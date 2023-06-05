@@ -17,7 +17,6 @@ namespace SME.Acessos.Aplicacao
 
         public async Task<IList<DadosUsuarioDTO>> ObterTodosUsuarios()
         {
-            throw new Exception("Deu pau!");
             var usuarios = await repositorioUsuario.ObterTodos();
             return mapper.Map<IList<DadosUsuarioDTO>>(usuarios);
         }
