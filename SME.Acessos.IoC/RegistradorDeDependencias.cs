@@ -75,8 +75,18 @@ namespace SME.Acessos.IoC
 
         protected virtual void RegistrarConexao()
         {
-            services.AddScoped<IConexaoAcessos, ConexaoAcessos>(_ => new ConexaoAcessos(configuration.GetConnectionString("Acessos") ?? throw new ArgumentNullException("String de Conexão para base Acessos Nula")));
-            services.AddScoped<IConexaoCoreSSO, ConexaoCoreSSO>(_ => new ConexaoCoreSSO(configuration.GetConnectionString("CoreSSO") ?? throw new ArgumentNullException("String de Conexão para base CoreSSO Nula")));
+            var conexaoAcessos = configuration.GetConnectionString("Acessos");
+            if (!string.IsNullOrEmpty(conexaoAcessos))
+                services.AddScoped<IConexaoAcessos, ConexaoAcessos>(_ => new ConexaoAcessos(conexaoAcessos));
+            else
+                services.AddScoped<IConexaoAcessos, ConexaoAcessos>();
+            
+            var conexaoCoreSSO = configuration.GetConnectionString("CoreSSO");
+            if (!string.IsNullOrEmpty(conexaoCoreSSO))
+                services.AddScoped<IConexaoCoreSSO, ConexaoCoreSSO>(_ =>new ConexaoCoreSSO(conexaoCoreSSO));
+            else
+                services.AddScoped<IConexaoCoreSSO, ConexaoCoreSSO>();
+            
             //serviceCollection.AddScoped<ITransacao, Transacao>();
         }
 
