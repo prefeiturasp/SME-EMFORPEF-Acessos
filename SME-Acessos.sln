@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.Acessos.Infra.Dominio",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.Acessos.Aplicacao", "SME.Acessos.Aplicacao\SME.Acessos.Aplicacao.csproj", "{06021DED-BE6D-4C69-9858-D2054743D137}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.Acessos.TesteIntegracao", "SME.Acessos.TesteIntegracao\SME.Acessos.TesteIntegracao.csproj", "{9F4B9B0B-EF60-4188-8BFC-469872EB02C9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{06021DED-BE6D-4C69-9858-D2054743D137}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06021DED-BE6D-4C69-9858-D2054743D137}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06021DED-BE6D-4C69-9858-D2054743D137}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F4B9B0B-EF60-4188-8BFC-469872EB02C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F4B9B0B-EF60-4188-8BFC-469872EB02C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F4B9B0B-EF60-4188-8BFC-469872EB02C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F4B9B0B-EF60-4188-8BFC-469872EB02C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

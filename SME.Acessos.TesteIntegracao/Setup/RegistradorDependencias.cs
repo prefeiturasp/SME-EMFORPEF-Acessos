@@ -3,28 +3,23 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using SME.Acessos.Aplicacao;
-using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.Infra.Dados;
-using SME.Acessos.Infra.Dados.Repositorios.CoreSSO;
-using SME.Acessos.Infra.Dominio.CoreSSO;
 using SME.Acessos.Infra.IoC;
 using SME.Acessos.Infra.Polly;
 using SME.Acessos.Infra.Servicos;
+using SME.Acessos.IoC;
 
-namespace SME.Acessos.IoC
+namespace SME.CDEP.TesteIntegracao.Setup
 {
-    public class RegistradorDeDependencias
+    public class RegistradorDependencias : RegistradorDeDependencias
     {
         private readonly IServiceCollection services;
         private readonly IConfiguration configuration;
 
-        public RegistradorDeDependencias(IServiceCollection serviceCollection, IConfiguration configuration)
-        {
-            this.services = serviceCollection;
-            this.configuration = configuration;
-        }
+        public RegistradorDependencias(IServiceCollection services, IConfiguration configuration) : base(services, configuration)
+        {}
 
-        public virtual void Registrar()
+        public override void Registrar()
         {
             RegistrarTelemetria();
             RegistrarConexao();
@@ -37,7 +32,7 @@ namespace SME.Acessos.IoC
             RegistrarMapeamentos.Registrar();
         }
 
-        protected virtual void RegistrarLogs()
+        protected override void RegistrarLogs()
         {
             services.AddOptions<ConfiguracaoRabbitLogsOptions>()
                 .Bind(configuration.GetSection(ConfiguracaoRabbitLogsOptions.Secao), c => c.BindNonPublicProperties = true);
@@ -53,47 +48,32 @@ namespace SME.Acessos.IoC
             services.AddSingleton<IServicoLogs, ServicoLogs>();
         }
 
-        protected virtual void RegistrarProfiles()
+        protected override void RegistrarProfiles()
         {
             services.AddAutoMapper(typeof(DominioParaDTOProfile));
         }
 
-        protected virtual void RegistrarServicos()
-        {
-            services.AddScoped<IServicoUsuarios, ServicoUsuarios>();
-        }
+        protected override void RegistrarServicos()
+        {}
 
-        protected virtual void RegistrarRepositorios()
-        {
-            services.AddScoped<IRepositorioUsuario, RepositorioUsuario>();
-        }
+        protected override void RegistrarRepositorios()
+        {}
 
-        protected virtual void RegistrarTelemetria()
+        protected override void RegistrarTelemetria()
         {
             services.ConfigurarTelemetria(configuration);
         }
 
-        protected virtual void RegistrarConexao()
+        protected override void RegistrarConexao()
         {
-            var conexaoAcessos = configuration.GetConnectionString("Acessos");
-            if (!string.IsNullOrEmpty(conexaoAcessos))
-                services.AddScoped<IConexaoAcessos, ConexaoAcessos>(_ => new ConexaoAcessos(conexaoAcessos));
-            else
-                services.AddScoped<IConexaoAcessos, ConexaoAcessos>();
-            
-            var conexaoCoreSSO = configuration.GetConnectionString("CoreSSO");
-            if (!string.IsNullOrEmpty(conexaoCoreSSO))
-                services.AddScoped<IConexaoCoreSSO, ConexaoCoreSSO>(_ =>new ConexaoCoreSSO(conexaoCoreSSO));
-            else
-                services.AddScoped<IConexaoCoreSSO, ConexaoCoreSSO>();
-            
+            services.AddScoped<IConexaoAcessos, ConexaoAcessos>();
+            services.AddScoped<IConexaoCoreSSO, ConexaoCoreSSO>();
             //serviceCollection.AddScoped<ITransacao, Transacao>();
         }
 
-        protected virtual void RegistrarPolly()
+        protected override void RegistrarPolly()
         {
             services.ConfigurarPolly();
         }
-
     }
 }
