@@ -4,8 +4,8 @@ namespace SME.Acessos.Aplicacao.Interfaces
 {
     public interface IServicoUsuarios
     {
-        Task<IList<DadosUsuarioDTO>> ObterTodosUsuarios();
-        Task<DadosUsuarioDTO> ObterUsuarioPorId(Guid id);
-        Task<DadosUsuarioDTO> ObterUsuarioPorLogin(string login);
+        Task<IList<DadosUsuarioDto>> ObterTodosUsuarios();
+        Task<DadosUsuarioDto> ObterUsuarioPorId(Guid id);
+        Task<DadosUsuarioDto> ObterUsuarioPorLogin(string login);
     }
 }

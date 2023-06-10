@@ -2,7 +2,7 @@
 
 namespace SME.Acessos.Aplicacao
 {
-    public class DadosUsuarioDTO
+    public class DadosUsuarioDto
     {
         [Required(ErrorMessage = "Login é necessário para o usuário")]
         [MinLength(1)]

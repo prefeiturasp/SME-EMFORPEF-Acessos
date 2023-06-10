@@ -1,11 +1,17 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using SME.Acessos.Aplicacao;
 using SME.Acessos.Aplicacao.Interfaces;
+using SME.Acessos.Aplicacao.Servicos;
+using SME.Acessos.Aplicacao.Settings;
 using SME.Acessos.Infra.Dados;
+using SME.Acessos.Infra.Dados.Acessos;
 using SME.Acessos.Infra.Dados.Repositorios.CoreSSO;
+using SME.Acessos.Infra.Dominio;
 using SME.Acessos.Infra.Dominio.CoreSSO;
 using SME.Acessos.Infra.IoC;
 using SME.Acessos.Infra.Polly;
@@ -33,8 +39,35 @@ namespace SME.Acessos.IoC
             RegistrarProfiles();
             RegistrarLogs();
             RegistrarPolly();
+            RegistrarJwtSettings();
 
             RegistrarMapeamentos.Registrar();
+        }
+
+        protected virtual void RegistrarJwtSettings()
+        {
+            var jwtConfiguration = configuration.GetSection(nameof(JwtTokenSettings));
+            services.Configure<JwtTokenSettings>(jwtConfiguration);
+            
+            var jwtTokenSettings = jwtConfiguration.Get<JwtTokenSettings>();
+            
+            services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(o =>
+            {
+                o.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateLifetime = true,
+                    ValidateAudience = true,
+                    ValidAudience = jwtTokenSettings.Audience,
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtTokenSettings.Issuer,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtTokenSettings.IssuerSigningKey))
+                };
+            });
         }
 
         protected virtual void RegistrarLogs()
@@ -61,11 +94,16 @@ namespace SME.Acessos.IoC
         protected virtual void RegistrarServicos()
         {
             services.AddScoped<IServicoUsuarios, ServicoUsuarios>();
+            services.AddScoped<IServicoAutenticacao, ServicoAutenticacao>();
+            services.AddScoped<IServicoTokenJwt, ServicoTokenJwt>();
         }
 
         protected virtual void RegistrarRepositorios()
         {
             services.AddScoped<IRepositorioUsuario, RepositorioUsuario>();
+            services.AddScoped<IRepositorioPerfilUsuario, RepositorioPerfilUsuario>();
+            services.AddScoped<IRepositorioModuloGrupoPermissao, RepositorioModuloGrupoPermissaoGrupoPermissao>();
+            services.AddScoped<IRepositorioPermissao, RepositorioPermissao>();
         }
 
         protected virtual void RegistrarTelemetria()
@@ -75,17 +113,8 @@ namespace SME.Acessos.IoC
 
         protected virtual void RegistrarConexao()
         {
-            var conexaoAcessos = configuration.GetConnectionString("Acessos");
-            if (!string.IsNullOrEmpty(conexaoAcessos))
-                services.AddScoped<IConexaoAcessos, ConexaoAcessos>(_ => new ConexaoAcessos(conexaoAcessos));
-            else
-                services.AddScoped<IConexaoAcessos, ConexaoAcessos>();
-            
-            var conexaoCoreSSO = configuration.GetConnectionString("CoreSSO");
-            if (!string.IsNullOrEmpty(conexaoCoreSSO))
-                services.AddScoped<IConexaoCoreSSO, ConexaoCoreSSO>(_ =>new ConexaoCoreSSO(conexaoCoreSSO));
-            else
-                services.AddScoped<IConexaoCoreSSO, ConexaoCoreSSO>();
+            services.AddScoped<IConexaoAcessos, ConexaoAcessos>(_ => new ConexaoAcessos(configuration.GetConnectionString("Acessos")));
+            services.AddScoped<IConexaoCoreSSO, ConexaoCoreSSO>(_ =>new ConexaoCoreSSO(configuration.GetConnectionString("CoreSSO")));
             
             //serviceCollection.AddScoped<ITransacao, Transacao>();
         }

@@ -1,4 +1,4 @@
-﻿namespace SME.Acessos.Infra.Dominio
+﻿namespace SME.Acessos.Infra.Dominio.Extensions
 {
     public static class DateTimeExtensions
     {

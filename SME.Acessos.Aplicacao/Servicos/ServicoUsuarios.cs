@@ -15,16 +15,16 @@ namespace SME.Acessos.Aplicacao
             this.mapper = mapper;
         }
 
-        public async Task<IList<DadosUsuarioDTO>> ObterTodosUsuarios()
+        public async Task<IList<DadosUsuarioDto>> ObterTodosUsuarios()
         {
             var usuarios = await repositorioUsuario.ObterTodos();
-            return mapper.Map<IList<DadosUsuarioDTO>>(usuarios);
+            return mapper.Map<IList<DadosUsuarioDto>>(usuarios);
         }
 
-        public async Task<DadosUsuarioDTO> ObterUsuarioPorId(Guid id)
-            => mapper.Map<DadosUsuarioDTO>(await repositorioUsuario.ObterPorId(id));
+        public async Task<DadosUsuarioDto> ObterUsuarioPorId(Guid id)
+            => mapper.Map<DadosUsuarioDto>(await repositorioUsuario.ObterPorId(id));
 
-        public async Task<DadosUsuarioDTO> ObterUsuarioPorLogin(string login)
-            => mapper.Map<DadosUsuarioDTO>(await repositorioUsuario.ObterPorLogin(login));
+        public async Task<DadosUsuarioDto> ObterUsuarioPorLogin(string login)
+            => mapper.Map<DadosUsuarioDto>(await repositorioUsuario.ObterPorLogin(login));
     }
 }

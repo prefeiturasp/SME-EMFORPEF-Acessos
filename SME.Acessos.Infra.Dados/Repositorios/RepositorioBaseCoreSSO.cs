@@ -1,4 +1,5 @@
 ﻿using SME.Acessos.Infra.Dominio;
+using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 
 namespace SME.Acessos.Infra.Dados
 {

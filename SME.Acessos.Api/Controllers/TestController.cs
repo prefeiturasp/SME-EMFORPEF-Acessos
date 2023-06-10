@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.Infra.Dominio.CoreSSO;
+using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 
 namespace SME.Acessos.Api.Controllers
 {

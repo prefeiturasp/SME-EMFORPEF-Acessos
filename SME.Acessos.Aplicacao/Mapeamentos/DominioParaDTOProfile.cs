@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SME.Acessos.Infra.Dominio.CoreSSO;
+using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 
 namespace SME.Acessos.Aplicacao
 {
@@ -7,7 +8,7 @@ namespace SME.Acessos.Aplicacao
     {
         public DominioParaDTOProfile()
         {
-            CreateMap<DadosUsuarioDTO, Usuario>().ReverseMap();
+            CreateMap<DadosUsuarioDto, Usuario>().ReverseMap();
         }
     }
 }
