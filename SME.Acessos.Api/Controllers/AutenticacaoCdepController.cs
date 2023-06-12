@@ -8,7 +8,6 @@ namespace SME.Acessos.Api.Controllers
 {
     [Route("api/autenticacao-cdep")]
     [ApiController]
-    // [ChaveIntegracaoApi]
     public class AutenticacaoCdepController : BaseController
     {
         private readonly IServicoAutenticacao servicoAutenticacao;
