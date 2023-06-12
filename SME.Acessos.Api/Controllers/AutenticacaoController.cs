@@ -2,21 +2,18 @@
 using SME.Acessos.Aplicacao.Constantes;
 using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Interfaces;
-using SME.Acessos.Infra.Dominio.CoreSSO;
 
 namespace SME.Acessos.Api.Controllers
 {
-    [Route("api/v1/autenticacao-cdep")]
+    [Route("api/v1/autenticacao")]
     [ApiController]
-    public class AutenticacaoCdepController : BaseController
+    public class AutenticacaoController : BaseController
     {
         private readonly IServicoAutenticacao servicoAutenticacao;
-        private readonly IServicoAutenticacaoCdep servicoAutenticacaoCdep;
         
-        public AutenticacaoCdepController(IServicoAutenticacao servicoAutenticacao,IServicoAutenticacaoCdep servicoAutenticacaoCdep)
+        public AutenticacaoController(IServicoAutenticacao servicoAutenticacao)
         {
             this.servicoAutenticacao = servicoAutenticacao ?? throw new ArgumentNullException(nameof(servicoAutenticacao));
-            this.servicoAutenticacaoCdep = servicoAutenticacaoCdep ?? throw new ArgumentNullException(nameof(servicoAutenticacaoCdep));
         }
         
         [HttpPost("autenticar")]
@@ -29,10 +26,8 @@ namespace SME.Acessos.Api.Controllers
                 return BadRequest(MensagemNegocio.LOGIN_SENHA_SAO_OBRIGATORIOS);
             
             var retornoAutenticacao = await servicoAutenticacao.Autenticar(login, senha);
-
-            var retornoUsuarioCdepDto = await servicoAutenticacaoCdep.ObterPerfisToken(retornoAutenticacao);
             
-            return Ok(retornoUsuarioCdepDto);
+            return Ok(retornoAutenticacao);
         }
     }
 }

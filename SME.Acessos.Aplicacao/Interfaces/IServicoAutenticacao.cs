@@ -4,6 +4,6 @@ namespace SME.Acessos.Aplicacao.Interfaces
 {
     public interface IServicoAutenticacao
     {
-        Task<RetornoUsuarioCdepDto> Autenticar(string login, string senha);
+        Task<RetornoAutenticacaoDto> Autenticar(string login, string senha);
     }
 }
