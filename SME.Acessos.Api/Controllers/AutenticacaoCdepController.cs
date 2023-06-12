@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SME.Acessos.Aplicacao.Constantes;
 using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Interfaces;
-using SME.Acessos.Infra.Dominio.CoreSSO;
 
 namespace SME.Acessos.Api.Controllers
 {
@@ -10,25 +8,13 @@ namespace SME.Acessos.Api.Controllers
     [ApiController]
     public class AutenticacaoCdepController : BaseController
     {
-        private readonly IServicoAutenticacao servicoAutenticacao;
-        private readonly IServicoAutenticacaoCdep servicoAutenticacaoCdep;
-        
-        public AutenticacaoCdepController(IServicoAutenticacao servicoAutenticacao,IServicoAutenticacaoCdep servicoAutenticacaoCdep)
-        {
-            this.servicoAutenticacao = servicoAutenticacao ?? throw new ArgumentNullException(nameof(servicoAutenticacao));
-            this.servicoAutenticacaoCdep = servicoAutenticacaoCdep ?? throw new ArgumentNullException(nameof(servicoAutenticacaoCdep));
-        }
-        
         [HttpPost("autenticar")]
-        [ProducesResponseType(typeof(RetornoUsuarioCdepDto), 200)]
+        [ProducesResponseType(typeof(RetornoUsuarioCdepDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
-        public async Task<IActionResult> Autenticar([FromForm] string login, [FromForm] string senha)
+        public async Task<IActionResult> Autenticar([FromBody] AutenticacaoDTO autenticacaoDto, [FromServices] IServicoAutenticacao servicoAutenticacao, [FromServices] IServicoAutenticacaoCdep servicoAutenticacaoCdep)
         {
-            if (string.IsNullOrEmpty(login) && string.IsNullOrEmpty(senha))
-                return BadRequest(MensagemNegocio.LOGIN_SENHA_SAO_OBRIGATORIOS);
-            
-            var retornoAutenticacao = await servicoAutenticacao.Autenticar(login, senha);
+            var retornoAutenticacao = await servicoAutenticacao.Autenticar(autenticacaoDto.Login, autenticacaoDto.Senha);
 
             var retornoUsuarioCdepDto = await servicoAutenticacaoCdep.ObterPerfisToken(retornoAutenticacao);
             

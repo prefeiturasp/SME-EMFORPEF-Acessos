@@ -12,7 +12,9 @@ using SME.Acessos.Infra.Dados;
 using SME.Acessos.Infra.Dados.Acessos;
 using SME.Acessos.Infra.Dados.Repositorios.CoreSSO;
 using SME.Acessos.Infra.Dominio;
+using SME.Acessos.Infra.Dominio.Acessos.Repositorios;
 using SME.Acessos.Infra.Dominio.CoreSSO;
+using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 using SME.Acessos.Infra.IoC;
 using SME.Acessos.Infra.Polly;
 using SME.Acessos.Infra.Servicos;
@@ -103,7 +105,7 @@ namespace SME.Acessos.IoC
         {
             services.AddScoped<IRepositorioUsuario, RepositorioUsuario>();
             services.AddScoped<IRepositorioPerfilUsuario, RepositorioPerfilUsuario>();
-            services.AddScoped<IRepositorioModuloGrupoPermissao, RepositorioModuloGrupoPermissaoGrupoPermissao>();
+            services.AddScoped<IRepositorioGrupoPermissao, RepositorioGrupoPermissao>();
             services.AddScoped<IRepositorioPermissao, RepositorioPermissao>();
         }
 

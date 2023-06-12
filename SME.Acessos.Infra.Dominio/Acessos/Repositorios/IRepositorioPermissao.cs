@@ -1,8 +1,7 @@
-﻿using SME.Acessos.Infra.Dominio.Acessos;
-
-namespace SME.Acessos.Infra.Dominio;
+﻿
+namespace SME.Acessos.Infra.Dominio.Acessos.Repositorios;
 
 public interface IRepositorioPermissao
 {
-    Task<IEnumerable<int>> ObterPermissoesPorModulos(IList<ModuloGrupoPermissao> modulosGrupoPermissao);
+    Task<IList<Acessos.Entidades.Modulo>> ObterPermissoesPorModulos(IList<Dominio.CoreSSO.Entidades.GrupoPermissao> modulosGrupoPermissao);
 }

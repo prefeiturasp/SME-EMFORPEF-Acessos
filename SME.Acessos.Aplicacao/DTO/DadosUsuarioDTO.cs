@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SME.Acessos.Aplicacao
+namespace SME.Acessos.Aplicacao.DTO
 {
-    public class DadosUsuarioDto
+    public class DadosUsuarioDTO
     {
         [Required(ErrorMessage = "Login é necessário para o usuário")]
         [MinLength(1)]

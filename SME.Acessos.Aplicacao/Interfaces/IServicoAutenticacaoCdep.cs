@@ -4,6 +4,6 @@ namespace SME.Acessos.Aplicacao.Interfaces
 {
     public interface IServicoAutenticacaoCdep
     {
-        Task<RetornoUsuarioCdepDto> ObterPerfisToken(RetornoAutenticacaoDto retornoAutenticacao);
+        Task<RetornoUsuarioCdepDTO> ObterPerfisToken(RetornoAutenticacaoDTO retornoAutenticacao);
     }
 }

@@ -4,12 +4,12 @@ using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 
 namespace SME.Acessos.Infra.Dados.Mapeamentos.CoreSSO
 {
-    public class PerfilUsuarioMap : DommelEntityMap<PerfilUsuario>
+    public class VisaoMap : DommelEntityMap<Visao>
     {
-        public PerfilUsuarioMap()
+        public VisaoMap()
         {
-            ToTable("SYS_Grupo");
-            Map(a => a.Id).ToColumn("gru_id");
+            ToTable("SYS_Visao");
+            Map(a => a.VisaoId).ToColumn("vis_id");
             Map(a => a.Nome).ToColumn("gru_nome");
         }
     }

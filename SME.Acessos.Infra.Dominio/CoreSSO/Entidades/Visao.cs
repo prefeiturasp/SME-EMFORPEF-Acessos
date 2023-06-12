@@ -1,7 +1,7 @@
 ﻿namespace SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 
-public class PerfilUsuario : EntidadeBaseCoreSSO
+public class Visao : EntidadeBaseCoreSSO
 {
-    public Guid Id { get; set; }
+    public int VisaoId { get; set; }
     public string Nome { get; set; }
 }

@@ -1,6 +1,6 @@
 ﻿namespace SME.Acessos.Aplicacao.DTO
 {
-    public class RetornoAutenticacaoDto
+    public class RetornoAutenticacaoDTO
     {
         public string Nome { get; set; }
         public string Login { get; set; }

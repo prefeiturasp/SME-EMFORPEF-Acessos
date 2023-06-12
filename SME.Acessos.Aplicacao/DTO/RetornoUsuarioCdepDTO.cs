@@ -1,6 +1,6 @@
 ﻿namespace SME.Acessos.Aplicacao.DTO
 {
-    public class RetornoUsuarioCdepDto
+    public class RetornoUsuarioCdepDTO
     {
         public string UsuarioNome { get; set; }
         public string UsuarioLogin { get; set; }
@@ -8,6 +8,6 @@
         public string Token { get; set; }
         public string Email { get; set; }
         public bool Autenticado { get; set; }
-        public IList<PerfilUsuarioDto> PerfilUsuario { get; set; }
+        public IList<PerfilUsuarioDTO> PerfilUsuario { get; set; }
     }
 }

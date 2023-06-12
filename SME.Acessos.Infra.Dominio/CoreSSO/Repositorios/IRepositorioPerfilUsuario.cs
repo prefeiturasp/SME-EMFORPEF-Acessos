@@ -1,9 +1,9 @@
 ﻿using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 
-namespace SME.Acessos.Infra.Dominio.CoreSSO
+namespace SME.Acessos.Infra.Dominio.CoreSSO.Repositorios
 {
     public interface IRepositorioPerfilUsuario
     {
-        Task<IList<PerfilUsuario>> ObterPerfisUsuario(string login, int sistemaId);
+        Task<IList<Grupo>> ObterPerfisUsuario(string login, int sistemaId);
     }
 }

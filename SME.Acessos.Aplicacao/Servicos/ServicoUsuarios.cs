@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
+using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Interfaces;
-using SME.Acessos.Infra.Dominio.CoreSSO;
+using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 
 namespace SME.Acessos.Aplicacao
 {
@@ -15,16 +16,16 @@ namespace SME.Acessos.Aplicacao
             this.mapper = mapper;
         }
 
-        public async Task<IList<DadosUsuarioDto>> ObterTodosUsuarios()
+        public async Task<IList<DadosUsuarioDTO>> ObterTodosUsuarios()
         {
             var usuarios = await repositorioUsuario.ObterTodos();
-            return mapper.Map<IList<DadosUsuarioDto>>(usuarios);
+            return mapper.Map<IList<DadosUsuarioDTO>>(usuarios);
         }
 
-        public async Task<DadosUsuarioDto> ObterUsuarioPorId(Guid id)
-            => mapper.Map<DadosUsuarioDto>(await repositorioUsuario.ObterPorId(id));
+        public async Task<DadosUsuarioDTO> ObterUsuarioPorId(Guid id)
+            => mapper.Map<DadosUsuarioDTO>(await repositorioUsuario.ObterPorId(id));
 
-        public async Task<DadosUsuarioDto> ObterUsuarioPorLogin(string login)
-            => mapper.Map<DadosUsuarioDto>(await repositorioUsuario.ObterPorLogin(login));
+        public async Task<DadosUsuarioDTO> ObterUsuarioPorLogin(string login)
+            => mapper.Map<DadosUsuarioDTO>(await repositorioUsuario.ObterPorLogin(login));
     }
 }
