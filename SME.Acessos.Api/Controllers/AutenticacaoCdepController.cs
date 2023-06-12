@@ -6,6 +6,7 @@ using SME.Acessos.Infra.Dominio.CoreSSO;
 
 namespace SME.Acessos.Api.Controllers
 {
+    [Route("api/v1/autenticacao-cdep")]
     [ApiController]
     public class AutenticacaoCdepController : BaseController
     {
