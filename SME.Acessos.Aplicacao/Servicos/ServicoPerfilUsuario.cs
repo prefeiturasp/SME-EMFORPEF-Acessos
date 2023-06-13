@@ -1,8 +1,11 @@
-﻿using SME.Acessos.Aplicacao.DTO;
+﻿using System.Net;
+using SME.Acessos.Aplicacao.Constantes;
+using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.Infra.Dominio.Acessos.Repositorios;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 using SME.Acessos.Infra.Dominio.Enumeradores;
+using SME.Acessos.Infra.Dominio.Extensions;
 
 namespace SME.Acessos.Aplicacao.Servicos
 {
@@ -12,38 +15,69 @@ namespace SME.Acessos.Aplicacao.Servicos
         private readonly IRepositorioGrupoPermissao repositorioGrupoPermissao;
         private readonly IRepositorioPermissao repositorioPermissao;
         private readonly IServicoTokenJwt servicoTokenJwt;
+        private const string PERFIL_EXTERNO = "Externo";
+        private readonly IRepositorioUsuario repositorioUsuario;
 
-        public ServicoPerfilUsuario(IRepositorioUsuarioGrupo repositorioUsuarioGrupo,IServicoTokenJwt servicoTokenJwt,IRepositorioGrupoPermissao repositorioGrupoPermissao,IRepositorioPermissao repositorioPermissao)
+        public ServicoPerfilUsuario(IRepositorioUsuarioGrupo repositorioUsuarioGrupo,IServicoTokenJwt servicoTokenJwt,IRepositorioGrupoPermissao repositorioGrupoPermissao,IRepositorioPermissao repositorioPermissao,IRepositorioUsuario repositorioUsuario)
         {
             this.repositorioUsuarioGrupo = repositorioUsuarioGrupo ?? throw new ArgumentNullException(nameof(repositorioUsuarioGrupo));
             this.servicoTokenJwt = servicoTokenJwt ?? throw new ArgumentNullException(nameof(servicoTokenJwt));
             this.repositorioGrupoPermissao = repositorioGrupoPermissao ?? throw new ArgumentNullException(nameof(repositorioGrupoPermissao));
             this.repositorioPermissao = repositorioPermissao ?? throw new ArgumentNullException(nameof(repositorioPermissao));
+            this.repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
         }
 
         public async Task<RetornoPerfilUsuarioDTO> ObterPerfisToken(string login, int sistemaId)
         {
-            var perfisUsuario = await repositorioUsuarioGrupo.ObterPerfisUsuario(login, sistemaId);
+            string nomeUsuario, emailUsuario;
+            Guid perfilUsuarioId;
+            var codPermissoes = Enumerable.Empty<long>();
 
-            var perfilUsuario = perfisUsuario.FirstOrDefault();
-            var modulos = await repositorioGrupoPermissao.ObterModulosPorPerfilSistema(perfilUsuario.GrupoId,sistemaId);
-            var permissoes = await repositorioPermissao.ObterPermissoesPorModulos(modulos);
-            var codPermissoes = permissoes.ToList().Select(p => p.Id);
-            var token = servicoTokenJwt.GerarToken(login, perfilUsuario.PessoaNome, perfilUsuario.Id, codPermissoes);
+            var perfisUsuario = await repositorioUsuarioGrupo.ObterPerfisUsuario(login, sistemaId);
+            if (perfisUsuario.Any())
+            {
+                var perfilUsuario = perfisUsuario.FirstOrDefault();
+                var modulos = await repositorioGrupoPermissao.ObterModulosPorPerfilSistema(perfilUsuario.GrupoId,sistemaId);
+                var permissoes = await repositorioPermissao.ObterPermissoesPorModulos(modulos);
+                codPermissoes = permissoes.ToList().Select(p => p.Id);
+                nomeUsuario = perfilUsuario.PessoaNome;
+                emailUsuario = perfilUsuario.UsuarioEmail;
+                perfilUsuarioId = perfilUsuario.GrupoId;
+            }
+            else
+            {
+                var usuarioCoreSSO = await repositorioUsuario.ObterPorLogin(login);
+                if (usuarioCoreSSO == null)
+                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO, HttpStatusCode.Unauthorized);
+
+                nomeUsuario = usuarioCoreSSO.Pessoa.Nome;
+                emailUsuario = usuarioCoreSSO.Email;
+                perfilUsuarioId = Guid.NewGuid();//Trocar pelo guid de externo
+            }
+            
+            var token = servicoTokenJwt.GerarToken(login, nomeUsuario, perfilUsuarioId, codPermissoes);
             var dataExpiracaoToken = servicoTokenJwt.ObterDataHoraExpiracao();
 
             var retorno = new RetornoPerfilUsuarioDTO()
             {
                 UsuarioLogin = login,
-                UsuarioNome = perfilUsuario.PessoaNome,
-                Email = perfilUsuario.UsuarioEmail,
+                UsuarioNome = nomeUsuario,
+                Email = emailUsuario,
                 Token = token,
-                PerfilUsuario = perfisUsuario.Any() ? perfisUsuario.Select(s => new PerfilUsuarioDTO()
-                    { Perfil = s.GrupoId, PerfilNome = s.GrupoNome }).ToList() : null,
+                PerfilUsuario = perfisUsuario.Any() 
+                    ? perfisUsuario.Select(s => 
+                        new PerfilUsuarioDTO() { Perfil = s.GrupoId, PerfilNome = s.GrupoNome }).ToList() 
+                    : ObterPerfilExterno(),
                 DataHoraExpiracao = dataExpiracaoToken,
                 Autenticado = true,
             };
             return retorno;
+        }
+
+        private IList<PerfilUsuarioDTO> ObterPerfilExterno()
+        {
+            return new List<PerfilUsuarioDTO>() { new (Guid.NewGuid(), PERFIL_EXTERNO) };
+            //Trocar pelo guid de externo
         }
     }
 }
