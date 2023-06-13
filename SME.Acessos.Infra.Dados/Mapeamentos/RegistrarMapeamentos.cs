@@ -12,6 +12,7 @@ namespace SME.Acessos.Infra.Dados
             FluentMapper.Initialize(config =>
             {
                 config.AddMap(new UsuarioMap());
+                config.AddMap(new UsuarioGrupoMap());
                 config.AddMap(new GrupoMap());
                 config.AddMap(new GrupoPermissaoMap());
                 config.AddMap(new ModuloMap());

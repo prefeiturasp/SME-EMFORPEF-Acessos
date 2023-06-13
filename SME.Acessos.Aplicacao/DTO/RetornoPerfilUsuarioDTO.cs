@@ -1,6 +1,6 @@
 ﻿namespace SME.Acessos.Aplicacao.DTO
 {
-    public class RetornoUsuarioCdepDTO
+    public class RetornoPerfilUsuarioDTO
     {
         public string UsuarioNome { get; set; }
         public string UsuarioLogin { get; set; }

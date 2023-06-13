@@ -9,7 +9,7 @@ namespace SME.Acessos.Api.Controllers
     public class AutenticacaoController : BaseController
     {
         [HttpPost("autenticar")]
-        [ProducesResponseType(typeof(RetornoUsuarioCdepDTO), 200)]
+        [ProducesResponseType(typeof(RetornoPerfilUsuarioDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         public async Task<IActionResult> Autenticar([FromBody] AutenticacaoDTO autenticacaoDto, [FromServices] IServicoAutenticacao servicoAutenticacao)
@@ -17,6 +17,17 @@ namespace SME.Acessos.Api.Controllers
             var retornoAutenticacao = await servicoAutenticacao.Autenticar(autenticacaoDto.Login, autenticacaoDto.Senha);
             
             return Ok(retornoAutenticacao);
+        }
+        
+        [HttpGet("{login}/{sistemaId}/perfis/listar")]
+        [ProducesResponseType(typeof(RetornoPerfilUsuarioDTO), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]        
+        public async Task<IActionResult> ListarPerfisUsuario(string login, int sistemaId, [FromServices] IServicoPerfilUsuario servicoPerfilUsuario)
+        {
+            var retorno = await servicoPerfilUsuario.ObterPerfisToken(login, sistemaId);
+
+            return Ok(retorno);
         }
     }
 }

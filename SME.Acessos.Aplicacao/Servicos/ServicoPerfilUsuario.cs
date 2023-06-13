@@ -6,40 +6,40 @@ using SME.Acessos.Infra.Dominio.Enumeradores;
 
 namespace SME.Acessos.Aplicacao.Servicos
 {
-    public class ServicoAutenticacaoCdep : IServicoAutenticacaoCdep
+    public class ServicoPerfilUsuario : IServicoPerfilUsuario
     {
-        private readonly IRepositorioPerfilUsuario repositorioPerfilUsuario;
+        private readonly IRepositorioUsuarioGrupo repositorioUsuarioGrupo;
         private readonly IRepositorioGrupoPermissao repositorioGrupoPermissao;
         private readonly IRepositorioPermissao repositorioPermissao;
         private readonly IServicoTokenJwt servicoTokenJwt;
 
-        public ServicoAutenticacaoCdep(IRepositorioPerfilUsuario repositorioPerfilUsuario,IServicoTokenJwt servicoTokenJwt,IRepositorioGrupoPermissao repositorioGrupoPermissao,IRepositorioPermissao repositorioPermissao)
+        public ServicoPerfilUsuario(IRepositorioUsuarioGrupo repositorioUsuarioGrupo,IServicoTokenJwt servicoTokenJwt,IRepositorioGrupoPermissao repositorioGrupoPermissao,IRepositorioPermissao repositorioPermissao)
         {
-            this.repositorioPerfilUsuario = repositorioPerfilUsuario ?? throw new ArgumentNullException(nameof(repositorioPerfilUsuario));
+            this.repositorioUsuarioGrupo = repositorioUsuarioGrupo ?? throw new ArgumentNullException(nameof(repositorioUsuarioGrupo));
             this.servicoTokenJwt = servicoTokenJwt ?? throw new ArgumentNullException(nameof(servicoTokenJwt));
             this.repositorioGrupoPermissao = repositorioGrupoPermissao ?? throw new ArgumentNullException(nameof(repositorioGrupoPermissao));
             this.repositorioPermissao = repositorioPermissao ?? throw new ArgumentNullException(nameof(repositorioPermissao));
         }
 
-        public async Task<RetornoUsuarioCdepDTO> ObterPerfisToken(RetornoAutenticacaoDTO retornoAutenticacao)
+        public async Task<RetornoPerfilUsuarioDTO> ObterPerfisToken(string login, int sistemaId)
         {
-            var perfisUsuario = await repositorioPerfilUsuario.ObterPerfisUsuario(retornoAutenticacao.Login, (int)Sistema.Cdep);
+            var perfisUsuario = await repositorioUsuarioGrupo.ObterPerfisUsuario(login, sistemaId);
 
             var perfilUsuario = perfisUsuario.FirstOrDefault();
-            var modulos = await repositorioGrupoPermissao.ObterModulosPorPerfilSistema(perfilUsuario.Id,(int)Sistema.Cdep);
+            var modulos = await repositorioGrupoPermissao.ObterModulosPorPerfilSistema(perfilUsuario.GrupoId,sistemaId);
             var permissoes = await repositorioPermissao.ObterPermissoesPorModulos(modulos);
             var codPermissoes = permissoes.ToList().Select(p => p.Id);
-            var token = servicoTokenJwt.GerarToken(retornoAutenticacao.Login, retornoAutenticacao.Nome, perfilUsuario.Id, codPermissoes);
+            var token = servicoTokenJwt.GerarToken(login, perfilUsuario.PessoaNome, perfilUsuario.Id, codPermissoes);
             var dataExpiracaoToken = servicoTokenJwt.ObterDataHoraExpiracao();
 
-            var retorno = new RetornoUsuarioCdepDTO()
+            var retorno = new RetornoPerfilUsuarioDTO()
             {
-                UsuarioLogin = retornoAutenticacao.Login,
-                UsuarioNome = retornoAutenticacao.Nome,
-                Email = retornoAutenticacao.Email,
+                UsuarioLogin = login,
+                UsuarioNome = perfilUsuario.PessoaNome,
+                Email = perfilUsuario.UsuarioEmail,
                 Token = token,
-                PerfilUsuario = perfisUsuario.Select(s => new PerfilUsuarioDTO()
-                    { Perfil = s.Id, PerfilNome = s.Nome }).ToList(),
+                PerfilUsuario = perfisUsuario.Any() ? perfisUsuario.Select(s => new PerfilUsuarioDTO()
+                    { Perfil = s.GrupoId, PerfilNome = s.GrupoNome }).ToList() : null,
                 DataHoraExpiracao = dataExpiracaoToken,
                 Autenticado = true,
             };

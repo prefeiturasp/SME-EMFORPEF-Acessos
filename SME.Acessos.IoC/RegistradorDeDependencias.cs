@@ -97,14 +97,14 @@ namespace SME.Acessos.IoC
         {
             services.AddScoped<IServicoUsuarios, ServicoUsuarios>();
             services.AddScoped<IServicoAutenticacao, ServicoAutenticacao>();
-            services.AddScoped<IServicoAutenticacaoCdep, ServicoAutenticacaoCdep>();
+            services.AddScoped<IServicoPerfilUsuario, ServicoPerfilUsuario>();
             services.AddScoped<IServicoTokenJwt, ServicoTokenJwt>();
         }
 
         protected virtual void RegistrarRepositorios()
         {
             services.AddScoped<IRepositorioUsuario, RepositorioUsuario>();
-            services.AddScoped<IRepositorioPerfilUsuario, RepositorioPerfilUsuario>();
+            services.AddScoped<IRepositorioUsuarioGrupo, RepositorioUsuarioGrupo>();
             services.AddScoped<IRepositorioGrupoPermissao, RepositorioGrupoPermissao>();
             services.AddScoped<IRepositorioPermissao, RepositorioPermissao>();
         }
