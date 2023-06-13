@@ -1,6 +1,7 @@
-﻿using SME.Acessos.Infra.Dominio;
+﻿using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
+using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 
-namespace SME.Acessos.Infra.Dados
+namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
 {
     public class RepositorioBaseCoreSSO<TEntidade> : RepositorioBase<TEntidade, Guid>, IRepositorioBaseCoreSSO<TEntidade>
         where TEntidade : EntidadeBaseCoreSSO

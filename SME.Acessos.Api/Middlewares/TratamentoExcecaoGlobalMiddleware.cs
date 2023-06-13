@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using SME.Acessos.Infra.Servicos;
 using System.Net;
+using SME.Acessos.Infra.Dominio.Enumeradores;
+using SME.Acessos.Infra.Dominio.Extensions;
 
 namespace SME.Acessos.Api
 {
@@ -20,6 +22,11 @@ namespace SME.Acessos.Api
             try
             {
                 await next(context);
+            }
+            catch (NegocioException nex)
+            {
+                await servicoLogs.Enviar(nex.Message, observacao: nex.Message, rastreamento: nex.StackTrace);
+                await TratarExcecao(context, nex.Message);
             }
             catch (Exception ex)
             {

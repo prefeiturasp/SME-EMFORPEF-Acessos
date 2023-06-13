@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
+using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Interfaces;
-using SME.Acessos.Infra.Dominio.CoreSSO;
+using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 
 namespace SME.Acessos.Aplicacao
 {
