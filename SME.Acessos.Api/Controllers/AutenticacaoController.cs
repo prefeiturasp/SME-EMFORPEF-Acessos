@@ -19,7 +19,7 @@ namespace SME.Acessos.Api.Controllers
             return Ok(retornoAutenticacao);
         }
         
-        [HttpGet("{login}/{sistemaId}/perfis/listar")]
+        [HttpGet("usuarios/{login}/sistemas/{sistemaId}/perfis")]
         [ProducesResponseType(typeof(RetornoPerfilUsuarioDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]        
