@@ -1,9 +1,9 @@
-﻿namespace SME.Acessos.Infra.Dominio.Acessos
+﻿namespace SME.Acessos.Infra.Dominio.Acessos.Entidades
 {
     public class Modulo : EntidadeBaseAcessos
     {
         public string Descricao { get; set; }
-        public long IdModCoreSSO { get; set; }
-        public long IdAcao { get; set; }
+        public long ModuloCoreSSOId { get; set; }
+        public int AcaoId { get; set; }
     }
 }

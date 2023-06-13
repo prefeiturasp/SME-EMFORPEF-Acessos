@@ -2,13 +2,15 @@ using Elastic.Apm.AspNetCore;
 using Elastic.Apm.DiagnosticSource;
 using Elastic.Apm.SqlClient;
 using SME.Acessos.Api;
+using SME.Acessos.Api.SwaggerOperationFilters;
 using SME.Acessos.IoC;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c=>
+    c.OperationFilter<AdicionaCabecalhoHttp>());
 
 var registradorDeDependencia = new RegistradorDeDependencias(builder.Services, builder.Configuration);
 registradorDeDependencia.Registrar();

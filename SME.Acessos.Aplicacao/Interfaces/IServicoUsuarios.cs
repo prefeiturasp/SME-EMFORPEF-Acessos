@@ -1,4 +1,5 @@
-﻿using SME.Acessos.Infra.Dominio.CoreSSO;
+﻿using SME.Acessos.Aplicacao.DTO;
+using SME.Acessos.Infra.Dominio.CoreSSO;
 
 namespace SME.Acessos.Aplicacao.Interfaces
 {
