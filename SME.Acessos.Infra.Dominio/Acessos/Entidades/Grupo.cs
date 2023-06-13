@@ -1,4 +1,4 @@
-﻿namespace SME.Acessos.Infra.Dominio.Acessos
+﻿namespace SME.Acessos.Infra.Dominio.Acessos.Entidades
 {
     public class Grupo : EntidadeBaseAcessos
     {
