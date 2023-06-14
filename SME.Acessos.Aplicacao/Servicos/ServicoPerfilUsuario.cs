@@ -15,7 +15,8 @@ namespace SME.Acessos.Aplicacao.Servicos
         private readonly IRepositorioGrupoPermissao repositorioGrupoPermissao;
         private readonly IRepositorioPermissao repositorioPermissao;
         private readonly IServicoTokenJwt servicoTokenJwt;
-        private const string PERFIL_EXTERNO = "Externo";
+        private const string PERFIL_EXTERNO_DESCRICAO = "Externo";
+        private const string PERFIL_EXTERNO_GUID = "3092428D-CA98-4788-9717-E706DF1945A0";
         private readonly IRepositorioUsuario repositorioUsuario;
 
         public ServicoPerfilUsuario(IRepositorioUsuarioGrupo repositorioUsuarioGrupo,IServicoTokenJwt servicoTokenJwt,IRepositorioGrupoPermissao repositorioGrupoPermissao,IRepositorioPermissao repositorioPermissao,IRepositorioUsuario repositorioUsuario)
@@ -52,7 +53,7 @@ namespace SME.Acessos.Aplicacao.Servicos
 
                 nomeUsuario = usuarioCoreSSO.Pessoa.Nome;
                 emailUsuario = usuarioCoreSSO.Email;
-                perfilUsuarioId = Guid.NewGuid();//Trocar pelo guid de externo
+                perfilUsuarioId = new Guid(PERFIL_EXTERNO_GUID);
             }
             
             var token = servicoTokenJwt.GerarToken(login, nomeUsuario, perfilUsuarioId, codPermissoes);
@@ -76,8 +77,7 @@ namespace SME.Acessos.Aplicacao.Servicos
 
         private IList<PerfilUsuarioDTO> ObterPerfilExterno()
         {
-            return new List<PerfilUsuarioDTO>() { new (Guid.NewGuid(), PERFIL_EXTERNO) };
-            //Trocar pelo guid de externo
+            return new List<PerfilUsuarioDTO>() { new (new Guid(PERFIL_EXTERNO_GUID), PERFIL_EXTERNO_DESCRICAO) };
         }
     }
 }
