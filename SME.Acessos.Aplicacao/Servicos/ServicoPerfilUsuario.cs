@@ -15,8 +15,6 @@ namespace SME.Acessos.Aplicacao.Servicos
         private readonly IRepositorioGrupoPermissao repositorioGrupoPermissao;
         private readonly IRepositorioPermissao repositorioPermissao;
         private readonly IServicoTokenJwt servicoTokenJwt;
-        private const string PERFIL_EXTERNO_DESCRICAO = "Externo";
-        private const string PERFIL_EXTERNO_GUID = "3092428D-CA98-4788-9717-E706DF1945A0";
         private readonly IRepositorioUsuario repositorioUsuario;
 
         public ServicoPerfilUsuario(IRepositorioUsuarioGrupo repositorioUsuarioGrupo,IServicoTokenJwt servicoTokenJwt,IRepositorioGrupoPermissao repositorioGrupoPermissao,IRepositorioPermissao repositorioPermissao,IRepositorioUsuario repositorioUsuario)
@@ -31,7 +29,7 @@ namespace SME.Acessos.Aplicacao.Servicos
         public async Task<RetornoPerfilUsuarioDTO> ObterPerfisToken(string login, int sistemaId)
         {
             string nomeUsuario, emailUsuario;
-            Guid perfilUsuarioId;
+            Guid? perfilUsuarioId = null;
             var codPermissoes = Enumerable.Empty<long>();
 
             var perfisUsuario = await repositorioUsuarioGrupo.ObterPerfisUsuario(login, sistemaId);
@@ -53,7 +51,6 @@ namespace SME.Acessos.Aplicacao.Servicos
 
                 nomeUsuario = usuarioCoreSSO.Pessoa.Nome;
                 emailUsuario = usuarioCoreSSO.Email;
-                perfilUsuarioId = new Guid(PERFIL_EXTERNO_GUID);
             }
             
             var token = servicoTokenJwt.GerarToken(login, nomeUsuario, perfilUsuarioId, codPermissoes);
@@ -68,16 +65,11 @@ namespace SME.Acessos.Aplicacao.Servicos
                 PerfilUsuario = perfisUsuario.Any() 
                     ? perfisUsuario.Select(s => 
                         new PerfilUsuarioDTO() { Perfil = s.GrupoId, PerfilNome = s.GrupoNome }).ToList() 
-                    : ObterPerfilExterno(),
+                    : null,
                 DataHoraExpiracao = dataExpiracaoToken,
                 Autenticado = true,
             };
             return retorno;
-        }
-
-        private IList<PerfilUsuarioDTO> ObterPerfilExterno()
-        {
-            return new List<PerfilUsuarioDTO>() { new (new Guid(PERFIL_EXTERNO_GUID), PERFIL_EXTERNO_DESCRICAO) };
         }
     }
 }
