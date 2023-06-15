@@ -17,14 +17,14 @@ namespace SME.Acessos.Aplicacao.Servicos
             this.jwtTokenSettings = jwtTokenSettings?.Value;
         }
 
-        public string GerarToken(string usuarioLogin, string usuarioNome, Guid guidPerfil, IEnumerable<long> permissionamentos)
+        public string GerarToken(string usuarioLogin, string usuarioNome, Guid? guidPerfil, IEnumerable<long> permissionamentos)
         {
             List<Claim> claims = new List<Claim>();
 
             claims.Add(new Claim(ClaimTypes.Name, usuarioLogin));
             claims.Add(new Claim("login", usuarioLogin));
             claims.Add(new Claim("nome", usuarioNome));
-            claims.Add(new Claim("perfil", guidPerfil.ToString()));
+            claims.Add(new Claim("perfil", guidPerfil.HasValue ? guidPerfil.ToString() : string.Empty));
 
             foreach (var permissao in permissionamentos)
                 claims.Add(new Claim("roles", permissao.ToString()));

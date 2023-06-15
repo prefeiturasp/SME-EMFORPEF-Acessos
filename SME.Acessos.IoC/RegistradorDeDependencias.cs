@@ -107,6 +107,7 @@ namespace SME.Acessos.IoC
             services.AddScoped<IRepositorioUsuarioGrupo, RepositorioUsuarioGrupo>();
             services.AddScoped<IRepositorioGrupoPermissao, RepositorioGrupoPermissao>();
             services.AddScoped<IRepositorioPermissao, RepositorioPermissao>();
+            services.AddScoped<IRepositorioPessoa, RepositorioPessoa>();
         }
 
         protected virtual void RegistrarTelemetria()
