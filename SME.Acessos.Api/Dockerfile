@@ -26,4 +26,4 @@ COPY --from=publish /app/publish .
 
 RUN sed -i 's/DEFAULT@SECLEVEL=2/DEFAULT@SECLEVEL=1/g' /etc/ssl/openssl.cnf
 
-ENTRYPOINT ["dotnet", SME.Acessos.Api.dll"]
+ENTRYPOINT ["dotnet", "SME.Acessos.Api.dll"]
