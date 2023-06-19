@@ -407,3 +407,9 @@
 			    IF(@@TRANCOUNT > 0)
 			        ROLLBACK TRAN;
 			END CATCH
+			
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--> Inserindo visão módulo			
+
+	insert into sys_visaomodulo 
+    select 1,sis_id, mod_id from sys_modulo where sis_id = 1006
