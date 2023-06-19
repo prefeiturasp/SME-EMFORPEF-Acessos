@@ -411,5 +411,11 @@
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> Inserindo visão módulo			
 
-	insert into sys_visaomodulo 
-    select 1,sis_id, mod_id from sys_modulo where sis_id = 1006
+	if not exists(select * from sys_visaomodulo where sis_id = @Sistema_CDEP)
+	begin
+		print 'inserindo visão módulos'
+		insert into sys_visaomodulo 
+    	select 1,sis_id, mod_id from sys_modulo where sis_id = @Sistema_CDEP
+	end
+			
+	
