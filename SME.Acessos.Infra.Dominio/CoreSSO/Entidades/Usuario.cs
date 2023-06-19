@@ -16,7 +16,8 @@
         public int IntegracaoAD { get; set; }
         public int IntegracaoExterna { get; set; }
         public DateTime DataAlteracaoSenha { get; set; }
-        
+        public Guid EntidadeId { get; set; }
+
         public void AdicionarPessoa(Pessoa pessoa)
         {
             if (pessoa != null)

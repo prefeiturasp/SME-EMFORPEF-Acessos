@@ -1,6 +1,5 @@
 ﻿------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> Grupos
-select * from grupos order by 1 desc
 
 	insert into grupos (id, guidPerfil, nome, idabrangencia) 	
 	select (select max(id)+1 from grupos),'D3766FB4-D753-4398-BFB0-C357724BB0A2', 'Admin Geral', 1
@@ -28,7 +27,6 @@ select * from grupos order by 1 desc
 	
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> Módulos
-select * from modulos m order by 1 desc
 
 --> Crédito
 insert into modulos (id, descricao, idmodcoresso,idacao) 	
