@@ -44,6 +44,7 @@ public class RepositorioPermissao : RepositorioBaseAcessos<Modulo>, IRepositorio
         int indexOfOr = query.ToString().IndexOf(" or ");
         query.Replace(" or ", "and (", indexOfOr, " or ".Length).Append(")");
 
+        var ret = query.ToString();
         return (await conexao.Obter().QueryAsync<Modulo>(query.ToString())).ToList();
     }
 }

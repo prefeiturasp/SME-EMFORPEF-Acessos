@@ -11,15 +11,15 @@ namespace SME.Acessos.Aplicacao.Servicos
 {
     public class ServicoPerfilUsuario : IServicoPerfilUsuario
     {
-        private readonly IRepositorioUsuarioGrupo repositorioUsuarioGrupo;
+        private readonly IRepositorioUsuarioGrupoPessoa repositorioUsuarioGrupoPessoa;
         private readonly IRepositorioGrupoPermissao repositorioGrupoPermissao;
         private readonly IRepositorioPermissao repositorioPermissao;
         private readonly IServicoTokenJwt servicoTokenJwt;
         private readonly IRepositorioUsuario repositorioUsuario;
 
-        public ServicoPerfilUsuario(IRepositorioUsuarioGrupo repositorioUsuarioGrupo,IServicoTokenJwt servicoTokenJwt,IRepositorioGrupoPermissao repositorioGrupoPermissao,IRepositorioPermissao repositorioPermissao,IRepositorioUsuario repositorioUsuario)
+        public ServicoPerfilUsuario(IRepositorioUsuarioGrupoPessoa repositorioUsuarioGrupoPessoa,IServicoTokenJwt servicoTokenJwt,IRepositorioGrupoPermissao repositorioGrupoPermissao,IRepositorioPermissao repositorioPermissao,IRepositorioUsuario repositorioUsuario)
         {
-            this.repositorioUsuarioGrupo = repositorioUsuarioGrupo ?? throw new ArgumentNullException(nameof(repositorioUsuarioGrupo));
+            this.repositorioUsuarioGrupoPessoa = repositorioUsuarioGrupoPessoa ?? throw new ArgumentNullException(nameof(repositorioUsuarioGrupoPessoa));
             this.servicoTokenJwt = servicoTokenJwt ?? throw new ArgumentNullException(nameof(servicoTokenJwt));
             this.repositorioGrupoPermissao = repositorioGrupoPermissao ?? throw new ArgumentNullException(nameof(repositorioGrupoPermissao));
             this.repositorioPermissao = repositorioPermissao ?? throw new ArgumentNullException(nameof(repositorioPermissao));
@@ -32,7 +32,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             Guid? perfilUsuarioId = null;
             var codPermissoes = Enumerable.Empty<long>();
 
-            var perfisUsuario = await repositorioUsuarioGrupo.ObterPerfisUsuario(login, sistemaId);
+            var perfisUsuario = await repositorioUsuarioGrupoPessoa.ObterPerfisUsuario(login, sistemaId);
             if (perfisUsuario.Any())
             {
                 var perfilUsuario = perfisUsuario.FirstOrDefault();
