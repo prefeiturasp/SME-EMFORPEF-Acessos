@@ -407,3 +407,15 @@
 			    IF(@@TRANCOUNT > 0)
 			        ROLLBACK TRAN;
 			END CATCH
+			
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--> Inserindo visão módulo			
+
+	if not exists(select * from sys_visaomodulo where sis_id = @Sistema_CDEP)
+	begin
+		print 'inserindo visão módulos'
+		insert into sys_visaomodulo 
+    	select 1,sis_id, mod_id from sys_modulo where sis_id = @Sistema_CDEP
+	end
+			
+	
