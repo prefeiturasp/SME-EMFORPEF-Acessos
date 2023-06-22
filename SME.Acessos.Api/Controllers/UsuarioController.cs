@@ -38,7 +38,7 @@ namespace SME.Acessos.Api.Controllers
             return Ok(retorno);
         }
         
-        [HttpPost("usuarios/{login}/sistemas/{sistemaId}/meus-dados")]
+        [HttpPost("{login}/sistemas/{sistemaId}/meus-dados")]
         [ProducesResponseType(typeof(DadosUsuarioDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
