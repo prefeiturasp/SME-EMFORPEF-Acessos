@@ -1,0 +1,9 @@
+﻿namespace SME.Acessos.Infra.Dados.Constantes;
+
+public class ConstantesDados
+{
+    public const string TIPO_DOCUMENTO_CPF = "2CEEED03-63EB-E011-9B36-00155D033206";
+    public const string TIPO_MEIO_CONTATO_TELEFONE_CELULAR = "BB2E686C-A29C-E211-B1FE-782BCB3D2D76";
+    public const string TIPO_MEIO_CONTATO_TELEFONE_FIXO = "D18DB29F-ADF5-E011-9B36-00155D033206";
+    public const string TIPO_MEIO_CONTATO_EMAIL = "51A8C983-3A62-E111-B753-00155D033206";
+}

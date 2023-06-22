@@ -11,7 +11,6 @@ namespace SME.Acessos.Api.Controllers
         [HttpPost("cadastrar")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
-        [ProducesResponseType(401)]
         public async Task<IActionResult> Autenticar([FromBody] UsuarioDTO usuarioDto, [FromServices] IServicoUsuarios servicoUsuarios)
         {
             var retornoAutenticacao = await servicoUsuarios.Cadastrar(usuarioDto);
@@ -22,7 +21,6 @@ namespace SME.Acessos.Api.Controllers
         [HttpGet("{login}/cadastrado")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
-        [ProducesResponseType(401)]        
         public async Task<IActionResult> UsuarioCadastradoCoreSSO(string login, [FromServices] IServicoUsuarios servicoUsuarios)
         {
             var retorno = await servicoUsuarios.UsuarioCadastradoCoreSSO(login);
@@ -33,10 +31,20 @@ namespace SME.Acessos.Api.Controllers
         [HttpPost("{login}/vincular-perfil/{perfilId}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
-        [ProducesResponseType(401)]        
         public async Task<IActionResult> VincularPerfil(string login, Guid perfilId, [FromServices] IServicoUsuarioGrupo servicoUsuarioGrupo)
         {
             var retorno = await servicoUsuarioGrupo.VincularPerfil(login,perfilId);
+
+            return Ok(retorno);
+        }
+        
+        [HttpPost("usuarios/{login}/sistemas/{sistemaId}/meus-dados")]
+        [ProducesResponseType(typeof(DadosUsuarioDTO), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> MeusDados(string login, int sistemaId, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            var retorno = await servicoUsuarios.ObterMeusDados(login,sistemaId);
 
             return Ok(retorno);
         }

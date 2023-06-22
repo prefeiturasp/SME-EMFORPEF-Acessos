@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SME.Acessos.Aplicacao.Constantes;
 using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
@@ -10,27 +11,32 @@ namespace SME.Acessos.Aplicacao
     public class ServicoUsuarios : IServicoUsuarios
     {
         private readonly IRepositorioUsuario repositorioUsuario;
+        private readonly IRepositorioDadosUsuario repositorioDadosUsuario;
         private readonly IRepositorioPessoa repositorioPessoa;
+        private readonly IRepositorioPessoaDocumento repositorioPessoaDocumento;
         private readonly IMapper mapper;
 
-        public ServicoUsuarios(IRepositorioUsuario repositorioUsuario, IMapper mapper,IRepositorioPessoa repositorioPessoa)
+        public ServicoUsuarios(IRepositorioUsuario repositorioUsuario, IMapper mapper,IRepositorioPessoa repositorioPessoa,
+            IRepositorioPessoaDocumento repositorioPessoaDocumento,IRepositorioDadosUsuario repositorioDadosUsuario)
         {
+            this.repositorioDadosUsuario = repositorioDadosUsuario ?? throw new ArgumentNullException(nameof(repositorioDadosUsuario));
             this.repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
             this.repositorioPessoa = repositorioPessoa ?? throw new ArgumentNullException(nameof(repositorioPessoa));
+            this.repositorioPessoaDocumento = repositorioPessoaDocumento ?? throw new ArgumentNullException(nameof(repositorioPessoaDocumento));
             this.mapper = mapper;
         }
 
-        public async Task<IList<DadosUsuarioDTO>> ObterTodosUsuarios()
+        public async Task<IList<LoginEmailDTO>> ObterTodosUsuarios()
         {
             var usuarios = await repositorioUsuario.ObterTodos();
-            return mapper.Map<IList<DadosUsuarioDTO>>(usuarios);
+            return mapper.Map<IList<LoginEmailDTO>>(usuarios);
         }
 
-        public async Task<DadosUsuarioDTO> ObterUsuarioPorId(Guid id)
-            => mapper.Map<DadosUsuarioDTO>(await repositorioUsuario.ObterPorId(id));
+        public async Task<LoginEmailDTO> ObterUsuarioPorId(Guid id)
+            => mapper.Map<LoginEmailDTO>(await repositorioUsuario.ObterPorId(id));
 
-        public async Task<DadosUsuarioDTO> ObterUsuarioPorLogin(string login)
-            => mapper.Map<DadosUsuarioDTO>(await repositorioUsuario.ObterPorLogin(login));
+        public async Task<LoginEmailDTO> ObterUsuarioPorLogin(string login)
+            => mapper.Map<LoginEmailDTO>(await repositorioUsuario.ObterPorLogin(login));
 
         public async Task<bool> UsuarioCadastradoCoreSSO(string login)
         {
@@ -45,9 +51,11 @@ namespace SME.Acessos.Aplicacao
                 if (pessoa == null)
                     return false;
                 
+                await repositorioPessoaDocumento.InserirPessoaDocumentoCustomizado(usuarioDto.Login, pessoa, new Guid(Constantes.ConstantesCoreSSO.TIPO_DOCUMENTACAO_CPF));
+                
                 await repositorioUsuario.InserirUsuarioCustomizado(usuarioDto.Login, usuarioDto.Email, 
                     CriptografiaExtensions.CriptografarSenhaTripleDES(usuarioDto.Senha),pessoa,
-                    new Guid(Constantes.ConstCoreSSO.ENTIDADE_SME));
+                    new Guid(Constantes.ConstantesCoreSSO.ENTIDADE_SME));
 
                 return true;
             }
@@ -55,6 +63,15 @@ namespace SME.Acessos.Aplicacao
             {
                 return false;
             }
+        }
+
+        public async Task<DadosUsuarioDTO> ObterMeusDados(string login, int sistemaId)
+        {
+            var usuarios = await repositorioDadosUsuario.ObterMeusDados(login,sistemaId);
+            if (usuarios == null)
+                throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
+                
+            return mapper.Map<DadosUsuarioDTO>(usuarios);
         }
     }
 }

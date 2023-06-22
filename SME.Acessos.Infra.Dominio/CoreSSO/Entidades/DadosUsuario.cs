@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SME.Acessos.Aplicacao.DTO
+﻿namespace SME.Acessos.Infra.Dominio.CoreSSO.Entidades
 {
-    public class DadosUsuarioDTO
+    public class DadosUsuario : EntidadeBaseCoreSSO
     {
         public string Nome { get; set; }
         public string Perfil { get; set; }
