@@ -11,11 +11,10 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
         {
         }
 
-        public async Task<DadosUsuario> ObterMeusDados(string login, int sistemaId)
+        public async Task<DadosUsuario> ObterMeusDados(string login)
         {
             var query = @"SELECT    
-                                    p.pes_nome as nome,    
-                                    g.gru_nome perfil,                            
+                                   p.pes_nome as nome,                            
                                    d.psd_numero as cpf,      
                                    u.usu_login as login,
                                    coalesce(c_email.psc_contato, u.usu_email) as email,   
@@ -37,8 +36,6 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                         left join end_endereco endereco on endereco.end_id = c_endereco.end_id
                         left join end_cidade cidade on cidade.cid_id = endereco.cid_id
                         left join end_unidadefederativa uf on uf.unf_id = cidade.unf_id
-                        join sys_usuariogrupo ug on u.usu_id = ug.usu_id
-                        join sys_grupo g on g.gru_id = ug.gru_id and g.sis_id = @sistemaId
                         where u.usu_login = @login ";
             
             var dadosUsuario = await conexao.Obter().QueryAsync<DadosUsuario>(query, new
@@ -47,8 +44,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                 tipoDocumentoCpf = ConstantesDados.TIPO_DOCUMENTO_CPF,
                 tipoMeioContatoTelefoneCelular = ConstantesDados.TIPO_MEIO_CONTATO_TELEFONE_CELULAR,
                 tipoMeioContatoTelefoneFixo = ConstantesDados.TIPO_MEIO_CONTATO_TELEFONE_FIXO,
-                tipoMeioContatoEmail = ConstantesDados.TIPO_MEIO_CONTATO_EMAIL,
-                sistemaId = sistemaId
+                tipoMeioContatoEmail = ConstantesDados.TIPO_MEIO_CONTATO_EMAIL
             });
             
             return dadosUsuario.Any() ? dadosUsuario.FirstOrDefault() : default;

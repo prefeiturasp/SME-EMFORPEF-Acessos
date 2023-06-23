@@ -4,9 +4,7 @@ using SME.Acessos.Aplicacao.Interfaces;
 
 namespace SME.Acessos.Api.Controllers
 {
-    [Route("api/v1/usuarios")]
-    [ApiController]
-    public class UsuarioController : BaseController
+    public class UsuariosController : BaseController
     {
         [HttpPost("cadastrar")]
         [ProducesResponseType(typeof(bool), 200)]
@@ -38,13 +36,13 @@ namespace SME.Acessos.Api.Controllers
             return Ok(retorno);
         }
         
-        [HttpGet("{login}/sistemas/{sistemaId}/meus-dados")]
+        [HttpGet("{login}")]
         [ProducesResponseType(typeof(DadosUsuarioDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> MeusDados(string login, int sistemaId, [FromServices] IServicoUsuarios servicoUsuarios)
+        public async Task<IActionResult> MeusDados(string login, [FromServices] IServicoUsuarios servicoUsuarios)
         {
-            var retorno = await servicoUsuarios.ObterMeusDados(login,sistemaId);
+            var retorno = await servicoUsuarios.ObterMeusDados(login);
 
             return Ok(retorno);
         }

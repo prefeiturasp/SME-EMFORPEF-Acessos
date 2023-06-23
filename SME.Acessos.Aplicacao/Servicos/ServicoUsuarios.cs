@@ -48,13 +48,13 @@ namespace SME.Acessos.Aplicacao
             try
             {
                 var pessoa = await repositorioPessoa.InserirPessoaCustomizado(usuarioDto.Nome);
-                if (pessoa == null)
+                if (!pessoa.HasValue)
                     return false;
                 
-                await repositorioPessoaDocumento.InserirPessoaDocumentoCustomizado(usuarioDto.Login, pessoa, new Guid(Constantes.ConstantesCoreSSO.TIPO_DOCUMENTACAO_CPF));
+                await repositorioPessoaDocumento.InserirPessoaDocumentoCustomizado(usuarioDto.Login, pessoa.Value, new Guid(Constantes.ConstantesCoreSSO.TIPO_DOCUMENTACAO_CPF));
                 
                 await repositorioUsuario.InserirUsuarioCustomizado(usuarioDto.Login, usuarioDto.Email, 
-                    CriptografiaExtensions.CriptografarSenhaTripleDES(usuarioDto.Senha),pessoa,
+                    CriptografiaExtensions.CriptografarSenhaTripleDES(usuarioDto.Senha),pessoa.Value,
                     new Guid(Constantes.ConstantesCoreSSO.ENTIDADE_SME));
 
                 return true;
@@ -65,9 +65,9 @@ namespace SME.Acessos.Aplicacao
             }
         }
 
-        public async Task<DadosUsuarioDTO> ObterMeusDados(string login, int sistemaId)
+        public async Task<DadosUsuarioDTO?> ObterMeusDados(string login)
         {
-            var usuarios = await repositorioDadosUsuario.ObterMeusDados(login,sistemaId);
+            var usuarios = await repositorioDadosUsuario.ObterMeusDados(login);
             if (usuarios == null)
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
                 
