@@ -109,6 +109,8 @@ namespace SME.Acessos.IoC
             services.AddScoped<IRepositorioUsuarioGrupo, RepositorioUsuarioGrupo>();
             services.AddScoped<IRepositorioGrupoPermissao, RepositorioGrupoPermissao>();
             services.AddScoped<IRepositorioPermissao, RepositorioPermissao>();
+            services.AddScoped<IRepositorioSistemaRecuperacaoSenha, RepositorioSistemaRecuperacaoSenha>();
+            services.AddScoped<IRepositorioConfiguracaoEmail, RepositorioConfiguracaoEmail>();
             services.AddScoped<IRepositorioPessoa, RepositorioPessoa>();
         }
 
