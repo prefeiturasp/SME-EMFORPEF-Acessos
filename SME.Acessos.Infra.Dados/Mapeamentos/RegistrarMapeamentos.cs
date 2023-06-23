@@ -17,6 +17,7 @@ namespace SME.Acessos.Infra.Dados
                 config.AddMap(new GrupoPermissaoMap());
                 config.AddMap(new ModuloMap());
                 config.AddMap(new PessoaMap());
+                config.AddMap(new PessoaDocumentoMap());
                 config.AddMap(new SistemaMap());
                 config.AddMap(new VisaoMap());
                 config.AddMap(new Mapeamentos.Acessos.ModuloMap());

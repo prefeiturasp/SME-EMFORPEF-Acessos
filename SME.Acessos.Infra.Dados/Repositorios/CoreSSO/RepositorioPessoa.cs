@@ -12,7 +12,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
         {
         }
 
-        public async Task<Guid> InserirPessoaCustomizado(string nome)
+        public async Task<Guid?> InserirPessoaCustomizado(string nome)
         {
             var insertPessoa = $@"insert into [PES_Pessoa] ([pes_nome]) values ('{nome}'); 
                                   select pes_id  from [PES_Pessoa] where [pes_nome] = '{nome}'";
