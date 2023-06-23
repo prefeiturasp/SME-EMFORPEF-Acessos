@@ -4,14 +4,11 @@ using SME.Acessos.Aplicacao.Interfaces;
 
 namespace SME.Acessos.Api.Controllers
 {
-    [Route("api/v1/usuarios")]
-    [ApiController]
-    public class UsuarioController : BaseController
+    public class UsuariosController : BaseController
     {
         [HttpPost("cadastrar")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
-        [ProducesResponseType(401)]
         public async Task<IActionResult> Autenticar([FromBody] UsuarioDTO usuarioDto, [FromServices] IServicoUsuarios servicoUsuarios)
         {
             var retornoAutenticacao = await servicoUsuarios.Cadastrar(usuarioDto);
@@ -22,7 +19,6 @@ namespace SME.Acessos.Api.Controllers
         [HttpGet("{login}/cadastrado")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
-        [ProducesResponseType(401)]        
         public async Task<IActionResult> UsuarioCadastradoCoreSSO(string login, [FromServices] IServicoUsuarios servicoUsuarios)
         {
             var retorno = await servicoUsuarios.UsuarioCadastradoCoreSSO(login);
@@ -33,10 +29,20 @@ namespace SME.Acessos.Api.Controllers
         [HttpPost("{login}/vincular-perfil/{perfilId}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
-        [ProducesResponseType(401)]        
         public async Task<IActionResult> VincularPerfil(string login, Guid perfilId, [FromServices] IServicoUsuarioGrupo servicoUsuarioGrupo)
         {
             var retorno = await servicoUsuarioGrupo.VincularPerfil(login,perfilId);
+
+            return Ok(retorno);
+        }
+        
+        [HttpGet("{login}")]
+        [ProducesResponseType(typeof(DadosUsuarioDTO), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> MeusDados(string login, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            var retorno = await servicoUsuarios.ObterMeusDados(login);
 
             return Ok(retorno);
         }
