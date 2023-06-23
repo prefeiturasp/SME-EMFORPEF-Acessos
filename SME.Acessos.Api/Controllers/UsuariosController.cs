@@ -48,12 +48,23 @@ namespace SME.Acessos.Api.Controllers
         }
         
         [HttpPut("alterar-senha")]
-        [ProducesResponseType(typeof(DadosUsuarioDTO), 200)]
+        [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
-        public async Task<IActionResult> AlterarSenha([FromBody] AlterarUsuarioDTO alterarUsuarioDto, [FromServices] IServicoUsuarios servicoUsuarios)
+        public async Task<IActionResult> AlterarSenha([FromBody] AlterarSenhaUsuarioDTO alterarSenhaUsuarioDto, [FromServices] IServicoUsuarios servicoUsuarios)
         {
-            var retorno = await servicoUsuarios.AlterarSenha(alterarUsuarioDto);
+            var retorno = await servicoUsuarios.AlterarSenha(alterarSenhaUsuarioDto);
+
+            return Ok(retorno);
+        }
+        
+        [HttpPut("alterar-email")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> AlterarEmail([FromBody] AlterarEmailUsuarioDTO alterarEmailUsuarioDto, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            var retorno = await servicoUsuarios.AlterarEmail(alterarEmailUsuarioDto);
 
             return Ok(retorno);
         }

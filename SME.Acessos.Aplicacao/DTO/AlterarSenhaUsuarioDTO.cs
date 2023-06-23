@@ -1,6 +1,6 @@
 ﻿namespace SME.Acessos.Aplicacao.DTO
 {
-    public class AlterarUsuarioDTO
+    public class AlterarSenhaUsuarioDTO
     {
         public string Login { get; set; }
         public string SenhaAtual { get; set; }

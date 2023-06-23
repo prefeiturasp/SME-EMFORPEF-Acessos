@@ -90,5 +90,14 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
             
             await conexao.Obter().ExecuteAsync(inserirHistorico, new {usuarioId, senha, tipoCriptografia = (int)criptografia});
         }
+
+        public async Task AlterarEmail(Guid usuarioId, string email)
+        {
+            var alterarEmail = @"update SYS_Usuario 
+                                        set usu_email = @email, 
+                                            usu_dataalteracao = getdate()
+                                   where usu_id = @usuarioId ";
+            await conexao.Obter().ExecuteAsync(alterarEmail, new {usuarioId, email});
+        }
     }
 }
