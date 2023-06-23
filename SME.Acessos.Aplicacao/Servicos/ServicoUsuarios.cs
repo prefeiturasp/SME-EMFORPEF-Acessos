@@ -66,16 +66,16 @@ namespace SME.Acessos.Aplicacao
             }
         }
 
-        public async Task<bool> AlterarSenha(string login, string senhaAtual, string senhaNova, int sistemaId)
+        public async Task<bool> AlterarSenha(AlterarUsuarioDTO alterarUsuarioDto)
         {
-           var usuario = await repositorioUsuario.ObterPorLogin(login);
+           var usuario = await repositorioUsuario.ObterPorLogin(alterarUsuarioDto.Login);
            
-           var senhaAtualCorreta = await repositorioUsuario.ValidarSenhaAtual(usuario.Id, CriptografiaExtensions.CriptografarSenha(senhaAtual,TipoCriptografia.TripleDES));
+           var senhaAtualCorreta = await repositorioUsuario.ValidarSenhaAtual(usuario.Id, CriptografiaExtensions.CriptografarSenha(alterarUsuarioDto.SenhaAtual,TipoCriptografia.TripleDES));
            if (!senhaAtualCorreta)
                return false;
            
-           await repositorioUsuario.AlterarSenha(usuario.Id, CriptografiaExtensions.CriptografarSenha(senhaNova,TipoCriptografia.TripleDES));
-           await repositorioUsuario.InserirHistoricoSenha(usuario.Id, CriptografiaExtensions.CriptografarSenha(senhaNova,TipoCriptografia.TripleDES),TipoCriptografia.TripleDES);
+           await repositorioUsuario.AlterarSenha(usuario.Id, CriptografiaExtensions.CriptografarSenha(alterarUsuarioDto.SenhaNova,TipoCriptografia.TripleDES));
+           await repositorioUsuario.InserirHistoricoSenha(usuario.Id, CriptografiaExtensions.CriptografarSenha(alterarUsuarioDto.SenhaNova,TipoCriptografia.TripleDES),TipoCriptografia.TripleDES);
            return true;
         }
 
