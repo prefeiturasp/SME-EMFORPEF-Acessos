@@ -40,5 +40,16 @@ namespace SME.Acessos.Api.Controllers
 
             return Ok(retorno);
         }
+        
+        [HttpPut("alterar-senha")]
+        [ProducesResponseType(typeof(DadosUsuarioDTO), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> AlterarSenha(string login, string senhaAtual, string senhaNova, int sistemaId, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            var retorno = await servicoUsuarios.AlterarSenha(login,senhaAtual, senhaNova, sistemaId);
+
+            return Ok(retorno);
+        }
     }
 }

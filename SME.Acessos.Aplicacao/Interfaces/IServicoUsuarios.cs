@@ -10,5 +10,6 @@ namespace SME.Acessos.Aplicacao.Interfaces
         Task<DadosUsuarioDTO> ObterUsuarioPorLogin(string login);
         Task<bool> UsuarioCadastradoCoreSSO(string login);
         Task<bool> Cadastrar(UsuarioDTO usuarioDto);
+        Task<bool> AlterarSenha(string login, string senhaAtual, string senhaNova, int sistemaId);
     }
 }

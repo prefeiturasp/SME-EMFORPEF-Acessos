@@ -3,6 +3,7 @@ using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
+using SME.Acessos.Infra.Dominio.Enumeradores;
 using SME.Acessos.Infra.Dominio.Extensions;
 
 namespace SME.Acessos.Aplicacao
@@ -55,6 +56,19 @@ namespace SME.Acessos.Aplicacao
             {
                 return false;
             }
+        }
+
+        public async Task<bool> AlterarSenha(string login, string senhaAtual, string senhaNova, int sistemaId)
+        {
+           var usuario = await repositorioUsuario.ObterPorLogin(login);
+           
+           var senhaAtualCorreta = await repositorioUsuario.ValidarSenhaAtual(usuario.Id, CriptografiaExtensions.CriptografarSenha(senhaAtual,TipoCriptografia.TripleDES));
+           if (!senhaAtualCorreta)
+               return false;
+           
+           await repositorioUsuario.AlterarSenha(usuario.Id, CriptografiaExtensions.CriptografarSenha(senhaNova,TipoCriptografia.TripleDES));
+           await repositorioUsuario.InserirHistoricoSenha(usuario.Id, CriptografiaExtensions.CriptografarSenha(senhaNova,TipoCriptografia.TripleDES),TipoCriptografia.TripleDES);
+           return true;
         }
     }
 }
