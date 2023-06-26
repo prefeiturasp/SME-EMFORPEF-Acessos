@@ -40,5 +40,11 @@ namespace SME.Acessos.Api.Controllers
 
             return Ok(retorno);
         }
+        
+        [HttpGet("{login}/sistemas/{Sistema_Cdep}/recuperar-senha")] //SGP = "SolicitarRecuperacaoSenha - autenticacao/RecuperarSenha/usuario"
+        public async Task<IActionResult> RecuperarSenha([FromBody] string login, [FromQuery] int sistema, [FromServices] IServicoRecuperarSenha servicoRecuperarSenha)
+        {
+            return Ok(await servicoRecuperarSenha.RecuperarSenha(login, sistema));
+        }
     }
 }

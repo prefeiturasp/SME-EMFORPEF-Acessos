@@ -97,6 +97,7 @@ namespace SME.Acessos.IoC
         {
             services.AddScoped<IServicoUsuarios, ServicoUsuarios>();
             services.AddScoped<IServicoUsuarioGrupo, ServicoUsuarioGrupo>();
+            services.AddScoped<IServicoRecuperarSenha, ServicoRecuperarSenha>();
             services.AddScoped<IServicoAutenticacao, ServicoAutenticacao>();
             services.AddScoped<IServicoPerfilUsuario, ServicoPerfilUsuario>();
             services.AddScoped<IServicoTokenJwt, ServicoTokenJwt>();
