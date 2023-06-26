@@ -47,7 +47,7 @@ namespace SME.Acessos.Api.Controllers
             return Ok(retorno);
         }
         
-        [HttpPut("alterar-senha")]
+        [HttpPut("senha")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
@@ -58,7 +58,7 @@ namespace SME.Acessos.Api.Controllers
             return Ok(retorno);
         }
         
-        [HttpPut("alterar-email")]
+        [HttpPut("email")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
