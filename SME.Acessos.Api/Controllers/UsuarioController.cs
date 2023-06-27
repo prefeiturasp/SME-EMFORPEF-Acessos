@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SME.Acesos.Aplicacao.DTO;
+using SME.Acessos.Aplicacao.Constantes;
 using SME.Acessos.Aplicacao.DTO;
+using SME.Acessos.Aplicacao.Enumerados;
 using SME.Acessos.Aplicacao.Interfaces;
 
 namespace SME.Acessos.Api.Controllers
@@ -57,7 +59,29 @@ namespace SME.Acessos.Api.Controllers
         [HttpPut("senha")] 
         public async Task<IActionResult> AlterarSenhaComTokenRecuperacao([FromBody] AlterarSenhaPorTokenDto alterarSenha, [FromServices] IServicoUsuarios servicoUsuarios)
         {
-            return Ok(await servicoUsuarios.AlterarSenhaPorToken(alterarSenha));
+            var senhaAlterada = await servicoUsuarios.AlterarSenhaPorToken(alterarSenha);
+            return TratarRetornoAlterarSenha(senhaAlterada);
+        }
+        
+        private IActionResult TratarRetornoAlterarSenha(RetornoAlteracaoSenhaDto retornoAlterar)
+        {
+            switch (retornoAlterar.Status)
+            {
+                case AlterarSenhaStatus.TokenExpirado:
+                    return Unauthorized(MensagemNegocio.TOKEN_INVALIDO_OU_EXPIRADO);
+                case AlterarSenhaStatus.ForaPadrao:
+                    return Unauthorized(MensagemNegocio.SENHA_FORA_DO_PADRAO);
+                case AlterarSenhaStatus.NaoEncontrado:
+                    return Unauthorized(MensagemNegocio.USUARIO_OU_SENHA_INCORRETOS);
+                case AlterarSenhaStatus.OK:
+                    return Ok(retornoAlterar.Login);
+                case AlterarSenhaStatus.NoHistorico:
+                    return Unauthorized(MensagemNegocio.A_SENHA_NAO_PODE_SER_UMA_DAS_ULTIMAS_5_ANTERIORES);
+                case AlterarSenhaStatus.SenhaPadrao:
+                    return Unauthorized(MensagemNegocio.A_NOVA_SENHA_NAO_PODE_SER_UMA_SENHA_PADRAO);
+                default:
+                    return Ok(retornoAlterar.Login);
+            }
         }
     }
 }
