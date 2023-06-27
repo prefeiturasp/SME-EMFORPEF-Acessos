@@ -58,7 +58,7 @@ namespace SME.Acessos.Api.Controllers
             return Ok(retorno);
         }
         
-        [HttpPut("email")]
+        [HttpPut("{login}/email")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
