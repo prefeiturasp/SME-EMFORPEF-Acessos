@@ -20,6 +20,7 @@ namespace SME.Acessos.Infra.Dados
                 config.AddMap(new SistemaMap());
                 config.AddMap(new VisaoMap());
                 config.AddMap(new Mapeamentos.Acessos.ModuloMap());
+                config.AddMap(new Mapeamentos.Acessos.UsuarioRecuperacaoSenhaMap());
 
                 config.ForDommel();
             });
