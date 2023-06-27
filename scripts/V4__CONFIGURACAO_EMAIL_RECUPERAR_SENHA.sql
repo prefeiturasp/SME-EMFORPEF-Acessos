@@ -20,6 +20,17 @@ create table if not exists  public.sistema_recuperacao_senha (
 	CONSTRAINT sistema_recuperacao_senha_pkey PRIMARY KEY (id)
 );
 
+
+create table if not exists  public.usuario_recuperacao_senha (
+	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 1 CACHE 1 NO CYCLE),
+	login varchar(50) NULL,
+	expiracao timestamp NULL,
+	token uuid NULL,
+	CONSTRAINT usuario_token_pkey PRIMARY KEY (id),
+	CONSTRAINT usuario_token_un_login UNIQUE (login)
+);
+CREATE INDEX usuario_token_login_idx ON public.usuario USING btree (login);
+
 --> Informações da configuração do e-mail
 INSERT INTO public.configuracao_email (codigo_sistema,email,nome,smtp,usuario,senha,porta,tls) 
 select 1,'sgp-nao_responder@sme.prefeitura.sp.gov.br','Novo SGP - Não responder','smtp.office365.com','sgp-nao_responder@sme.prefeitura.sp.gov.br','247@Vzi#00',587,false 

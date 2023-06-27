@@ -110,7 +110,7 @@ namespace SME.Acessos.IoC
             services.AddScoped<IRepositorioGrupoPermissao, RepositorioGrupoPermissao>();
             services.AddScoped<IRepositorioPermissao, RepositorioPermissao>();
             services.AddScoped<IRepositorioSistemaRecuperacaoSenha, RepositorioSistemaRecuperacaoSenha>();
-            services.AddScoped<IRepositorioUsuarioRecuperacaoToken, RepositorioUsuarioRecuperacaoToken>();
+            services.AddScoped<IRepositorioUsuarioRecuperacaoSenha, RepositorioUsuarioRecuperacaoSenha>();
             services.AddScoped<IRepositorioConfiguracaoEmail, RepositorioConfiguracaoEmail>();
             services.AddScoped<IRepositorioPessoa, RepositorioPessoa>();
         }
