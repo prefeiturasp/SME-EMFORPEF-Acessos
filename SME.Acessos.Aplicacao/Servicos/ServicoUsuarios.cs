@@ -4,6 +4,8 @@ using SME.Acessos.Aplicacao.Constantes;
 using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Enumerados;
 using SME.Acessos.Aplicacao.Interfaces;
+using SME.Acessos.Infra.Dominio.Acessos.Entidades;
+using SME.Acessos.Infra.Dominio.Acessos.Repositorios;
 using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 using SME.Acessos.Infra.Dominio.Extensions;
@@ -16,13 +18,19 @@ namespace SME.Acessos.Aplicacao
         private readonly IRepositorioPessoa repositorioPessoaCoreSSO;
         private readonly IMapper mapper;
         private readonly IServicoEmail servicoEmail;
+        private readonly IRepositorioUsuarioRecuperacaoSenha repositorioUsuarioRecuperacaoSenha;
+        private readonly IRepositorioSistemaRecuperacaoSenha repositorioSistemaRecuperacaoSenha;
 
-        public ServicoUsuarios(IRepositorioUsuario repositorioUsuarioCoreSSO, IMapper mapper,IRepositorioPessoa repositorioPessoaCoreSSO,IServicoEmail servicoEmail)
+        public ServicoUsuarios(IRepositorioUsuario repositorioUsuarioCoreSSO, IMapper mapper,IRepositorioPessoa repositorioPessoaCoreSSO,
+            IServicoEmail servicoEmail,IRepositorioUsuarioRecuperacaoSenha repositorioUsuarioRecuperacaoSenha,
+            IRepositorioSistemaRecuperacaoSenha repositorioSistemaRecuperacaoSenha)
         {
             this.repositorioUsuarioCoreSSO = repositorioUsuarioCoreSSO ?? throw new ArgumentNullException(nameof(repositorioUsuarioCoreSSO));
             this.repositorioPessoaCoreSSO = repositorioPessoaCoreSSO ?? throw new ArgumentNullException(nameof(repositorioPessoaCoreSSO));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.servicoEmail = servicoEmail ?? throw new ArgumentNullException(nameof(servicoEmail));
+            this.repositorioUsuarioRecuperacaoSenha = repositorioUsuarioRecuperacaoSenha ?? throw new ArgumentNullException(nameof(repositorioUsuarioRecuperacaoSenha));
+            this.repositorioSistemaRecuperacaoSenha = repositorioSistemaRecuperacaoSenha ?? throw new ArgumentNullException(nameof(repositorioSistemaRecuperacaoSenha));
         }
 
         public async Task<IList<DadosUsuarioDTO>> ObterTodosUsuarios()
@@ -64,7 +72,7 @@ namespace SME.Acessos.Aplicacao
 
         public async Task<string> RecuperarSenha(string login, int sistema)
         {
-            var sistemaRecuperacao = await sistemaRecuperacaoSenhaRepository.ObterSistema(sistema);
+            var sistemaRecuperacao = await repositorioSistemaRecuperacaoSenha.ObterSistema(sistema); 
             if (sistemaRecuperacao is null)
                 throw new NegocioException(MensagemNegocio.O_SISTEMA_INFORMADO_NAO_FOI_IDENTIFICADO);
 
@@ -73,12 +81,12 @@ namespace SME.Acessos.Aplicacao
             if (usuarioCore == null)
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
-            var usuario = await repositorioUsuarioRecuperacaoSenha.ObterUsuarioOuAdiciona(login);
+            var usuarioRecuperacaoSenha = await repositorioUsuarioRecuperacaoSenha.ObterUsuarioPorLoginSistema(login, sistemaRecuperacao.CodigoSistema);
+            
+            usuarioRecuperacaoSenha.IniciarRecuperacaoDeSenha(usuarioCore.Email);
+            await repositorioUsuarioRecuperacaoSenha.Salvar(usuarioRecuperacaoSenha);
 
-            usuario.IniciarRecuperacaoDeSenha(usuarioCore.Email);
-            await repositorioUsuarioRecuperacaoSenha.Salvar(usuario);
-
-            EnviarEmailRecuperacao(usuarioCore, usuario.TokenRecuperacaoSenha.Value, sistemaRecuperacao, login);
+            EnviarEmailRecuperacao(usuarioCore, usuarioRecuperacaoSenha.Token.Value, sistemaRecuperacao, login);
             return usuarioCore.Email;
         }
 
@@ -91,45 +99,49 @@ namespace SME.Acessos.Aplicacao
                 .Replace("#RF", login)
                 .Replace("#LINK", $"{sistema.PaginaRecuperacaoSenha}{tokenRecuperacaoSenha}");
 
-            servicoEmail.Enviar(usuario.Email, $"Recuperação de senha do(a) {sistema.NomeSistema}", textoEmail);
+            servicoEmail.Enviar(usuario.Pessoa.Nome, usuario.Email, $"Recuperação de senha do(a) {sistema.NomeSistema}", textoEmail);
         }
         
-        public Task<bool> ValidarTokenRecuperacaoSenha(Guid token, int sistema)
+        public async Task<bool> ValidarTokenRecuperacaoSenha(Guid token, int sistema)
         {
-            return repositorioUsuarioCoreSSO.ValidarTokenRecuperacaoSenha(token, sistema);
+            var usuarioPorTokenRecuperacaoSenha = await repositorioUsuarioRecuperacaoSenha.ObterUsuarioPorTokenRecuperacaoSenha(token, sistema);
+            return usuarioPorTokenRecuperacaoSenha?.TokenRecuperacaoSenhaValido() ?? false;
         }
 
         public async Task<RetornoAlteracaoSenhaDto> AlterarSenhaPorToken(AlterarSenhaPorTokenDto alterarSenha)
         {
-            Usuario usuario = await ServicoUsuarios.ObterUsuarioPorTokenRecuperacaoSenha(new Guid(alterarSenha.Token));
+            var usuarioRecuperacaoSenha = await repositorioUsuarioRecuperacaoSenha.ObterUsuarioPorTokenRecuperacaoSenha(new Guid(alterarSenha.Token), alterarSenha.Sistema);
 
-            if (usuario == null)
+            if (usuarioRecuperacaoSenha == null)
                 return new RetornoAlteracaoSenhaDto(AlterarSenhaStatus.NaoEncontrado);
 
-            if (!usuario.TokenRecuperacaoSenhaValido())
+            if (!usuarioRecuperacaoSenha.TokenRecuperacaoSenhaValido())
                 return new RetornoAlteracaoSenhaDto(AlterarSenhaStatus.TokenExpirado);
 
             try
             {
-                usuario.ValidarSenha(alterarSenha.Senha);
+                usuarioRecuperacaoSenha.ValidarSenha(alterarSenha.Senha);
             }
             catch (NegocioException e)
             {
                 return new RetornoAlteracaoSenhaDto(AlterarSenhaStatus.ForaPadrao);
             }
 
-            var retornoAlteracaoSenha = await AlterarSenha(usuario.Login, alterarSenha.Senha);
+            var retornoAlteracaoSenha = await AlterarSenha(usuarioRecuperacaoSenha.Login, alterarSenha.Senha);
 
             if (retornoAlteracaoSenha == AlterarSenhaStatus.OK)
             {
-                usuario.FinalizarRecuperacaoSenha();
-                await usuarioService.Salvar(usuario);
+                usuarioRecuperacaoSenha.FinalizarRecuperacaoSenha();
+                await repositorioUsuarioRecuperacaoSenha.Salvar(usuarioRecuperacaoSenha);
             }
 
-            return new RetornoAlteracaoSenhaDto(retornoAlteracaoSenha, usuario.Login);
+            return new RetornoAlteracaoSenhaDto(retornoAlteracaoSenha, usuarioRecuperacaoSenha.Login);
         }
-        
+
         private Task<AlterarSenhaStatus> AlterarSenha(string login, string senha)
-            => //chamar AlterarSenha que foi criado - autenticacaoSGPService.AlterarSenhaAsync(new AlterarSenhaDto() { Usuario = login, Senha = senha });
+        {
+            //chamar AlterarSenha que foi criado na estória de Meus dados 93741- autenticacaoSGPService.AlterarSenhaAsync(new AlterarSenhaDto() { Usuario = login, Senha = senha });
+            return Task.FromResult(new AlterarSenhaStatus());
+        }
     }
 }

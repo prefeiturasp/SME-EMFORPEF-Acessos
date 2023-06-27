@@ -12,7 +12,7 @@ namespace SME.Acessos.Infra.Dados.Mapeamentos.Acessos
             Map(a => a.Email).ToColumn("email");
             Map(a => a.CodigoSistema).ToColumn("codigo_sistema");
             Map(a => a.Nome).ToColumn("nome");
-            Map(a => a.smtp).ToColumn("smtp");
+            Map(a => a.Smtp).ToColumn("smtp");
             Map(a => a.Usuario).ToColumn("usuario");
             Map(a => a.Senha).ToColumn("senha");
             Map(a => a.Porta).ToColumn("porta");

@@ -56,7 +56,7 @@ namespace SME.Acessos.Api.Controllers
             return Ok(await servicoUsuarios.ValidarTokenRecuperacaoSenha(token, sistema));
         }
         
-        [HttpPut("senha")] 
+        [HttpPut("sistemas/{Sistema_Cdep}/senha")] 
         public async Task<IActionResult> AlterarSenhaComTokenRecuperacao([FromBody] AlterarSenhaPorTokenDto alterarSenha, [FromServices] IServicoUsuarios servicoUsuarios)
         {
             var senhaAlterada = await servicoUsuarios.AlterarSenhaPorToken(alterarSenha);

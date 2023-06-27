@@ -1,28 +1,29 @@
 ﻿using MailKit.Net.Smtp;
 using MimeKit;
-using System.Net.Mail;
 using SME.Acessos.Aplicacao.Constantes;
 using SME.Acessos.Aplicacao.Interfaces;
+using SME.Acessos.Infra.Dominio.Acessos.Entidades;
+using SME.Acessos.Infra.Dominio.Acessos.Repositorios;
 using SME.Acessos.Infra.Dominio.Extensions;
 
 namespace SME.Acessos.Aplicacao
 {
     public class ServicoEmail : IServicoEmail
     {
-        private readonly IConfiguracaoEmailRepository configuracaoEmailRepository;
+        private readonly IRepositorioConfiguracaoEmail repositorioConfiguracaoEmail;
 
-        public ServicoEmail(IConfiguracaoEmailRepository configuracaoEmailRepository)
+        public ServicoEmail(IRepositorioConfiguracaoEmail repositorioConfiguracaoEmail)
         {
-            this.configuracaoEmailRepository = configuracaoEmailRepository ?? throw new ArgumentNullException(nameof(configuracaoEmailRepository));
+            this.repositorioConfiguracaoEmail = repositorioConfiguracaoEmail ?? throw new ArgumentNullException(nameof(repositorioConfiguracaoEmail));
         }
 
-        public async Task Enviar(string destinatario, string assunto, string mensagemHtml)
+        public async Task Enviar(string nomeDestinatario, string emailDestinatario, string assunto, string mensagemHtml)
         {
             var configuracaoEmail = await ObterConfiguracaoEmail();
 
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(configuracaoEmail.NomeRemetente, configuracaoEmail.EmailRemetente));
-            message.To.Add(new MailboxAddress(destinatario));
+            message.From.Add(new MailboxAddress(configuracaoEmail.Nome, configuracaoEmail.Email));
+            message.To.Add(new MailboxAddress(nomeDestinatario, emailDestinatario));
             message.Subject = assunto;
 
             message.Body = new TextPart("html")
@@ -32,7 +33,7 @@ namespace SME.Acessos.Aplicacao
 
             using (var client = new SmtpClient())
             {
-                client.Connect(configuracaoEmail.ServidorSmtp, configuracaoEmail.Porta, configuracaoEmail.UsarTls);
+                client.Connect(configuracaoEmail.Smtp, configuracaoEmail.Porta, configuracaoEmail.TLS);
 
                 client.Authenticate(configuracaoEmail.Usuario, configuracaoEmail.Senha);
 
@@ -43,12 +44,12 @@ namespace SME.Acessos.Aplicacao
 
         private async Task<ConfiguracaoEmail> ObterConfiguracaoEmail()
         {
-            var configuracoes = await configuracaoEmailRepository.ObterTodos();
+            var configuracoes = await repositorioConfiguracaoEmail.ObterTodos();
 
             if (configuracoes == null || !configuracoes.Any())
                 throw new NegocioException(MensagemNegocio.NAO_LOCALIZADO_CONFIGURACAO_EMAIL);
 
-            return configuracoes.First();
+            return configuracoes.FirstOrDefault();
         }
     }
 }
