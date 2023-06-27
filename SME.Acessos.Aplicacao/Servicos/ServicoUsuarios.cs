@@ -4,6 +4,7 @@ using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
+using SME.Acessos.Infra.Dominio.Enumeradores;
 using SME.Acessos.Infra.Dominio.Extensions;
 
 namespace SME.Acessos.Aplicacao
@@ -65,6 +66,19 @@ namespace SME.Acessos.Aplicacao
             }
         }
 
+        public async Task<bool> AlterarSenha(AlterarSenhaUsuarioDTO alterarSenhaUsuarioDto)
+        {
+           var usuario = await repositorioUsuario.ObterPorLogin(alterarSenhaUsuarioDto.Login);
+           
+           var senhaAtualCorreta = await repositorioUsuario.ValidarSenhaAtual(usuario.Id, CriptografiaExtensions.CriptografarSenha(alterarSenhaUsuarioDto.SenhaAtual,TipoCriptografia.TripleDES));
+           if (!senhaAtualCorreta)
+               return false;
+           
+           await repositorioUsuario.AlterarSenha(usuario.Id, CriptografiaExtensions.CriptografarSenha(alterarSenhaUsuarioDto.SenhaNova,TipoCriptografia.TripleDES));
+           await repositorioUsuario.InserirHistoricoSenha(usuario.Id, CriptografiaExtensions.CriptografarSenha(alterarSenhaUsuarioDto.SenhaNova,TipoCriptografia.TripleDES),TipoCriptografia.TripleDES);
+           return true;
+        }
+
         public async Task<DadosUsuarioDTO?> ObterMeusDados(string login)
         {
             var usuarios = await repositorioDadosUsuario.ObterMeusDados(login);
@@ -72,6 +86,14 @@ namespace SME.Acessos.Aplicacao
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
                 
             return mapper.Map<DadosUsuarioDTO>(usuarios);
+        }
+        
+        public async Task<bool> AlterarEmail(AlterarEmailUsuarioDTO alterarEmailUsuarioDto)
+        {
+            var usuario = await repositorioUsuario.ObterPorLogin(alterarEmailUsuarioDto.Login);
+           
+            await repositorioUsuario.AlterarEmail(usuario.Id, alterarEmailUsuarioDto.Email);
+            return true;
         }
     }
 }

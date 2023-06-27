@@ -46,5 +46,27 @@ namespace SME.Acessos.Api.Controllers
 
             return Ok(retorno);
         }
+        
+        [HttpPut("{login}/senha")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> AlterarSenha([FromBody] AlterarSenhaUsuarioDTO alterarSenhaUsuarioDto, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            var retorno = await servicoUsuarios.AlterarSenha(alterarSenhaUsuarioDto);
+
+            return Ok(retorno);
+        }
+        
+        [HttpPut("{login}/email")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        public async Task<IActionResult> AlterarEmail([FromBody] AlterarEmailUsuarioDTO alterarEmailUsuarioDto, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            var retorno = await servicoUsuarios.AlterarEmail(alterarEmailUsuarioDto);
+
+            return Ok(retorno);
+        }
     }
 }
