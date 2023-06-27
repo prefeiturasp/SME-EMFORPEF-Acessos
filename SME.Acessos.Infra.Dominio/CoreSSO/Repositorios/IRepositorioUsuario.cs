@@ -7,5 +7,6 @@ namespace SME.Acessos.Infra.Dominio.CoreSSO.Repositorios
         Task<Usuario> ObterPorLogin(string login);
         Task<bool> UsuarioCadastradoCoreSSO(string login);
         Task InserirUsuarioCustomizado(string login, string email, string senha, Guid pessoa, Guid entidade);
+        Task<bool> ValidarTokenRecuperacaoSenha(Guid token, int sistema);
     }
 }

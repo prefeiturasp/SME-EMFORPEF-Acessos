@@ -1,4 +1,5 @@
-﻿using SME.Acessos.Aplicacao.DTO;
+﻿using SME.Acesos.Aplicacao.DTO;
+using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Infra.Dominio.CoreSSO;
 
 namespace SME.Acessos.Aplicacao.Interfaces
@@ -10,5 +11,8 @@ namespace SME.Acessos.Aplicacao.Interfaces
         Task<DadosUsuarioDTO> ObterUsuarioPorLogin(string login);
         Task<bool> UsuarioCadastradoCoreSSO(string login);
         Task<bool> Cadastrar(UsuarioDTO usuarioDto);
+        Task<string> RecuperarSenha(string login, int sistema);
+        Task<bool> ValidarTokenRecuperacaoSenha(Guid token, int sistema);
+        Task<RetornoAlteracaoSenhaDto> AlterarSenhaPorToken(AlterarSenhaPorTokenDto alterarSenha);
     }
 }

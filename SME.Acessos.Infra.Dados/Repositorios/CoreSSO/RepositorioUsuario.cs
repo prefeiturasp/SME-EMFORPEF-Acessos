@@ -57,5 +57,12 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
 
             await conexao.Obter().ExecuteScalarAsync(sql);
         }
+
+        public Task<Usuario> ValidarTokenRecuperacaoSenha(Guid token, int sistema)
+        {
+            var query = "select * from usuario where token_recuperacao_senha = @token";
+
+            return conexao.Obter().ExecuteScalarAsync(query, new { token });
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SME.Acesos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Interfaces;
 
@@ -41,10 +42,22 @@ namespace SME.Acessos.Api.Controllers
             return Ok(retorno);
         }
         
-        [HttpGet("{login}/sistemas/{Sistema_Cdep}/recuperar-senha")] //SGP = "SolicitarRecuperacaoSenha - autenticacao/RecuperarSenha/usuario"
-        public async Task<IActionResult> RecuperarSenha([FromBody] string login, [FromQuery] int sistema, [FromServices] IServicoRecuperarSenha servicoRecuperarSenha)
+        [HttpGet("{login}/sistemas/{Sistema_Cdep}/recuperar-senha")] 
+        public async Task<IActionResult> SolicitarRecuperacaoSenha(string login, [FromQuery] int sistema, [FromServices] IServicoUsuarios servicoUsuarios)
         {
-            return Ok(await servicoRecuperarSenha.RecuperarSenha(login, sistema));
+            return Ok(await servicoUsuarios.RecuperarSenha(login, sistema));
+        }
+        
+        [HttpGet("{token}/sistemas/{Sistema_Cdep}/validar")] 
+        public async Task<IActionResult> TokenRecuperacaoSenhaEstaValido( Guid token, int sistema, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            return Ok(await servicoUsuarios.ValidarTokenRecuperacaoSenha(token, sistema));
+        }
+        
+        [HttpPut("senha")] 
+        public async Task<IActionResult> AlterarSenhaComTokenRecuperacao([FromBody] AlterarSenhaPorTokenDto alterarSenha, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            return Ok(await servicoUsuarios.AlterarSenhaPorToken(alterarSenha));
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SME.Acesos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
@@ -55,6 +56,48 @@ namespace SME.Acessos.Aplicacao
             {
                 return false;
             }
+        }
+
+        public Task<string> RecuperarSenha(string login, int sistema)
+        {
+            var sistemaRecuperacao = await sistemaRecuperacaoSenhaRepository.ObterSistema(sistema);
+            if (sistemaRecuperacao is null)
+                throw new NegocioException("O sistema informado não foi identificado na base de integração do EOL");
+
+            var usuarioCore = await autenticacaoSGPService.CarregarDadosDoUsuarioAsync(login);
+
+            if (usuarioCore == null)
+                throw new NegocioException("Usuário ou RF não encontrado");
+
+            var usuario = await usuarioService.ObterUsuarioOuAdiciona(login);
+
+            usuario.IniciarRecuperacaoDeSenha(usuarioCore.Email);
+            await usuarioService.Salvar(usuario);
+
+            EnviarEmailRecuperacao(usuarioCore, usuario.TokenRecuperacaoSenha.Value, sistemaRecuperacao, login);
+            return usuarioCore.Email;
+        }
+
+        private void EnviarEmailRecuperacao(DadosUsuarioDTO usuario, Guid tokenRecuperacaoSenha, SistemaRecuperacaoSenha sistema, string login)
+        {
+            string caminho = $"{Directory.GetCurrentDirectory()}/wwwroot/ModelosEmail/RecuperacaoSenha.txt";
+            var textoArquivo = File.ReadAllText(caminho);
+            var textoEmail = textoArquivo
+                .Replace("#NOME", usuario.Nome)
+                .Replace("#RF", login)
+                .Replace("#LINK", $"{sistema.PaginaRecuperacaoSenha}{tokenRecuperacaoSenha}");
+
+            emailService.Enviar(usuario.Email, $"Recuperação de senha do(a) {sistema.NomeSistema}", textoEmail);
+        }
+        
+        public Task<bool> ValidarTokenRecuperacaoSenha(Guid token, int sistema)
+        {
+            return repositorioUsuario.ValidarTokenRecuperacaoSenha(token, sistema);
+        }
+
+        public Task<RetornoAlteracaoSenhaDto> AlterarSenhaPorToken(AlterarSenhaPorTokenDto alterarSenha)
+        {
+            throw new NotImplementedException();
         }
     }
 }
