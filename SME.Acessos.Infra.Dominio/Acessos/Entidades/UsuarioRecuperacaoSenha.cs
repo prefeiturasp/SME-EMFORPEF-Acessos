@@ -5,5 +5,6 @@
         public string Login { get; set; }
         public DateTime? Expiracao { get; set; }
         public Guid? Token { get; set; }
+        public long CodigoSistema { get; set; }
     }
 }

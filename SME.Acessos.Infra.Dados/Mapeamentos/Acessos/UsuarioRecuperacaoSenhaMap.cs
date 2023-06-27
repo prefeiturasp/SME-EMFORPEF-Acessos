@@ -12,6 +12,7 @@ namespace SME.Acessos.Infra.Dados.Mapeamentos.Acessos
             Map(a => a.Login);
             Map(a => a.Expiracao);
             Map(a => a.Token);
+            Map(a => a.CodigoSistema).ToColumn("codigo_sistema");
         }
     }
 }
