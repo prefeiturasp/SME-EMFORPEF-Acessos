@@ -30,7 +30,6 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                            INNER JOIN SYS_Modulo  m ON m.mod_id = gp.mod_id AND m.mod_id = vm.mod_id AND m.sis_id = g.sis_id
                             WHERE g.gru_id = @perfilId  
                                 AND g.gru_situacao = 1 
-                                AND m.mod_idPai IS NULL 
                                 AND g.sis_id = @sistemaId";
 
             var grupoPermissao = await conexao.Obter().QueryAsync<GrupoPermissao, Modulo, GrupoPermissao>(query, 
