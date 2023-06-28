@@ -9,7 +9,8 @@ namespace SME.Acessos.Aplicacao
     {
         public DominioParaDTOProfile()
         {
-            CreateMap<DadosUsuarioDTO, Usuario>().ReverseMap();
+            CreateMap<LoginEmailDTO, Usuario>().ReverseMap();
+            CreateMap<DadosUsuarioDTO, DadosUsuario>().ReverseMap();
         }
     }
 }

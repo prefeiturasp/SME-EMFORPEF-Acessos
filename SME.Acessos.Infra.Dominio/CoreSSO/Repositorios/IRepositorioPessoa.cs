@@ -4,6 +4,6 @@ namespace SME.Acessos.Infra.Dominio.CoreSSO.Repositorios
 {
     public interface IRepositorioPessoa : IRepositorioBaseCoreSSO<Pessoa>
     {
-        Task<Guid> InserirPessoaCustomizado(string usuarioDtoNome);
+        Task<Guid?> InserirPessoaCustomizado(string usuarioDtoNome);
     }
 }
