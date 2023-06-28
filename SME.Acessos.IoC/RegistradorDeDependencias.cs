@@ -105,6 +105,7 @@ namespace SME.Acessos.IoC
         protected virtual void RegistrarRepositorios()
         {
             services.AddScoped<IRepositorioUsuario, RepositorioUsuario>();
+            services.AddScoped<IRepositorioDadosUsuario, RepositorioDadosUsuario>();
             services.AddScoped<IRepositorioUsuarioGrupoPessoa, RepositorioUsuarioGrupoPessoa>();
             services.AddScoped<IRepositorioUsuarioGrupo, RepositorioUsuarioGrupo>();
             services.AddScoped<IRepositorioGrupoPermissao, RepositorioGrupoPermissao>();
@@ -113,6 +114,7 @@ namespace SME.Acessos.IoC
             services.AddScoped<IRepositorioUsuarioRecuperacaoSenha, RepositorioUsuarioRecuperacaoSenha>();
             services.AddScoped<IRepositorioConfiguracaoEmail, RepositorioConfiguracaoEmail>();
             services.AddScoped<IRepositorioPessoa, RepositorioPessoa>();
+            services.AddScoped<IRepositorioPessoaDocumento, RepositorioPessoaDocumento>();
         }
 
         protected virtual void RegistrarTelemetria()
