@@ -8,7 +8,7 @@ namespace SME.Acessos.Infra.Dados.Mapeamentos.Acessos
         public ConfiguracaoEmailMap()
         {
             ToTable("configuracao_email");
-            Map(a => a.Id);
+            Map(a => a.Id).ToColumn("id");
             Map(a => a.Email).ToColumn("email");
             Map(a => a.CodigoSistema).ToColumn("codigo_sistema");
             Map(a => a.Nome).ToColumn("nome");

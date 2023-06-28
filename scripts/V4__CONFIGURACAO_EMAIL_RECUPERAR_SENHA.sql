@@ -26,6 +26,7 @@ create table if not exists  public.usuario_recuperacao_senha (
 	login varchar(50) NULL,
 	expiracao timestamp NULL,
 	token uuid NULL,
+	codigo_sistema int4 NOT NULL,
 	CONSTRAINT usuario_token_pkey PRIMARY KEY (id),
 	CONSTRAINT usuario_token_un_login UNIQUE (login)
 );

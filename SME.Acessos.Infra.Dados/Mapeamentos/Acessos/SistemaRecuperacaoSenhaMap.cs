@@ -8,7 +8,7 @@ namespace SME.Acessos.Infra.Dados.Mapeamentos.Acessos
         public SistemaRecuperacaoSenhaMap()
         {
             ToTable("sistema_recuperacao_senha");
-            Map(a => a.Id);
+            Map(a => a.Id).ToColumn("id");
             Map(a => a.CodigoSistema).ToColumn("codigo_sistema");
             Map(a => a.NomeSistema).ToColumn("nome_sistema");
             Map(a => a.PaginaRecuperacaoSenha).ToColumn("pagina_recuperacao_senha");

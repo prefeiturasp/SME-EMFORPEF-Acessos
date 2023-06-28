@@ -9,6 +9,7 @@ namespace SME.Acessos.Infra.Dominio.Acessos.Entidades
         public string Login { get; set; }
         public DateTime? Expiracao { get; set; }
         public Guid? Token { get; set; }
+        public long CodigoSistema { get; set; }
         
         public bool TokenRecuperacaoSenhaValido()
             => Expiracao > DateTime.Now;
