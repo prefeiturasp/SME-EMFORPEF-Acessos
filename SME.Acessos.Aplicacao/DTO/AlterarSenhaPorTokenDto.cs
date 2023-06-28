@@ -9,8 +9,5 @@ namespace SME.Acesos.Aplicacao.DTO
 
         [Required(ErrorMessage = "É necessario informar a nova senha")]
         public string Senha { get; set; }
-
-        [Required(ErrorMessage = "É necessario informar a nova senha")]
-        public int Sistema { get; set; }
     }
 }

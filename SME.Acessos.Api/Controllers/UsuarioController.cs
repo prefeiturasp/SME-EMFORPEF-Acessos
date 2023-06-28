@@ -44,22 +44,22 @@ namespace SME.Acessos.Api.Controllers
             return Ok(retorno);
         }
         
-        [HttpGet("{login}/sistemas/{Sistema_Cdep}/recuperar-senha")] 
-        public async Task<IActionResult> SolicitarRecuperacaoSenha(string login, [FromQuery] int sistema, [FromServices] IServicoUsuarios servicoUsuarios)
+        [HttpGet("{login}/sistemas/{sistemaId}/recuperar-senha")] 
+        public async Task<IActionResult> SolicitarRecuperacaoSenha(string login, long sistemaId, [FromServices] IServicoUsuarios servicoUsuarios)
         {
-            return Ok(await servicoUsuarios.RecuperarSenha(login, sistema));
+            return Ok(await servicoUsuarios.RecuperarSenha(login, sistemaId));
         }
         
-        [HttpGet("{token}/sistemas/{Sistema_Cdep}/validar")] 
-        public async Task<IActionResult> TokenRecuperacaoSenhaEstaValido( Guid token, int sistema, [FromServices] IServicoUsuarios servicoUsuarios)
+        [HttpGet("{token}/sistemas/{sistemaId}/validar")] 
+        public async Task<IActionResult> TokenRecuperacaoSenhaEstaValido( Guid token, long sistemaId, [FromServices] IServicoUsuarios servicoUsuarios)
         {
-            return Ok(await servicoUsuarios.ValidarTokenRecuperacaoSenha(token, sistema));
+            return Ok(await servicoUsuarios.ValidarTokenRecuperacaoSenha(token, sistemaId));
         }
         
-        [HttpPut("sistemas/{Sistema_Cdep}/senha")] 
-        public async Task<IActionResult> AlterarSenhaComTokenRecuperacao([FromBody] AlterarSenhaPorTokenDto alterarSenha, [FromServices] IServicoUsuarios servicoUsuarios)
+        [HttpPut("sistemas/{sistemaId}/senha")] 
+        public async Task<IActionResult> AlterarSenhaComTokenRecuperacao([FromRoute] long sistemaId,[FromBody] AlterarSenhaPorTokenDto alterarSenha, [FromServices] IServicoUsuarios servicoUsuarios)
         {
-            var senhaAlterada = await servicoUsuarios.AlterarSenhaPorToken(alterarSenha);
+            var senhaAlterada = await servicoUsuarios.AlterarSenhaPorToken(sistemaId,alterarSenha);
             return TratarRetornoAlterarSenha(senhaAlterada);
         }
         

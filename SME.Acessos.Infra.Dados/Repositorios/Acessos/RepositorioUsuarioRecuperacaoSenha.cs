@@ -12,7 +12,7 @@ public class RepositorioUsuarioRecuperacaoSenha : RepositorioBaseAcessos<Usuario
 
     public async Task<UsuarioRecuperacaoSenha> ObterUsuarioPorLoginSistema(string login, long sistema)
     {
-        var query = "select id, login,Expiracao, Token, CodigoSistema from usuario_recuperacao_senha where login = @login";
+        var query = @"select id, login,Expiracao, Token, codigo_sistema CodigoSistema from usuario_recuperacao_senha where login = @login and codigo_sistema = @sistema";
 
         return (await conexao.Obter().QueryAsync<UsuarioRecuperacaoSenha>(query, new { login, sistema }))
             .ToList()
@@ -21,7 +21,7 @@ public class RepositorioUsuarioRecuperacaoSenha : RepositorioBaseAcessos<Usuario
 
     public async Task<UsuarioRecuperacaoSenha> ObterUsuarioPorTokenRecuperacaoSenha(Guid token, long sistema)
     {
-        var query = "select id, login,Expiracao, Token, CodigoSistema from usuario_recuperacao_senha where token_recuperacao_senha = @token";
+        var query = "select id, login,Expiracao, Token, codigo_sistema CodigoSistema from usuario_recuperacao_senha where token = @token and codigo_sistema = @sistema";
 
         return (await conexao.Obter().QueryAsync<UsuarioRecuperacaoSenha>(query, new { token, sistema }))
             .ToList()

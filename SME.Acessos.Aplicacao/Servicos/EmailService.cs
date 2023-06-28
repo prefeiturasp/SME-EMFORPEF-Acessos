@@ -17,9 +17,9 @@ namespace SME.Acessos.Aplicacao
             this.repositorioConfiguracaoEmail = repositorioConfiguracaoEmail ?? throw new ArgumentNullException(nameof(repositorioConfiguracaoEmail));
         }
 
-        public async Task Enviar(string nomeDestinatario, string emailDestinatario, string assunto, string mensagemHtml)
+        public async Task Enviar(string nomeDestinatario, string emailDestinatario, string assunto, string mensagemHtml, long sistemaId)
         {
-            var configuracaoEmail = await ObterConfiguracaoEmail();
+            var configuracaoEmail = await ObterConfiguracaoEmail(sistemaId);
 
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress(configuracaoEmail.Nome, configuracaoEmail.Email));
@@ -42,14 +42,14 @@ namespace SME.Acessos.Aplicacao
             }
         }
 
-        private async Task<ConfiguracaoEmail> ObterConfiguracaoEmail()
+        private async Task<ConfiguracaoEmail> ObterConfiguracaoEmail(long sistemaId)
         {
-            var configuracoes = await repositorioConfiguracaoEmail.ObterTodos();
+            var configuracoes = await repositorioConfiguracaoEmail.ObterConfiguracaoEmailPorSistema(sistemaId);
 
-            if (configuracoes == null || !configuracoes.Any())
+            if (configuracoes == null)
                 throw new NegocioException(MensagemNegocio.NAO_LOCALIZADO_CONFIGURACAO_EMAIL);
 
-            return configuracoes.FirstOrDefault();
+            return configuracoes;
         }
     }
 }

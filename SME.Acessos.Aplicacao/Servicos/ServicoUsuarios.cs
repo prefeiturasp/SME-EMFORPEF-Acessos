@@ -70,9 +70,9 @@ namespace SME.Acessos.Aplicacao
             }
         }
 
-        public async Task<string> RecuperarSenha(string login, int sistema)
+        public async Task<string> RecuperarSenha(string login, long sistemaId)
         {
-            var sistemaRecuperacao = await repositorioSistemaRecuperacaoSenha.ObterSistema(sistema); 
+            var sistemaRecuperacao = await repositorioSistemaRecuperacaoSenha.ObterSistema(sistemaId); 
             if (sistemaRecuperacao is null)
                 throw new NegocioException(MensagemNegocio.O_SISTEMA_INFORMADO_NAO_FOI_IDENTIFICADO);
 
@@ -82,6 +82,8 @@ namespace SME.Acessos.Aplicacao
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
             var usuarioRecuperacaoSenha = await repositorioUsuarioRecuperacaoSenha.ObterUsuarioPorLoginSistema(login, sistemaRecuperacao.CodigoSistema);
+            if (usuarioRecuperacaoSenha == null)
+                usuarioRecuperacaoSenha = new UsuarioRecuperacaoSenha() { Login = usuarioCore.Login, CodigoSistema = sistemaId};
             
             usuarioRecuperacaoSenha.IniciarRecuperacaoDeSenha(usuarioCore.Email);
             await repositorioUsuarioRecuperacaoSenha.Salvar(usuarioRecuperacaoSenha);
@@ -99,18 +101,18 @@ namespace SME.Acessos.Aplicacao
                 .Replace("#RF", login)
                 .Replace("#LINK", $"{sistema.PaginaRecuperacaoSenha}{tokenRecuperacaoSenha}");
 
-            servicoEmail.Enviar(usuario.Pessoa.Nome, usuario.Email, $"Recuperação de senha do(a) {sistema.NomeSistema}", textoEmail);
+            servicoEmail.Enviar(usuario.Pessoa.Nome, usuario.Email, $"Recuperação de senha do(a) {sistema.NomeSistema}", textoEmail, sistema.CodigoSistema);
         }
         
-        public async Task<bool> ValidarTokenRecuperacaoSenha(Guid token, int sistema)
+        public async Task<bool> ValidarTokenRecuperacaoSenha(Guid token, long sistemaId)
         {
-            var usuarioPorTokenRecuperacaoSenha = await repositorioUsuarioRecuperacaoSenha.ObterUsuarioPorTokenRecuperacaoSenha(token, sistema);
+            var usuarioPorTokenRecuperacaoSenha = await repositorioUsuarioRecuperacaoSenha.ObterUsuarioPorTokenRecuperacaoSenha(token, sistemaId);
             return usuarioPorTokenRecuperacaoSenha?.TokenRecuperacaoSenhaValido() ?? false;
         }
 
-        public async Task<RetornoAlteracaoSenhaDto> AlterarSenhaPorToken(AlterarSenhaPorTokenDto alterarSenha)
+        public async Task<RetornoAlteracaoSenhaDto> AlterarSenhaPorToken(long sistemaId, AlterarSenhaPorTokenDto alterarSenha)
         {
-            var usuarioRecuperacaoSenha = await repositorioUsuarioRecuperacaoSenha.ObterUsuarioPorTokenRecuperacaoSenha(new Guid(alterarSenha.Token), alterarSenha.Sistema);
+            var usuarioRecuperacaoSenha = await repositorioUsuarioRecuperacaoSenha.ObterUsuarioPorTokenRecuperacaoSenha(new Guid(alterarSenha.Token), sistemaId);
 
             if (usuarioRecuperacaoSenha == null)
                 return new RetornoAlteracaoSenhaDto(AlterarSenhaStatus.NaoEncontrado);

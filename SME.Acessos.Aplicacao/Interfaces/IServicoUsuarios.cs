@@ -11,8 +11,8 @@ namespace SME.Acessos.Aplicacao.Interfaces
         Task<DadosUsuarioDTO> ObterUsuarioPorLogin(string login);
         Task<bool> UsuarioCadastradoCoreSSO(string login);
         Task<bool> Cadastrar(UsuarioDTO usuarioDto);
-        Task<string> RecuperarSenha(string login, int sistema);
-        Task<bool> ValidarTokenRecuperacaoSenha(Guid token, int sistema);
-        Task<RetornoAlteracaoSenhaDto> AlterarSenhaPorToken(AlterarSenhaPorTokenDto alterarSenha);
+        Task<string> RecuperarSenha(string login, long sistemaId);
+        Task<bool> ValidarTokenRecuperacaoSenha(Guid token, long sistemaId);
+        Task<RetornoAlteracaoSenhaDto> AlterarSenhaPorToken(long sistemaId, AlterarSenhaPorTokenDto alterarSenha);
     }
 }
