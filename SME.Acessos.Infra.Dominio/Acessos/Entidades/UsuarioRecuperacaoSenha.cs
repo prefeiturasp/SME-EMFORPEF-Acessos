@@ -12,7 +12,7 @@ namespace SME.Acessos.Infra.Dominio.Acessos.Entidades
         public long CodigoSistema { get; set; }
         
         public bool TokenRecuperacaoSenhaValido()
-            => Expiracao > DateTime.Now;
+            => Expiracao > DateTimeExtensions.HorarioBrasilia();
         
         public void FinalizarRecuperacaoSenha()
         {
@@ -23,10 +23,10 @@ namespace SME.Acessos.Infra.Dominio.Acessos.Entidades
         public void ValidarSenha(string novaSenha)
         {
             if (novaSenha.Length < 8)
-                throw new NegocioException(MensagemNegocio.A_SENHA_DEVE_TER_NO_MÍNIMO_8_CARACTERES);
+                throw new NegocioException(MensagemNegocio.A_SENHA_DEVE_TER_NO_MINIMO_8_CARACTERES);
 
             if (novaSenha.Length > 12)
-                throw new NegocioException(MensagemNegocio.A_SENHA_DEVE_TER_NO_MÁXIMO_12_CARACTERES);
+                throw new NegocioException(MensagemNegocio.A_SENHA_DEVE_TER_NO_MAXIMO_12_CARACTERES);
 
             if (novaSenha.Contains(" "))
                 throw new NegocioException(MensagemNegocio.A_SENHA_NAO_PODE_CONTER_ESPACOS_EM_BRANCO);
@@ -45,7 +45,7 @@ namespace SME.Acessos.Infra.Dominio.Acessos.Entidades
             }
 
             Token = Guid.NewGuid();
-            Expiracao = DateTime.Now.AddHours(6);
+            Expiracao = DateTimeExtensions.HorarioBrasilia().AddHours(6);
         }
     }
 }

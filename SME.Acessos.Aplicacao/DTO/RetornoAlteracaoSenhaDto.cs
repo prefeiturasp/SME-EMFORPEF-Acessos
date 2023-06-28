@@ -5,7 +5,12 @@ namespace SME.Acessos.Aplicacao.DTO
 {
     public class RetornoAlteracaoSenhaDto
     {
-        public RetornoAlteracaoSenhaDto(AlterarSenhaStatus status, string login = "")
+        public RetornoAlteracaoSenhaDto(AlterarSenhaStatus status)
+        {
+            Status = status;
+        }
+        
+        public RetornoAlteracaoSenhaDto(AlterarSenhaStatus status, string login)
         {
             Status = status;
             Login = login;

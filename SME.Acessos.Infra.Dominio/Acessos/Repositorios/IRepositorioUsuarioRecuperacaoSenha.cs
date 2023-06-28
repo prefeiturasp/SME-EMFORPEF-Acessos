@@ -1,6 +1,5 @@
 ﻿
 using SME.Acessos.Infra.Dominio.Acessos.Entidades;
-using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 
 namespace SME.Acessos.Infra.Dominio.Acessos.Repositorios;
 
