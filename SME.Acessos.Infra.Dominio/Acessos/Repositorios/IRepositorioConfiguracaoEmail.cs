@@ -5,5 +5,6 @@ namespace SME.Acessos.Infra.Dominio.Acessos.Repositorios;
 
 public interface IRepositorioConfiguracaoEmail
 {
-    Task<ConfiguracaoEmail> ObterConfiguracaoEmail(int sistemaId);
+    Task<ConfiguracaoEmail> ObterConfiguracaoEmailPorSistema(long sistemaId);
+    Task<IList<ConfiguracaoEmail>> ObterTodos();
 }

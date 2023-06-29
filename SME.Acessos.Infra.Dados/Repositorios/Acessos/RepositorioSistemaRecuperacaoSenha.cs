@@ -14,14 +14,18 @@ public class RepositorioSistemaRecuperacaoSenha : RepositorioBaseAcessos<Sistema
     {
     }
 
-    public async Task<SistemaRecuperacaoSenha> ObterSistema(int sistemaId)
+    public async Task<SistemaRecuperacaoSenha> ObterSistema(long sistemaId)
     {
+        var query = @"select id, 
+                        codigo_sistema CodigoSistema, 
+                        nome_sistema NomeSistema, 
+                        pagina_recuperacao_senha PaginaRecuperacaoSenha
+                     from sistema_recuperacao_senha 
+                     where codigo_sistema = @sistemaId";
+        
         return (await conexao.Obter()
-                .QueryAsync<SistemaRecuperacaoSenha>(
-                    "select id, codigo_sistema, nome_sistema, pagina_recuperacao_senha " +
-                    "   from sistema_recuperacao_senha " +
-                    "   where codigo_sistema = @sistemaId", new { sistemaId }))
-            .ToList()
-            .FirstOrDefault();
+                .QueryAsync<SistemaRecuperacaoSenha>(query, new { sistemaId }))
+                .ToList()
+                .FirstOrDefault();
     }
 }

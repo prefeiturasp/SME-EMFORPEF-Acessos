@@ -22,6 +22,8 @@ namespace SME.Acessos.Infra.Dados
                 config.AddMap(new VisaoMap());
                 config.AddMap(new Mapeamentos.Acessos.ModuloMap());
                 config.AddMap(new Mapeamentos.Acessos.UsuarioRecuperacaoSenhaMap());
+                config.AddMap(new Mapeamentos.Acessos.ConfiguracaoEmailMap());
+                config.AddMap(new Mapeamentos.Acessos.SistemaRecuperacaoSenhaMap());
 
                 config.ForDommel();
             });

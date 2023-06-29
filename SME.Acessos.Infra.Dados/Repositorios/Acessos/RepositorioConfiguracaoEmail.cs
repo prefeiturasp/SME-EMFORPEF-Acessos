@@ -14,7 +14,7 @@ public class RepositorioConfiguracaoEmail : RepositorioBaseAcessos<ConfiguracaoE
     {
     }
 
-    public async Task<ConfiguracaoEmail> ObterConfiguracaoEmail(int sistemaId)
+    public async Task<ConfiguracaoEmail> ObterConfiguracaoEmailPorSistema(long sistemaId)
     {
         return (await conexao.Obter()
                 .QueryAsync<ConfiguracaoEmail>(

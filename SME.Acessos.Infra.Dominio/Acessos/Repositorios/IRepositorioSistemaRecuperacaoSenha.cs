@@ -5,5 +5,5 @@ namespace SME.Acessos.Infra.Dominio.Acessos.Repositorios;
 
 public interface IRepositorioSistemaRecuperacaoSenha
 {
-    Task<SistemaRecuperacaoSenha> ObterSistema(int sistemaId);
+    Task<SistemaRecuperacaoSenha> ObterSistema(long sistemaId);
 }

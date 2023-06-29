@@ -5,6 +5,7 @@ namespace SME.Acessos.Infra.Dominio.Acessos.Repositorios;
 
 public interface IRepositorioUsuarioRecuperacaoSenha
 {
-    Task<UsuarioRecuperacaoSenha> ObterUsuarioPorLogin(string login);
-    Task<UsuarioRecuperacaoSenha> ObterUsuarioPorTokenRecuperacaoSenha(Guid token);
+    Task<UsuarioRecuperacaoSenha> ObterUsuarioPorLoginSistema(string login, long sistema);
+    Task<UsuarioRecuperacaoSenha> ObterUsuarioPorTokenRecuperacaoSenha(Guid token, long sistema);
+    Task Salvar(UsuarioRecuperacaoSenha usuarioRecuperacaoSenha);
 }
