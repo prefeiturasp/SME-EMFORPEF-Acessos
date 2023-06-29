@@ -55,5 +55,5 @@ select 3,'SIGPAE','https://sigpae.sme.prefeitura.sp.gov.br/redefinir-senha/'
 where not exists (select nome_sistema from sistema_recuperacao_senha where nome_sistema = 'SIGPAE');
 
 INSERT INTO public.sistema_recuperacao_senha (codigo_sistema,nome_sistema,pagina_recuperacao_senha) 
-select 1006,'CDEP','https://cedep.sme.prefeitura.sp.gov.br/redefinir-senha/'
+select 1006,'CDEP','https://cdep.sme.prefeitura.sp.gov.br/redefinir-senha/'
 where not exists (select nome_sistema from sistema_recuperacao_senha where nome_sistema = 'CDEP');
