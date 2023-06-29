@@ -30,7 +30,7 @@ create table if not exists  public.usuario_recuperacao_senha (
 	CONSTRAINT usuario_recuperacao_senha_pkey PRIMARY KEY (id),
 	CONSTRAINT usuario_recuperacao_senha_un_login UNIQUE (login)
 );
-CREATE INDEX uusuario_recuperacao_senha_login_idx ON public.usuario_recuperacao_senha USING btree (login);
+CREATE INDEX usuario_recuperacao_senha_login_idx ON public.usuario_recuperacao_senha USING btree (login);
 
 --> Informações da configuração do e-mail
 INSERT INTO public.configuracao_email (codigo_sistema,email,nome,smtp,usuario,senha,porta,tls) 
