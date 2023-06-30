@@ -3,6 +3,7 @@ using Dapper;
 using SME.Acessos.Infra.Dominio.CoreSSO;
 using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
+using SME.Acessos.Infra.Dominio.Enumeradores;
 
 namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
 {
@@ -56,6 +57,47 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
             var sql = $@"insert into [SYS_Usuario] ([usu_login],[usu_email],[usu_senha],[pes_id],[ent_id]) values ('{login}','{email}','{senha}','{pessoa}','{entidade}'); ";
 
             await conexao.Obter().ExecuteScalarAsync(sql);
+        }
+
+        public async Task<bool> ValidarSenhaAtual(Guid usuarioId, string senhaAtual)
+        {
+            var query = @"select 1
+                          from SYS_Usuario 
+                          where usu_id = @usuarioId 
+                            and usu_senha = @senhaAtual ";
+            
+            var usuarios = await conexao.Obter().QueryAsync<int>(query, new { usuarioId,senhaAtual });
+            
+            return usuarios.Any();
+        }
+
+        public async Task AlterarSenha(Guid usuarioId, string senhaNova)
+        {
+            var atualizarSenha = @"update SYS_Usuario 
+                                        set usu_senha = @senhaNova, 
+                                            usu_dataalteracao = getdate(), 
+                                            usu_dataalteracaosenha = getdate() 
+                                   where usu_id = @usuarioId ";
+            await conexao.Obter().ExecuteAsync(atualizarSenha, new {usuarioId, senhaNova});
+        }
+
+        public async Task InserirHistoricoSenha(Guid usuarioId, string senha, TipoCriptografia criptografia)
+        {
+            var inserirHistorico = @"INSERT INTO SYS_UsuarioSenhaHistorico
+                                        (usu_id ,ush_senha ,ush_criptografia ,ush_id ,ush_data)
+                                    VALUES
+                                        (@usuarioId ,@senha ,@tipoCriptografia ,NEWID() ,GETDATE())";
+            
+            await conexao.Obter().ExecuteAsync(inserirHistorico, new {usuarioId, senha, tipoCriptografia = (int)criptografia});
+        }
+
+        public async Task AlterarEmail(Guid usuarioId, string email)
+        {
+            var alterarEmail = @"update SYS_Usuario 
+                                        set usu_email = @email, 
+                                            usu_dataalteracao = getdate()
+                                   where usu_id = @usuarioId ";
+            await conexao.Obter().ExecuteAsync(alterarEmail, new {usuarioId, email});
         }
     }
 }
