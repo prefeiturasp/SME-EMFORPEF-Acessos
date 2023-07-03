@@ -17,7 +17,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                                    p.pes_nome as nome,                            
                                    d.psd_numero as cpf,      
                                    u.usu_login as login,
-                                   coalesce(c_email.psc_contato, u.usu_email) as email,   
+                                   u.usu_email as email,   
                                    coalesce(c_celular.psc_contato, c_fixo.psc_contato) as telefone,
                                    endereco.end_logradouro as endereco,
                                    c_endereco.pse_numero as numero,
