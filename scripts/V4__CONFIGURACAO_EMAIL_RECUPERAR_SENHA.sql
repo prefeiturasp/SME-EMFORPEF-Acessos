@@ -11,6 +11,8 @@ create table if not exists public.configuracao_email (
 	tls bool NOT NULL DEFAULT false,
 	CONSTRAINT configuracao_email_pk PRIMARY KEY (id)
 );
+CREATE INDEX configuracao_email_codigo_sistema_idx ON public.usuario_recuperacao_senha USING btree (codigo_sistema);
+CREATE INDEX configuracao_email_email_idx ON public.usuario_recuperacao_senha USING btree (email);
 
 create table if not exists  public.sistema_recuperacao_senha (
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 1 CACHE 1 NO CYCLE),
@@ -19,7 +21,7 @@ create table if not exists  public.sistema_recuperacao_senha (
 	pagina_recuperacao_senha varchar(200) NOT NULL,
 	CONSTRAINT sistema_recuperacao_senha_pkey PRIMARY KEY (id)
 );
-
+CREATE INDEX sistema_recuperacao_senha_codigo_sistema_idx ON public.sistema_recuperacao_senha USING btree (codigo_sistema);
 
 create table if not exists  public.usuario_recuperacao_senha (
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 1 CACHE 1 NO CYCLE),
@@ -31,6 +33,7 @@ create table if not exists  public.usuario_recuperacao_senha (
 	CONSTRAINT usuario_recuperacao_senha_un_login UNIQUE (login)
 );
 CREATE INDEX usuario_recuperacao_senha_login_idx ON public.usuario_recuperacao_senha USING btree (login);
+CREATE INDEX usuario_recuperacao_senha_codigo_sistema_idx ON public.usuario_recuperacao_senha USING btree (codigo_sistema);
 
 --> Informações da configuração do e-mail
 INSERT INTO public.configuracao_email (codigo_sistema,email,nome,smtp,usuario,senha,porta,tls) 

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SME.Acesos.Aplicacao.DTO
+namespace SME.Acessos.Aplicacao.DTO
 {
     public class AlterarSenhaPorTokenDto
     {

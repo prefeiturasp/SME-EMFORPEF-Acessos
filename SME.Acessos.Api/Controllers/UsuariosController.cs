@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SME.Acesos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Constantes;
 using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Enumerados;
@@ -77,7 +76,7 @@ namespace SME.Acessos.Api.Controllers
         }
         
         [HttpGet("{login}/sistemas/{sistemaId}/recuperar-senha")] 
-        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(string), 200,"Retorna o e-mail do usuário que solicitou a recuperação de senha")]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(601)]
