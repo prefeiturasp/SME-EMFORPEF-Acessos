@@ -96,6 +96,7 @@ namespace SME.Acessos.IoC
         protected virtual void RegistrarServicos()
         {
             services.AddScoped<IServicoUsuarios, ServicoUsuarios>();
+            services.AddScoped<IServicoEmail, ServicoEmail>();
             services.AddScoped<IServicoUsuarioGrupo, ServicoUsuarioGrupo>();
             services.AddScoped<IServicoAutenticacao, ServicoAutenticacao>();
             services.AddScoped<IServicoPerfilUsuario, ServicoPerfilUsuario>();
@@ -110,6 +111,9 @@ namespace SME.Acessos.IoC
             services.AddScoped<IRepositorioUsuarioGrupo, RepositorioUsuarioGrupo>();
             services.AddScoped<IRepositorioGrupoPermissao, RepositorioGrupoPermissao>();
             services.AddScoped<IRepositorioPermissao, RepositorioPermissao>();
+            services.AddScoped<IRepositorioSistemaRecuperacaoSenha, RepositorioSistemaRecuperacaoSenha>();
+            services.AddScoped<IRepositorioUsuarioRecuperacaoSenha, RepositorioUsuarioRecuperacaoSenha>();
+            services.AddScoped<IRepositorioConfiguracaoEmail, RepositorioConfiguracaoEmail>();
             services.AddScoped<IRepositorioPessoa, RepositorioPessoa>();
             services.AddScoped<IRepositorioPessoaDocumento, RepositorioPessoaDocumento>();
         }
