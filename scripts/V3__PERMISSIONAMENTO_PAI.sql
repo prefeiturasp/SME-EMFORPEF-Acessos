@@ -3,7 +3,7 @@
 
 --> Operações
 insert into modulos (id, descricao, idmodcoresso,idacao) 	
-select (select max(id)+1 from modulos),'Operações - Consulta',8,1
+select (select COALESCE(max(id)+1,1) from modulos),'Operações - Consulta',8,1
 where not exists (select 1 from modulos where descricao = 'Operações - Consulta');
 
 insert into modulos (id, descricao, idmodcoresso,idacao) 	

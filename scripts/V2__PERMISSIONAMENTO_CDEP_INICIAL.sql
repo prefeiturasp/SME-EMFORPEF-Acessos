@@ -1,11 +1,51 @@
-﻿------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+﻿CREATE TABLE public.grupos (
+	id int8 NOT NULL,
+	guidperfil uuid NOT NULL,
+	nome varchar(50) NOT NULL,
+	idabrangencia int4 NOT NULL,
+	ehperfilmanual bool NOT NULL DEFAULT false,
+	CONSTRAINT grupos_pk PRIMARY KEY (id)
+);
+
+CREATE TABLE public.modulos (
+	id int4 NOT NULL,
+	descricao varchar(150) NOT NULL,
+	idmodcoresso int4 NULL,
+	idacao int4 NOT NULL,
+	CONSTRAINT modulos_pk PRIMARY KEY (id)
+);
+
+CREATE TABLE public.acoes (
+	id int4 NOT NULL,
+	descricao varchar(20) NOT NULL,
+	CONSTRAINT acoes_pk PRIMARY KEY (id)
+);
+
+ALTER TABLE public.modulos ADD CONSTRAINT modulos_acao_fk FOREIGN KEY (idacao) REFERENCES public.acoes(id);
+
+CREATE TABLE public.abrangencia (
+	id int4 NOT NULL,
+	descricao varchar(30) NOT NULL,
+	CONSTRAINT abrangencia_pk PRIMARY KEY (id)
+);
+
+CREATE TABLE public.permissoes (
+	idgrupo int8 NOT NULL,
+	idmodulo int8 NOT NULL,
+	CONSTRAINT permissoes_pk PRIMARY KEY (idgrupo,idmodulo)
+);
+
+ALTER TABLE public.permissoes ADD CONSTRAINT permissoes_grupo_fk FOREIGN KEY (idgrupo) REFERENCES public.grupos(id);
+ALTER TABLE public.permissoes ADD CONSTRAINT permissoes_modulo_fk FOREIGN KEY (idmodulo) REFERENCES public.modulos(id);
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> Grupos
 
 	insert into grupos (id, guidPerfil, nome, idabrangencia) 	
-	select (select max(id)+1 from grupos),'D3766FB4-D753-4398-BFB0-C357724BB0A2', 'Admin Geral', 1
+	select (select COALESCE(max(id)+1,1) from grupos),'D3766FB4-D753-4398-BFB0-C357724BB0A2', 'Admin Geral', 1
 	where not exists (select 1 from grupos where nome = 'Admin Geral');
-	
-	insert into grupos (id, guidPerfil, nome, idabrangencia) 	
+		
+	/*insert into grupos (id, guidPerfil, nome, idabrangencia) 	
 	select (select max(id)+1 from grupos),'B82673B9-52B9-4E01-9157-E19339B7211A', 'Admin Biblioteca', 1
 	where not exists (select 1 from grupos where nome = 'Admin Biblioteca');
 
@@ -385,4 +425,4 @@ from modulos where idmodcoresso = 10 and not exists (select 1 from permissoes wh
 --> Solicitações
 insert into permissoes (idgrupo, idmodulo) 	
 select (select id from grupos where nome = 'Externo'),id 
-from modulos where idmodcoresso = 10 and not exists (select 1 from permissoes where idmodulo in (select id from modulos where idmodcoresso = 10));
+from modulos where idmodcoresso = 10 and not exists (select 1 from permissoes where idmodulo in (select id from modulos where idmodcoresso = 10));*/

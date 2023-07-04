@@ -3,21 +3,31 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using SME.Acessos.Aplicacao;
+using SME.Acessos.Aplicacao.Interfaces;
+using SME.Acessos.Aplicacao.Servicos;
 using SME.Acessos.Infra.Dados;
+using SME.Acessos.Infra.Dados.Acessos;
+using SME.Acessos.Infra.Dados.Repositorios.CoreSSO;
+using SME.Acessos.Infra.Dominio.Acessos.Repositorios;
+using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 using SME.Acessos.Infra.IoC;
 using SME.Acessos.Infra.Polly;
 using SME.Acessos.Infra.Servicos;
 using SME.Acessos.IoC;
+using SME.Acessos.TesteIntegracao.ServicosFakes;
 
 namespace SME.CDEP.TesteIntegracao.Setup
 {
     public class RegistradorDependencias : RegistradorDeDependencias
     {
-        private readonly IServiceCollection services;
-        private readonly IConfiguration configuration;
+        private readonly IServiceCollection _serviceCollection;
+        private readonly IConfiguration _configuration;
 
         public RegistradorDependencias(IServiceCollection services, IConfiguration configuration) : base(services, configuration)
-        {}
+        {
+            _serviceCollection = services;
+            _configuration = configuration;
+        }
 
         public override void Registrar()
         {
@@ -28,52 +38,58 @@ namespace SME.CDEP.TesteIntegracao.Setup
             RegistrarProfiles();
             RegistrarLogs();
             RegistrarPolly();
-
-            RegistrarMapeamentos.Registrar();
         }
 
         protected override void RegistrarLogs()
         {
-            services.AddOptions<ConfiguracaoRabbitLogsOptions>()
-                .Bind(configuration.GetSection(ConfiguracaoRabbitLogsOptions.Secao), c => c.BindNonPublicProperties = true);
+            _serviceCollection.AddOptions<ConfiguracaoRabbitLogsOptions>()
+                .Bind(_configuration.GetSection(ConfiguracaoRabbitLogsOptions.Secao), c => c.BindNonPublicProperties = true);
 
-            services.AddSingleton<ConfiguracaoRabbitLogsOptions>();
-            services.AddSingleton<IConexoesRabbitLogs>(serviceProvider =>
+            _serviceCollection.AddSingleton<ConfiguracaoRabbitLogsOptions>();
+            _serviceCollection.AddSingleton<IConexoesRabbitLogs>(serviceProvider =>
             {
                 var options = serviceProvider.GetService<IOptions<ConfiguracaoRabbitLogsOptions>>().Value;
                 var provider = serviceProvider.GetService<IOptions<DefaultObjectPoolProvider>>().Value;
                 return new ConexoesRabbitLogs(options, provider);
             });
 
-            services.AddSingleton<IServicoLogs, ServicoLogs>();
+            _serviceCollection.AddSingleton<IServicoLogs, ServicoLogs>();
         }
 
         protected override void RegistrarProfiles()
         {
-            services.AddAutoMapper(typeof(DominioParaDTOProfile));
+            _serviceCollection.AddAutoMapper(typeof(DominioParaDTOProfile));
         }
-
-        protected override void RegistrarServicos()
-        {}
-
-        protected override void RegistrarRepositorios()
-        {}
+        
+        protected virtual void RegistrarRepositorios()
+        {
+            _serviceCollection.AddScoped<IRepositorioUsuario, RepositorioUsuarioCoreSSOFake>();
+            _serviceCollection.AddScoped<IRepositorioDadosUsuario, RepositorioDadosUsuario>();
+            _serviceCollection.AddScoped<IRepositorioUsuarioGrupoPessoa, RepositorioUsuarioGrupoPessoa>();
+            _serviceCollection.AddScoped<IRepositorioUsuarioGrupo, RepositorioUsuarioGrupo>();
+            _serviceCollection.AddScoped<IRepositorioGrupoPermissao, RepositorioGrupoPermissao>();
+            _serviceCollection.AddScoped<IRepositorioPermissao, RepositorioPermissao>();
+            _serviceCollection.AddScoped<IRepositorioSistemaRecuperacaoSenha, RepositorioSistemaRecuperacaoSenha>();
+            _serviceCollection.AddScoped<IRepositorioUsuarioRecuperacaoSenha, RepositorioUsuarioRecuperacaoSenha>();
+            _serviceCollection.AddScoped<IRepositorioConfiguracaoEmail, RepositorioConfiguracaoEmail>();
+            _serviceCollection.AddScoped<IRepositorioPessoa, RepositorioPessoa>();
+            _serviceCollection.AddScoped<IRepositorioPessoaDocumento, RepositorioPessoaDocumento>();
+        }
 
         protected override void RegistrarTelemetria()
         {
-            services.ConfigurarTelemetria(configuration);
+            _serviceCollection.ConfigurarTelemetria(_configuration);
         }
 
         protected override void RegistrarConexao()
         {
-            services.AddScoped<IConexaoAcessos, ConexaoAcessos>();
-            services.AddScoped<IConexaoCoreSSO, ConexaoCoreSSO>();
-            //serviceCollection.AddScoped<ITransacao, Transacao>();
+            _serviceCollection.AddScoped<IConexaoAcessos, ConexaoAcessos>();
+            _serviceCollection.AddScoped<IConexaoCoreSSO, ConexaoCoreSSOFake>(_ =>new ConexaoCoreSSOFake(string.Empty));
         }
 
         protected override void RegistrarPolly()
         {
-            services.ConfigurarPolly();
+            _serviceCollection.ConfigurarPolly();
         }
     }
 }

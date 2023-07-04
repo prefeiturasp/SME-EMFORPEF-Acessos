@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.TesteIntegracao.Setup;
 using SME.CDEP.TesteIntegracao.Setup;
 using Xunit;
@@ -81,6 +82,21 @@ namespace SME.CDEP.TesteIntegracao
             where K : struct
         {
             return _collectionFixture.Database.ObterPorId<T, K>(id);
+        }
+        
+        protected IServicoAutenticacao GetServicoAutenticacao()
+        {
+            return ObterServico<IServicoAutenticacao>();
+        }
+        
+        protected IServicoPerfilUsuario GetServicoPerfilUsuario()
+        {
+            return ObterServico<IServicoPerfilUsuario>();
+        }
+        
+        public T ObterServico<T>()
+        {
+            return ServiceProvider.GetService<T>() ?? throw new Exception($"Servi�o {typeof(T).Name} n�o registrado!");
         }
     }
 }

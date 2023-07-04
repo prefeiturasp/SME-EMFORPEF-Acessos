@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Dapper.FluentMap;
+using Dapper.FluentMap.Dommel;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.ObjectPool;
@@ -10,8 +12,11 @@ using SME.Acessos.Aplicacao.Servicos;
 using SME.Acessos.Aplicacao.Settings;
 using SME.Acessos.Infra.Dados;
 using SME.Acessos.Infra.Dados.Acessos;
+using SME.Acessos.Infra.Dados.Mapeamentos.Acessos;
+using SME.Acessos.Infra.Dados.Mapeamentos.CoreSSO;
 using SME.Acessos.Infra.Dados.Repositorios.CoreSSO;
 using SME.Acessos.Infra.Dominio;
+using SME.Acessos.Infra.Dominio.Acessos.Entidades;
 using SME.Acessos.Infra.Dominio.Acessos.Repositorios;
 using SME.Acessos.Infra.Dominio.CoreSSO;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
@@ -42,8 +47,7 @@ namespace SME.Acessos.IoC
             RegistrarLogs();
             RegistrarPolly();
             RegistrarJwtSettings();
-
-            RegistrarMapeamentos.Registrar();
+            RegistrarMapeamentos();
         }
 
         protected virtual void RegistrarJwtSettings()
@@ -127,13 +131,34 @@ namespace SME.Acessos.IoC
         {
             services.AddScoped<IConexaoAcessos, ConexaoAcessos>(_ => new ConexaoAcessos(configuration.GetConnectionString("Acessos")));
             services.AddScoped<IConexaoCoreSSO, ConexaoCoreSSO>(_ =>new ConexaoCoreSSO(configuration.GetConnectionString("CoreSSO")));
-            
-            //serviceCollection.AddScoped<ITransacao, Transacao>();
         }
 
         protected virtual void RegistrarPolly()
         {
             services.ConfigurarPolly();
+        }
+        
+        protected virtual void RegistrarMapeamentos()
+        {
+            FluentMapper.Initialize(config =>
+            {
+                config.AddMap(new UsuarioMap());
+                config.AddMap(new UsuarioGrupoMap());
+                config.AddMap(new Infra.Dados.Mapeamentos.CoreSSO.GrupoMap());
+                config.AddMap(new GrupoPermissaoMap());
+                config.AddMap(new Infra.Dados.Mapeamentos.CoreSSO.ModuloMap());
+                config.AddMap(new PessoaMap());
+                config.AddMap(new PessoaDocumentoMap());
+                config.AddMap(new SistemaMap());
+                config.AddMap(new VisaoMap());
+                config.AddMap(new Infra.Dados.Mapeamentos.Acessos.ModuloMap());
+                config.AddMap(new UsuarioRecuperacaoSenhaMap());
+                config.AddMap(new ConfiguracaoEmailMap());
+                config.AddMap(new SistemaRecuperacaoSenhaMap());
+                config.AddMap(new Infra.Dados.Mapeamentos.Acessos.GrupoMap());
+
+                config.ForDommel();
+            });
         }
 
     }
