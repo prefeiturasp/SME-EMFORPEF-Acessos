@@ -11,8 +11,8 @@ create table if not exists public.configuracao_email (
 	tls bool NOT NULL DEFAULT false,
 	CONSTRAINT configuracao_email_pk PRIMARY KEY (id)
 );
-CREATE INDEX configuracao_email_codigo_sistema_idx ON public.usuario_recuperacao_senha USING btree (codigo_sistema);
-CREATE INDEX configuracao_email_email_idx ON public.usuario_recuperacao_senha USING btree (email);
+CREATE INDEX configuracao_email_codigo_sistema_idx ON public.configuracao_email USING btree (codigo_sistema);
+CREATE INDEX configuracao_email_email_idx ON public.configuracao_email USING btree (email);
 
 create table if not exists  public.sistema_recuperacao_senha (
 	id int8 NOT NULL GENERATED ALWAYS AS IDENTITY( INCREMENT BY 1 MINVALUE 1 MAXVALUE 9223372036854775807 START 1 CACHE 1 NO CYCLE),
