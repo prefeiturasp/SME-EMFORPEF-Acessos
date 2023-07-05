@@ -43,6 +43,13 @@ ALTER TABLE public.permissoes DROP CONSTRAINT if exists permissoes_modulo_fk;
 ALTER TABLE public.permissoes ADD CONSTRAINT permissoes_modulo_fk FOREIGN KEY (idmodulo) REFERENCES public.modulos(id);
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--> Ações
+	INSERT INTO public.acoes (id,descricao) 
+	select 1,'Consulta' where not exists (select 1 from public.acoes where id = 1) union all
+	select 2,'Inclusão' where not exists (select 1 from public.acoes where id = 2) union all
+	select 3,'Exclusão' where not exists (select 1 from public.acoes where id = 3) union all
+	select 4,'Alteração' where not exists (select 1 from public.acoes where id = 4);
+
 --> Grupos
 
 	insert into grupos (id, guidPerfil, nome, idabrangencia) 	
