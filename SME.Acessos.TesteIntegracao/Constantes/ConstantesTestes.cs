@@ -174,7 +174,10 @@ public class ConstantesTestes
     public const string GRUPO_EXTERNO_GUID = "3092428D-CA98-4788-9717-E706DF1945A0";
     public const long GRUPO_EXTERNO_ID = 6;
     
-    public const int SISTEMA_98 = 98;
+    public const int SISTEMA_98_ID = 98;
+    public const string SISTEMA_98_NOME = "'Sistema 98'";
+    public const string SISTEMA_98_PAGINA = "'http://www.sistema98.com.br'";
+    
     public const string LOGIN_00000000000 = "00000000000";
     public const string NOME_99999999998 = "NOME_99999999998";
     public const string EMAIL_99999999998 = "email99999999998@email.com";

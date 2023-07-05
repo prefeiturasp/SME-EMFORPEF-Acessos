@@ -17,7 +17,7 @@ namespace SME.Acessos.TesteIntegracao.Autenticacao
         {
             await CriarAcoesGrupoPermissoes();
             
-            var retorno = await GetServicoPerfilUsuario().ObterPerfisToken(ConstantesTestes.LOGIN_99999999998, ConstantesTestes.SISTEMA_98);
+            var retorno = await GetServicoPerfilUsuario().ObterPerfisToken(ConstantesTestes.LOGIN_99999999998, ConstantesTestes.SISTEMA_98_ID);
             
             retorno.ShouldNotBeNull();
             retorno.Token.ShouldNotBeEmpty();
@@ -35,7 +35,7 @@ namespace SME.Acessos.TesteIntegracao.Autenticacao
         {
             await CriarAcoesGrupoPermissoes();
             
-            var retorno = await GetServicoPerfilUsuario().ObterPerfisToken(ConstantesTestes.LOGIN_ADMIN_GERAL_1000, ConstantesTestes.SISTEMA_98);
+            var retorno = await GetServicoPerfilUsuario().ObterPerfisToken(ConstantesTestes.LOGIN_ADMIN_GERAL_1000, ConstantesTestes.SISTEMA_98_ID);
             
             retorno.ShouldNotBeNull();
             retorno.Token.ShouldNotBeEmpty();

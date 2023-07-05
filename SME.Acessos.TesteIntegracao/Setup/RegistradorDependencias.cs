@@ -98,6 +98,16 @@ namespace SME.Acessos.TesteIntegracao.Setup
             _serviceCollection.AddScoped<IRepositorioPessoa, RepositorioPessoa>();
             _serviceCollection.AddScoped<IRepositorioPessoaDocumento, RepositorioPessoaDocumento>();
         }
+        
+        protected override void RegistrarServicos()
+        {
+            _serviceCollection.AddScoped<IServicoUsuarios, ServicoUsuarios>();
+            _serviceCollection.AddScoped<IServicoEmail, ServicoEmailFake>();
+            _serviceCollection.AddScoped<IServicoUsuarioGrupo, ServicoUsuarioGrupo>();
+            _serviceCollection.AddScoped<IServicoAutenticacao, ServicoAutenticacao>();
+            _serviceCollection.AddScoped<IServicoPerfilUsuario, ServicoPerfilUsuario>();
+            _serviceCollection.AddScoped<IServicoTokenJwt, ServicoTokenJwt>();
+        }
 
         protected override void RegistrarTelemetria()
         {

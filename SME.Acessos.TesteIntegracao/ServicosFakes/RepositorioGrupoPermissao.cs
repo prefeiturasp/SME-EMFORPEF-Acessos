@@ -20,7 +20,7 @@ namespace SME.Acessos.TesteIntegracao.ServicosFakes
                 new GrupoPermissao()
                 {
                     Id = new Guid(ConstantesTestes.GRUPO_EXTERNO_GUID),
-                    SistemaId = ConstantesTestes.SISTEMA_98,
+                    SistemaId = ConstantesTestes.SISTEMA_98_ID,
                     ModuloId = ConstantesTestes.MODULO_OPERACOES_8_ID,
                     EhAlteracao = true,
                     EhConsulta = true,
@@ -30,7 +30,7 @@ namespace SME.Acessos.TesteIntegracao.ServicosFakes
                 new GrupoPermissao()
                 {
                     Id = new Guid(ConstantesTestes.GRUPO_EXTERNO_GUID),
-                    SistemaId = ConstantesTestes.SISTEMA_98,
+                    SistemaId = ConstantesTestes.SISTEMA_98_ID,
                     ModuloId = ConstantesTestes.MODULO_SOLICITACOES_10_ID,
                     EhAlteracao = true,
                     EhConsulta = true,
