@@ -349,17 +349,6 @@ namespace SME.Acessos.TesteIntegracao
             await InserirNaBase(new Modulo() { Id = ConstantesTestes.SOLICITACOES_INCLUSAO_ID, Descricao = ConstantesTestes.SOLICITACOES_INCLUSAO_NOME, ModuloCoreSSOId = ConstantesTestes.MODULO_SOLICITACOES_10_ID, AcaoId = ConstantesTestes.ACAO_INCLUSAO_2_ID});
             await InserirNaBase(new Modulo() { Id = ConstantesTestes.SOLICITACOES_EXCLUSAO_ID, Descricao = ConstantesTestes.SOLICITACOES_EXCLUSAO_NOME, ModuloCoreSSOId = ConstantesTestes.MODULO_SOLICITACOES_10_ID, AcaoId = ConstantesTestes.ACAO_EXCLUSAO_3_ID});
             await InserirNaBase(new Modulo() { Id = ConstantesTestes.SOLICITACOES_ALTERACAO_ID, Descricao = ConstantesTestes.SOLICITACOES_ALTERACAO_NOME, ModuloCoreSSOId = ConstantesTestes.MODULO_SOLICITACOES_10_ID, AcaoId = ConstantesTestes.ACAO_ALTERACAO_4_ID});
-            //
-            // 1	Cadastros
-            // 2	Crédito
-            // 3	Autor
-            // 4	Editora
-            // 5	Série/Coleção
-            // 6	Assunto
-            // 7	Acervo
-            // 8	Operações
-            // 9	Atendimento de solicitações
-            // 10	Solicitações
         }
 
         private async Task CriarGrupos()
