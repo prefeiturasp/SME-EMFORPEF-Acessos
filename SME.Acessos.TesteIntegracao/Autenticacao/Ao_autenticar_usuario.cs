@@ -2,7 +2,6 @@
 using SME.Acessos.Infra.Dominio.Extensions;
 using SME.Acessos.TesteIntegracao.Constantes;
 using SME.Acessos.TesteIntegracao.Setup;
-using SME.CDEP.TesteIntegracao;
 using Xunit;
 
 namespace SME.Acessos.TesteIntegracao.Autenticacao

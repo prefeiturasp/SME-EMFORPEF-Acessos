@@ -1,22 +1,32 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Dapper.FluentMap;
+using Dapper.FluentMap.Dommel;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using SME.Acessos.Aplicacao;
 using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.Aplicacao.Servicos;
+using SME.Acessos.Aplicacao.Settings;
 using SME.Acessos.Infra.Dados;
 using SME.Acessos.Infra.Dados.Acessos;
+using SME.Acessos.Infra.Dados.Mapeamentos.Acessos;
+using SME.Acessos.Infra.Dados.Mapeamentos.CoreSSO;
 using SME.Acessos.Infra.Dados.Repositorios.CoreSSO;
 using SME.Acessos.Infra.Dominio.Acessos.Repositorios;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
+using SME.Acessos.Infra.Dominio.Extensions;
 using SME.Acessos.Infra.IoC;
 using SME.Acessos.Infra.Polly;
 using SME.Acessos.Infra.Servicos;
 using SME.Acessos.IoC;
+using SME.Acessos.TesteIntegracao.Constantes;
 using SME.Acessos.TesteIntegracao.ServicosFakes;
+using SME.Acessos.TesteIntegracao.Setup;
+using GrupoMap = SME.Acessos.Infra.Dados.Mapeamentos.Acessos.GrupoMap;
+using ModuloMap = SME.Acessos.Infra.Dados.Mapeamentos.Acessos.ModuloMap;
 
-namespace SME.CDEP.TesteIntegracao.Setup
+namespace SME.Acessos.TesteIntegracao.Setup
 {
     public class RegistradorDependencias : RegistradorDeDependencias
     {
@@ -34,6 +44,7 @@ namespace SME.CDEP.TesteIntegracao.Setup
             RegistrarTelemetria();
             RegistrarConexao();
             RegistrarRepositorios();
+            RegistrarMapeamentos();
             RegistrarServicos();
             RegistrarProfiles();
             RegistrarLogs();
@@ -52,6 +63,18 @@ namespace SME.CDEP.TesteIntegracao.Setup
                 var provider = serviceProvider.GetService<IOptions<DefaultObjectPoolProvider>>().Value;
                 return new ConexoesRabbitLogs(options, provider);
             });
+            
+            _serviceCollection.AddSingleton<IServicoTokenJwt>(serviceProvider =>
+            {
+                var options = serviceProvider.GetService<IOptions<JwtTokenSettings>>();
+                
+                options.Value.Audience = ConstantesTestes.TOKEN_AUDIENCE;
+                options.Value.Issuer = ConstantesTestes.TOKEN_ISSUER;
+                options.Value.IssuerSigningKey = ConstantesTestes.TOKEN_ISSUER_SIGNING_KEY;
+                options.Value.ExpiresInMinutes = ConstantesTestes.EXPIRES_IN_720_MINUTES;
+                
+                return new ServicoTokenJwt(options);
+            });
 
             _serviceCollection.AddSingleton<IServicoLogs, ServicoLogs>();
         }
@@ -61,13 +84,13 @@ namespace SME.CDEP.TesteIntegracao.Setup
             _serviceCollection.AddAutoMapper(typeof(DominioParaDTOProfile));
         }
         
-        protected virtual void RegistrarRepositorios()
+        protected override void RegistrarRepositorios()
         {
             _serviceCollection.AddScoped<IRepositorioUsuario, RepositorioUsuarioCoreSSOFake>();
             _serviceCollection.AddScoped<IRepositorioDadosUsuario, RepositorioDadosUsuario>();
-            _serviceCollection.AddScoped<IRepositorioUsuarioGrupoPessoa, RepositorioUsuarioGrupoPessoa>();
+            _serviceCollection.AddScoped<IRepositorioUsuarioGrupoPessoa, RepositorioUsuarioGrupoPessoaCoreSSOFake>();
             _serviceCollection.AddScoped<IRepositorioUsuarioGrupo, RepositorioUsuarioGrupo>();
-            _serviceCollection.AddScoped<IRepositorioGrupoPermissao, RepositorioGrupoPermissao>();
+            _serviceCollection.AddScoped<IRepositorioGrupoPermissao, RepositorioGrupoPermissaoCoreSSOFake>();
             _serviceCollection.AddScoped<IRepositorioPermissao, RepositorioPermissao>();
             _serviceCollection.AddScoped<IRepositorioSistemaRecuperacaoSenha, RepositorioSistemaRecuperacaoSenha>();
             _serviceCollection.AddScoped<IRepositorioUsuarioRecuperacaoSenha, RepositorioUsuarioRecuperacaoSenha>();
@@ -83,7 +106,9 @@ namespace SME.CDEP.TesteIntegracao.Setup
 
         protected override void RegistrarConexao()
         {
-            _serviceCollection.AddScoped<IConexaoAcessos, ConexaoAcessos>();
+            var retorno = _serviceCollection.FirstOrDefault(f => f.ServiceType == typeof(System.Data.IDbConnection));
+            var conexao = ((CollectionFixture)retorno.ImplementationFactory.Target).Database.Conexao;
+            _serviceCollection.AddScoped<IConexaoAcessos, ConexaoAcessos>(_ =>new ConexaoAcessos(conexao.ConnectionString));
             _serviceCollection.AddScoped<IConexaoCoreSSO, ConexaoCoreSSOFake>(_ =>new ConexaoCoreSSOFake(string.Empty));
         }
 

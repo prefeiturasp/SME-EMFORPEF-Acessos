@@ -8,5 +8,6 @@ namespace SME.Acessos.Infra.Dominio.CoreSSO.Entidades
         public string PessoaNome { get; set; }
         public Guid GrupoId { get; set; }
         public string GrupoNome { get; set; }
+        public string Login { get; set; }
     }
 }

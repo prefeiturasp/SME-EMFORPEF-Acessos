@@ -9,9 +9,10 @@ namespace SME.Acessos.Infra.Dados.Mapeamentos.Acessos
         {
             ToTable("grupos");
             Map(a => a.Id).ToColumn("id");
-            Map(a => a.Perfil).ToColumn("guidPerfil");
+            Map(a => a.Perfil).ToColumn("guidperfil");
             Map(a => a.Nome).ToColumn("nome");
-            Map(a => a.IdAbrangencia).ToColumn("idAbrangencia");
+            Map(a => a.IdAbrangencia).ToColumn("idabrangencia");
+            Map(a => a.EhPerfilManual).ToColumn("ehperfilmanual");
         }
     }
 }

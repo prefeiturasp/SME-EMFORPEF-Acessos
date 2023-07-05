@@ -8,7 +8,7 @@ namespace SME.Acessos.Aplicacao.Interfaces
         Task<IList<DadosUsuarioDTO>> ObterTodosUsuarios();
         Task<DadosUsuarioDTO> ObterUsuarioPorId(Guid id);
         Task<DadosUsuarioDTO> ObterUsuarioPorLogin(string login);
-        Task<bool> UsuarioCadastradoCoreSSO(string login);
+        Task<bool> ExisteUsuarioCadastradoCoreSSO(string login);
         Task<bool> Cadastrar(UsuarioDTO usuarioDto);
         Task<DadosUsuarioDTO?> ObterMeusDados(string login);
         Task<bool> AlterarSenha(string login, AlterarSenhaUsuarioDTO alterarSenhaUsuarioDto);

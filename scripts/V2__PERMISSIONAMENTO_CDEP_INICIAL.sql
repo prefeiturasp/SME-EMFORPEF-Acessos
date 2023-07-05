@@ -1,4 +1,4 @@
-﻿CREATE TABLE public.grupos (
+﻿CREATE TABLE if not exists public.grupos (
 	id int8 NOT NULL,
 	guidperfil uuid NOT NULL,
 	nome varchar(50) NOT NULL,
@@ -7,7 +7,7 @@
 	CONSTRAINT grupos_pk PRIMARY KEY (id)
 );
 
-CREATE TABLE public.modulos (
+CREATE TABLE if not exists public.modulos (
 	id int4 NOT NULL,
 	descricao varchar(150) NOT NULL,
 	idmodcoresso int4 NULL,
@@ -15,37 +15,48 @@ CREATE TABLE public.modulos (
 	CONSTRAINT modulos_pk PRIMARY KEY (id)
 );
 
-CREATE TABLE public.acoes (
+CREATE TABLE if not exists public.acoes (
 	id int4 NOT NULL,
 	descricao varchar(20) NOT NULL,
 	CONSTRAINT acoes_pk PRIMARY KEY (id)
 );
 
+ALTER TABLE public.modulos DROP CONSTRAINT if exists modulos_acao_fk;
 ALTER TABLE public.modulos ADD CONSTRAINT modulos_acao_fk FOREIGN KEY (idacao) REFERENCES public.acoes(id);
 
-CREATE TABLE public.abrangencia (
+CREATE TABLE if not exists public.abrangencia (
 	id int4 NOT NULL,
 	descricao varchar(30) NOT NULL,
 	CONSTRAINT abrangencia_pk PRIMARY KEY (id)
 );
 
-CREATE TABLE public.permissoes (
+CREATE TABLE if not exists public.permissoes (
 	idgrupo int8 NOT NULL,
 	idmodulo int8 NOT NULL,
 	CONSTRAINT permissoes_pk PRIMARY KEY (idgrupo,idmodulo)
 );
 
+ALTER TABLE public.permissoes DROP CONSTRAINT if exists permissoes_grupo_fk;
 ALTER TABLE public.permissoes ADD CONSTRAINT permissoes_grupo_fk FOREIGN KEY (idgrupo) REFERENCES public.grupos(id);
+
+ALTER TABLE public.permissoes DROP CONSTRAINT if exists permissoes_modulo_fk;
 ALTER TABLE public.permissoes ADD CONSTRAINT permissoes_modulo_fk FOREIGN KEY (idmodulo) REFERENCES public.modulos(id);
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--> Ações
+	INSERT INTO public.acoes (id,descricao) 
+	select 1,'Consulta' where not exists (select 1 from public.acoes where id = 1) union all
+	select 2,'Inclusão' where not exists (select 1 from public.acoes where id = 2) union all
+	select 3,'Exclusão' where not exists (select 1 from public.acoes where id = 3) union all
+	select 4,'Alteração' where not exists (select 1 from public.acoes where id = 4);
+
 --> Grupos
 
 	insert into grupos (id, guidPerfil, nome, idabrangencia) 	
 	select (select COALESCE(max(id)+1,1) from grupos),'D3766FB4-D753-4398-BFB0-C357724BB0A2', 'Admin Geral', 1
 	where not exists (select 1 from grupos where nome = 'Admin Geral');
 		
-	/*insert into grupos (id, guidPerfil, nome, idabrangencia) 	
+	insert into grupos (id, guidPerfil, nome, idabrangencia) 	
 	select (select max(id)+1 from grupos),'B82673B9-52B9-4E01-9157-E19339B7211A', 'Admin Biblioteca', 1
 	where not exists (select 1 from grupos where nome = 'Admin Biblioteca');
 
@@ -70,7 +81,7 @@ ALTER TABLE public.permissoes ADD CONSTRAINT permissoes_modulo_fk FOREIGN KEY (i
 
 --> Crédito
 insert into modulos (id, descricao, idmodcoresso,idacao) 	
-select (select max(id)+1 from modulos),'Crédito - Consulta',2,1
+select (select coalesce(max(id)+1,1) from modulos),'Crédito - Consulta',2,1
 where not exists (select 1 from modulos where descricao = 'Crédito - Consulta');
 
 insert into modulos (id, descricao, idmodcoresso,idacao) 	
@@ -425,4 +436,4 @@ from modulos where idmodcoresso = 10 and not exists (select 1 from permissoes wh
 --> Solicitações
 insert into permissoes (idgrupo, idmodulo) 	
 select (select id from grupos where nome = 'Externo'),id 
-from modulos where idmodcoresso = 10 and not exists (select 1 from permissoes where idmodulo in (select id from modulos where idmodcoresso = 10));*/
+from modulos where idmodcoresso = 10 and not exists (select 1 from permissoes where idmodulo in (select id from modulos where idmodcoresso = 10));

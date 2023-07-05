@@ -156,6 +156,8 @@ namespace SME.Acessos.IoC
                 config.AddMap(new ConfiguracaoEmailMap());
                 config.AddMap(new SistemaRecuperacaoSenhaMap());
                 config.AddMap(new Infra.Dados.Mapeamentos.Acessos.GrupoMap());
+                config.AddMap(new Infra.Dados.Mapeamentos.Acessos.AcaoMap());
+                config.AddMap(new Infra.Dados.Mapeamentos.Acessos.PermissaoMap());
 
                 config.ForDommel();
             });

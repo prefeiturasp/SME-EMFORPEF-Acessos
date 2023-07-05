@@ -35,7 +35,7 @@ namespace SME.Acessos.TesteIntegracao.ServicosFakes
                             Nome = ConstantesTestes.NOME_99999999998
                         }
                     };
-                default:
+                case ConstantesTestes.LOGIN_99999999999:
                     return new Usuario()
                     {
                         Id = new Guid(ConstantesTestes.ID_99999999999),
@@ -49,6 +49,8 @@ namespace SME.Acessos.TesteIntegracao.ServicosFakes
                             Nome = ConstantesTestes.NOME_99999999999
                         }
                     };
+                default: 
+                    return null;
             }
         }
 
