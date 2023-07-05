@@ -41,7 +41,7 @@ namespace SME.Acessos.Infra.Dominio.Acessos.Entidades
         {
             if (string.IsNullOrWhiteSpace(usuarioCoreEmail))
             {
-                throw new NegocioException("Você não tem um e-mail cadastrado para recuperar sua senha. Para restabelecer o seu acesso, procure o Diretor da sua UE ou Administrador do SGP da sua unidade.");
+                throw new NegocioException(MensagemNegocio.VOCE_NAO_TEM_EMAIL_CADASTRADO_PARA_RECUPERAR_SENHA);
             }
 
             Token = Guid.NewGuid();

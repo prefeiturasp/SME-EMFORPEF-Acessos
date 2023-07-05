@@ -48,7 +48,7 @@ namespace SME.Acessos.Aplicacao
         public async Task<DadosUsuarioDTO> ObterUsuarioPorLogin(string login)
             => mapper.Map<DadosUsuarioDTO>(await repositorioUsuarioCoreSSO.ObterPorLogin(login));
 
-        public async Task<bool> UsuarioCadastradoCoreSSO(string login)
+        public async Task<bool> ExisteUsuarioCadastradoCoreSSO(string login)
         {
             return await repositorioUsuarioCoreSSO.UsuarioCadastradoCoreSSO(login);
         }

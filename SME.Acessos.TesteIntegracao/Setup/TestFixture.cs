@@ -1,4 +1,4 @@
-﻿namespace SME.CDEP.TesteIntegracao.Setup;
+﻿namespace SME.Acessos.TesteIntegracao.Setup;
 
 public class TestFixture : IDisposable
 {

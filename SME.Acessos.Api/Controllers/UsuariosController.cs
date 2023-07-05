@@ -12,7 +12,7 @@ namespace SME.Acessos.Api.Controllers
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
-        public async Task<IActionResult> Autenticar([FromBody] UsuarioDTO usuarioDto, [FromServices] IServicoUsuarios servicoUsuarios)
+        public async Task<IActionResult> CadastrarUsuarioCoreSSO([FromBody] UsuarioDTO usuarioDto, [FromServices] IServicoUsuarios servicoUsuarios)
         {
             var retornoAutenticacao = await servicoUsuarios.Cadastrar(usuarioDto);
             
@@ -23,9 +23,9 @@ namespace SME.Acessos.Api.Controllers
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
-        public async Task<IActionResult> UsuarioCadastradoCoreSSO([FromRoute] string login, [FromServices] IServicoUsuarios servicoUsuarios)
+        public async Task<IActionResult> ExisteUsuarioCadastradoCoreSSO([FromRoute] string login, [FromServices] IServicoUsuarios servicoUsuarios)
         {
-            var retorno = await servicoUsuarios.UsuarioCadastradoCoreSSO(login);
+            var retorno = await servicoUsuarios.ExisteUsuarioCadastradoCoreSSO(login);
 
             return Ok(retorno);
         }
