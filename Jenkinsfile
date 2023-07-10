@@ -24,19 +24,19 @@ pipeline {
 
         stage('Sonar') {
           agent { node { label 'SME-AGENT-DOTNET6-SONAR' } }
-          when { anyOf { branch '_master'; branch '_main'; branch '_development'; branch '_release'; branch '_release-r2'; } } 
+          when { anyOf { branch 'ci/testesunitarios'; branch 'release'; } } 
           steps {
             checkout scm
             script{
               withSonarQubeEnv('sonarqube-local'){
-                sh 'dotnet-sonarscanner begin /k:"SME-Acessos" /d:sonar.cs.opencover.reportsPaths="SME.SGP.TesteIntegracao/coverage.opencover.xml" /d:sonar.coverage.exclusions="**Test*.cs, **/*SME.Acessos.Api, **/*SME.Acessos.Infra, **/*SME.Acessos.IoC, **/*SME.Acessos.Infra.*, **/*/Workers/*, **/*/Hub/*"'
+                sh 'dotnet-sonarscanner begin /k:"SME-Acessos"'
                 sh 'dotnet build SME.Acessos.Api/SME.Acessos.Api.csproj'
                 sh 'dotnet test SME.Acessos.TesteIntegracao --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
-                sh 'dotnet-sonarscanner'
+                sh 'dotnet-sonarscanner end'
               }
             }
           }
-        }
+        }      
 
         stage('Build') {
           when { anyOf { branch 'master'; branch 'main'; branch "story/*"; branch 'development'; branch 'develop'; branch 'release'; branch 'homolog'; branch 'homolog-r2';  } } 

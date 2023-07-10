@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.Aplicacao.Settings;
+using SME.Acessos.Infra.Dominio.Extensions;
 
 namespace SME.Acessos.Aplicacao.Servicos
 {
@@ -29,7 +30,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             foreach (var permissao in permissionamentos)
                 claims.Add(new Claim("roles", permissao.ToString()));
 
-            var now = DateTime.Now;
+            var now = DateTimeExtensions.HorarioBrasilia();
             var token = new JwtSecurityToken(
                 issuer: jwtTokenSettings.Issuer,
                 audience: jwtTokenSettings.Audience,

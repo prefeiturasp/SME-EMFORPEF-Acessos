@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 using System.Globalization;
 using System.Text;
-using SME.CDEP.TesteIntegracao.Setup;
 using Xunit;
 
 namespace SME.Acessos.TesteIntegracao.Setup
@@ -58,7 +57,7 @@ namespace SME.Acessos.TesteIntegracao.Setup
         }
     }
 
-    [CollectionDefinition("TesteIntegradoCDEP")]
+    [CollectionDefinition("TesteIntegradoAcessos")]
     public class CollectionDoTeste : ICollectionFixture<CollectionFixture>
     {
     }

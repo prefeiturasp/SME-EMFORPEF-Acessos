@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using SME.Acessos.Aplicacao.Constantes;
-using SME.Acesos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Constantes;
 using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Enumerados;
@@ -49,7 +48,7 @@ namespace SME.Acessos.Aplicacao
         public async Task<DadosUsuarioDTO> ObterUsuarioPorLogin(string login)
             => mapper.Map<DadosUsuarioDTO>(await repositorioUsuarioCoreSSO.ObterPorLogin(login));
 
-        public async Task<bool> UsuarioCadastradoCoreSSO(string login)
+        public async Task<bool> ExisteUsuarioCadastradoCoreSSO(string login)
         {
             return await repositorioUsuarioCoreSSO.UsuarioCadastradoCoreSSO(login);
         }
