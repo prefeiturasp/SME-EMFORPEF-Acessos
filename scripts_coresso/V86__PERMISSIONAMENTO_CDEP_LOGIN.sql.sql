@@ -7,7 +7,7 @@
 			begin
 				print 'inserindo sistema CDEP'
 				insert into SYS_Sistema(sis_id, sis_nome, sis_descricao) 
-			      values((select Max(sis_id)+1 from SYS_Sistema), 'CDEP', 'Centro de Documentação da Educação Paulistana');     
+			      values(1006, 'CDEP', 'Centro de Documentação da Educação Paulistana');     
 			end
 			select @Sistema_CDEP = sis_id from SYS_Sistema where sis_nome = 'CDEP'
 
@@ -106,7 +106,17 @@
 					insert into SYS_Modulo(sis_id, mod_id, mod_nome, mod_idPai,mod_auditoria,mod_situacao, mod_dataCriacao) 
 				      values(@Sistema_CDEP,(select Max(mod_id)+1 from SYS_Modulo where sis_id = @Sistema_CDEP), 'Solicitações', @mod_idPai_operacoes,0,1, getdate());
 				end					
-					 	 
+					 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--> Inserindo visão módulo			
+
+	if not exists(select * from sys_visaomodulo where sis_id = @Sistema_CDEP)
+	begin
+		print 'inserindo visão módulos'
+		insert into sys_visaomodulo 
+    	select 1,sis_id, mod_id from sys_modulo where sis_id = @Sistema_CDEP
+	end
+	
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 --> Inserindo Grupos
 	
@@ -408,14 +418,6 @@
 			        ROLLBACK TRAN;
 			END CATCH
 			
-------------------------------------------------------------------------------------------------------------------------------------------------------------------
---> Inserindo visão módulo			
 
-	if not exists(select * from sys_visaomodulo where sis_id = @Sistema_CDEP)
-	begin
-		print 'inserindo visão módulos'
-		insert into sys_visaomodulo 
-    	select 1,sis_id, mod_id from sys_modulo where sis_id = @Sistema_CDEP
-	end
 			
 	
