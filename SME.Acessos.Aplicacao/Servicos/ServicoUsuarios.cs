@@ -22,10 +22,11 @@ namespace SME.Acessos.Aplicacao
         private readonly IServicoEmail servicoEmail;
         private readonly IRepositorioUsuarioRecuperacaoSenha repositorioUsuarioRecuperacaoSenha;
         private readonly IRepositorioSistemaRecuperacaoSenha repositorioSistemaRecuperacaoSenha;
+        private readonly IRepositorioPessoaDocumento repositorioPessoaDocumento;
 
         public ServicoUsuarios(IRepositorioUsuario repositorioUsuarioCoreSSO, IMapper mapper,IRepositorioPessoa repositorioPessoaCoreSSO,
             IServicoEmail servicoEmail,IRepositorioDadosUsuario repositorioDadosUsuario,IRepositorioUsuarioRecuperacaoSenha repositorioUsuarioRecuperacaoSenha,
-            IRepositorioSistemaRecuperacaoSenha repositorioSistemaRecuperacaoSenha)
+            IRepositorioSistemaRecuperacaoSenha repositorioSistemaRecuperacaoSenha,IRepositorioPessoaDocumento repositorioPessoaDocumento)
         {
             this.repositorioUsuarioCoreSSO = repositorioUsuarioCoreSSO ?? throw new ArgumentNullException(nameof(repositorioUsuarioCoreSSO));
             this.repositorioPessoaCoreSSO = repositorioPessoaCoreSSO ?? throw new ArgumentNullException(nameof(repositorioPessoaCoreSSO));
@@ -34,6 +35,7 @@ namespace SME.Acessos.Aplicacao
             this.repositorioUsuarioRecuperacaoSenha = repositorioUsuarioRecuperacaoSenha ?? throw new ArgumentNullException(nameof(repositorioUsuarioRecuperacaoSenha));
             this.repositorioDadosUsuario = repositorioDadosUsuario ?? throw new ArgumentNullException(nameof(repositorioDadosUsuario));
             this.repositorioSistemaRecuperacaoSenha = repositorioSistemaRecuperacaoSenha ?? throw new ArgumentNullException(nameof(repositorioSistemaRecuperacaoSenha));
+            this.repositorioPessoaDocumento = repositorioPessoaDocumento ?? throw new ArgumentNullException(nameof(repositorioPessoaDocumento));
         }
 
         public async Task<IList<DadosUsuarioDTO>> ObterTodosUsuarios()
@@ -61,9 +63,11 @@ namespace SME.Acessos.Aplicacao
                 if (!pessoa.HasValue)
                     return false;
                 
+                await repositorioPessoaDocumento.InserirPessoaDocumentoCustomizado(usuarioDto.Login, pessoa.Value, new Guid(ConstantesCoreSSO.TIPO_DOCUMENTACAO_CPF));
+                
                 await repositorioUsuarioCoreSSO.InserirUsuarioCustomizado(usuarioDto.Login, usuarioDto.Email, 
                     CriptografiaExtensions.CriptografarSenhaTripleDES(usuarioDto.Senha),pessoa.Value,
-                    new Guid(Constantes.ConstantesCoreSSO.ENTIDADE_SME));
+                    new Guid(ConstantesCoreSSO.ENTIDADE_SME));
 
                 return true;
             }
