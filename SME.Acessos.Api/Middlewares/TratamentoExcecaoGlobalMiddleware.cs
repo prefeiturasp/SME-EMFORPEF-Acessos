@@ -26,7 +26,7 @@ namespace SME.Acessos.Api
             catch (NegocioException nex)
             {
                 await servicoLogs.Enviar(nex.Message, observacao: nex.Message, rastreamento: nex.StackTrace);
-                await TratarExcecao(context, nex.Message);
+                await TratarExcecao(context, nex.Message, nex.StatusCode);
             }
             catch (Exception ex)
             {
