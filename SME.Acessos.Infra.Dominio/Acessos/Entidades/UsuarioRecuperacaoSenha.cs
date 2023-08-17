@@ -41,7 +41,11 @@ namespace SME.Acessos.Infra.Dominio.Acessos.Entidades
         {
             if (string.IsNullOrWhiteSpace(usuarioCoreEmail))
             {
-                throw new NegocioException(MensagemNegocio.VOCE_NAO_TEM_EMAIL_CADASTRADO_PARA_RECUPERAR_SENHA);
+                throw CodigoSistema switch
+                {
+                    1007 => new NegocioException(MensagemNegocio.VOCE_NAO_TEM_EMAIL_CADASTRADO_PARA_RECUPERAR_SENHA_CONECTA, System.Net.HttpStatusCode.BadRequest),
+                    _ => new NegocioException(MensagemNegocio.VOCE_NAO_TEM_EMAIL_CADASTRADO_PARA_RECUPERAR_SENHA),
+                };
             }
 
             Token = Guid.NewGuid();
