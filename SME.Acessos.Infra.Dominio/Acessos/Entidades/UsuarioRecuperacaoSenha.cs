@@ -1,6 +1,6 @@
-﻿using System.Text.RegularExpressions;
-using SME.Acessos.Infra.Dominio.Constantes;
+﻿using SME.Acessos.Infra.Dominio.Constantes;
 using SME.Acessos.Infra.Dominio.Extensions;
+using System.Text.RegularExpressions;
 
 namespace SME.Acessos.Infra.Dominio.Acessos.Entidades
 {
@@ -43,7 +43,7 @@ namespace SME.Acessos.Infra.Dominio.Acessos.Entidades
             {
                 throw CodigoSistema switch
                 {
-                    1007 => new NegocioException(MensagemNegocio.VOCE_NAO_TEM_EMAIL_CADASTRADO_PARA_RECUPERAR_SENHA_CONECTA, System.Net.HttpStatusCode.BadRequest),
+                    Constantes.Constantes.CODIGO_SISTEMA_CONECTA_FORMACAO => new NegocioException(MensagemNegocio.VOCE_NAO_TEM_EMAIL_CADASTRADO_PARA_RECUPERAR_SENHA_CONECTA, System.Net.HttpStatusCode.BadRequest),
                     _ => new NegocioException(MensagemNegocio.VOCE_NAO_TEM_EMAIL_CADASTRADO_PARA_RECUPERAR_SENHA),
                 };
             }
