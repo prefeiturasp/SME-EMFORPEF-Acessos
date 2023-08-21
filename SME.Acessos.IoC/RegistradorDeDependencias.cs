@@ -15,10 +15,7 @@ using SME.Acessos.Infra.Dados.Acessos;
 using SME.Acessos.Infra.Dados.Mapeamentos.Acessos;
 using SME.Acessos.Infra.Dados.Mapeamentos.CoreSSO;
 using SME.Acessos.Infra.Dados.Repositorios.CoreSSO;
-using SME.Acessos.Infra.Dominio;
-using SME.Acessos.Infra.Dominio.Acessos.Entidades;
 using SME.Acessos.Infra.Dominio.Acessos.Repositorios;
-using SME.Acessos.Infra.Dominio.CoreSSO;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 using SME.Acessos.Infra.IoC;
 using SME.Acessos.Infra.Polly;
@@ -105,6 +102,7 @@ namespace SME.Acessos.IoC
             services.AddScoped<IServicoAutenticacao, ServicoAutenticacao>();
             services.AddScoped<IServicoPerfilUsuario, ServicoPerfilUsuario>();
             services.AddScoped<IServicoTokenJwt, ServicoTokenJwt>();
+            services.AddScoped<IServicoGrupos, ServicoGrupos>();
         }
 
         protected virtual void RegistrarRepositorios()
@@ -120,6 +118,7 @@ namespace SME.Acessos.IoC
             services.AddScoped<IRepositorioConfiguracaoEmail, RepositorioConfiguracaoEmail>();
             services.AddScoped<IRepositorioPessoa, RepositorioPessoa>();
             services.AddScoped<IRepositorioPessoaDocumento, RepositorioPessoaDocumento>();
+            services.AddScoped<IRepositorioGrupo, RepositorioGrupo>();
         }
 
         protected virtual void RegistrarTelemetria()
@@ -156,8 +155,8 @@ namespace SME.Acessos.IoC
                 config.AddMap(new ConfiguracaoEmailMap());
                 config.AddMap(new SistemaRecuperacaoSenhaMap());
                 config.AddMap(new Infra.Dados.Mapeamentos.Acessos.GrupoMap());
-                config.AddMap(new Infra.Dados.Mapeamentos.Acessos.AcaoMap());
-                config.AddMap(new Infra.Dados.Mapeamentos.Acessos.PermissaoMap());
+                config.AddMap(new AcaoMap());
+                config.AddMap(new PermissaoMap());
 
                 config.ForDommel();
             });
