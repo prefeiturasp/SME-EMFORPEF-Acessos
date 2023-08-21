@@ -6,7 +6,7 @@ namespace SME.Acessos.Api.Controllers
 {
     public class GruposController : BaseController
     {
-        [HttpPost("sistema/{sistemaId}")]
+        [HttpGet("sistema/{sistemaId}")]
         [ProducesResponseType(typeof(GrupoDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
