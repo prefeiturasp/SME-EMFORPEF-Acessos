@@ -1,5 +1,4 @@
 ﻿using Dapper.FluentMap.Dommel.Mapping;
-using SME.Acessos.Infra.Dominio.CoreSSO;
 using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 
 namespace SME.Acessos.Infra.Dados.Mapeamentos.CoreSSO
