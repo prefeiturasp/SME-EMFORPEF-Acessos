@@ -36,12 +36,16 @@ namespace SME.Acessos.Aplicacao.Servicos
             if (perfisUsuario.Any())
             {
                 var perfilUsuario = perfisUsuario.FirstOrDefault();
-                var modulos = await repositorioGrupoPermissao.ObterModulosPorPerfilSistema(perfilUsuario.GrupoId,sistemaId);
-                var permissoes = await repositorioPermissao.ObterPermissoesPorModulos(modulos);
-                codPermissoes = permissoes.ToList().Select(p => p.Id);
                 nomeUsuario = perfilUsuario.PessoaNome;
                 emailUsuario = perfilUsuario.UsuarioEmail;
                 perfilUsuarioId = perfilUsuario.GrupoId;
+
+                var modulos = await repositorioGrupoPermissao.ObterModulosPorPerfilSistema(perfilUsuario.GrupoId,sistemaId);
+                if (modulos != null && modulos.Any())
+                {
+                    var permissoes = await repositorioPermissao.ObterPermissoesPorModulos(modulos);
+                    codPermissoes = permissoes.ToList().Select(p => p.Id);
+                }
             }
             else
             {
