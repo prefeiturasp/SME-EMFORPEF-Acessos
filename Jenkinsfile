@@ -98,5 +98,5 @@ def getKubeconf(branchName) {
     else if ("homolog-r2".equals(branchName)) { return "config_hom"; }
     else if ("release".equals(branchName)) { return "config_hom"; }
     else if ("development".equals(branchName)) { return "config_release"; }
-    else if ("develop".equals(branchName)) { return "config_dev"; }
+    else if ("develop".equals(branchName)) { return "config_release"; }
 }
