@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using SME.Acessos.Aplicacao.DTO;
-using SME.Acessos.Infra.Dominio.CoreSSO;
 using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 
 namespace SME.Acessos.Aplicacao
@@ -11,6 +10,7 @@ namespace SME.Acessos.Aplicacao
         {
             CreateMap<LoginEmailDTO, Usuario>().ReverseMap();
             CreateMap<DadosUsuarioDTO, DadosUsuario>().ReverseMap();
+            CreateMap<Grupo, GrupoDTO>();
         }
     }
 }
