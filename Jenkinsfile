@@ -6,9 +6,11 @@ pipeline {
       namespace = "${env.branchname == 'development' ? 'acessos-dev' : env.branchname == 'release' ? 'acessos-hom' : env.branchname == 'release-r2' ? 'acessos-hom2' : 'sme-acessos' }"
     }
   
-    agent {
-      node { label 'AGENT-NODES' }
-    }
+    agent { kubernetes { 
+              label 'builder'
+              defaultContainer 'builder'
+            }
+          }
 
     options {
       buildDiscarder(logRotator(numToKeepStr: '20', artifactNumToKeepStr: '5'))
@@ -24,7 +26,11 @@ pipeline {
 
 
         stage('Sonar') {
-          agent { node { label 'SME-AGENT-DOTNET6-SONAR' } }
+          agent { kubernetes { 
+              label 'dotnet6-sonar'
+              defaultContainer 'dotnet6-sonar'
+            }
+          }
           when { anyOf { branch 'ci/testesunitarios'; branch 'release'; } } 
           steps {
             checkout scm
@@ -76,7 +82,11 @@ pipeline {
         }
 
       stage('Flyway') {
-        agent { label 'master' }
+        agent { kubernetes { 
+              label 'builder'
+              defaultContainer 'builder'
+            }
+          }
         when { anyOf {  branch 'master'; branch 'main'; branch 'development'; branch 'release'; branch 'release-r2'; } }
         steps{
           withCredentials([string(credentialsId: "flyway_acessos_${branchname}", variable: 'url')]) {
