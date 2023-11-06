@@ -15,7 +15,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
 
         public Task<IEnumerable<Grupo>> ObterPorSistemaId(long sistemaId)
         {
-            var query = @"SELECT gru_id, gru_nome                     
+            var query = @"SELECT gru_id, gru_nome ,vis_id                       
                           FROM sys_grupo 
                           WHERE sis_id = @sistemaId
                           ORDER BY gru_nome ";

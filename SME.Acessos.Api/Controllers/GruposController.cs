@@ -10,7 +10,7 @@ namespace SME.Acessos.Api.Controllers
         [ProducesResponseType(typeof(GrupoDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
-        public async Task<IActionResult> CadastrarUsuarioCoreSSO([FromRoute] long sistemaId, [FromServices] IServicoGrupos servicoGrupo)
+        public async Task<IActionResult> ObterGruposPorSistemaId([FromRoute] long sistemaId, [FromServices] IServicoGrupos servicoGrupo)
         {
             var grupos = await servicoGrupo.ObterGruposPorSistemaId(sistemaId);
             return Ok(grupos);
