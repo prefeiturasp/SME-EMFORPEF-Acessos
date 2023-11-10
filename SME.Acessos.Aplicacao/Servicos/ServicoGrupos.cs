@@ -21,5 +21,10 @@ namespace SME.Acessos.Aplicacao.Servicos
             var grupos = await _repositorioGrupo.ObterPorSistemaId(sistemaId);
             return _mapper.Map<List<GrupoDTO>>(grupos);
         }
+        public async Task<GrupoDTO> ObterGrupoPorIdSistemaId(long sistemaId, Guid grupoId)
+        {
+            var grupo = await _repositorioGrupo.ObterGrupoPorIdSistemaId(sistemaId,grupoId);
+            return _mapper.Map<GrupoDTO>(grupo);
+        }
     }
 }
