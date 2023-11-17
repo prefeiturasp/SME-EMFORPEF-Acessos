@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.Aplicacao.Settings;
 using SME.Acessos.Infra.Dominio.Extensions;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace SME.Acessos.Aplicacao.Servicos
 {
@@ -20,15 +20,16 @@ namespace SME.Acessos.Aplicacao.Servicos
 
         public string GerarToken(string usuarioLogin, string usuarioNome, Guid? guidPerfil, IEnumerable<long> permissionamentos)
         {
-            List<Claim> claims = new List<Claim>();
+            List<Claim> claims = new()
+            {
+                new Claim(ClaimTypes.Name, usuarioLogin),
+                new Claim("login", usuarioLogin),
+                new Claim("nome", usuarioNome),
+                new Claim("perfil", guidPerfil.HasValue ? guidPerfil.Value.ToString() : string.Empty),
+            };
 
-            claims.Add(new Claim(ClaimTypes.Name, usuarioLogin));
-            claims.Add(new Claim("login", usuarioLogin));
-            claims.Add(new Claim("nome", usuarioNome));
-            claims.Add(new Claim("perfil", guidPerfil.HasValue ? guidPerfil.ToString() : string.Empty));
-
-            foreach (var permissao in permissionamentos)
-                claims.Add(new Claim("roles", permissao.ToString()));
+            if (permissionamentos != null && permissionamentos.Any())
+                claims.Add(new Claim("roles", string.Join(",", permissionamentos)));
 
             var now = DateTimeExtensions.HorarioBrasilia();
             var token = new JwtSecurityToken(
@@ -71,7 +72,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             return "";
         }
 
-        private DateTime ObterDataHoraCriacao(string tokenStr)
+        private static DateTime ObterDataHoraCriacao(string tokenStr)
         {
             if (!string.IsNullOrEmpty(tokenStr))
             {
@@ -81,6 +82,5 @@ namespace SME.Acessos.Aplicacao.Servicos
 
             return DateTime.MinValue;
         }
-
     }
 }

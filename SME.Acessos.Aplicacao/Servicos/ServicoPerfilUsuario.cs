@@ -1,11 +1,11 @@
-﻿using System.Net;
-using SME.Acessos.Aplicacao.Constantes;
+﻿using SME.Acessos.Aplicacao.Constantes;
 using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.Infra.Dominio.Acessos.Repositorios;
+using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
-using SME.Acessos.Infra.Dominio.Enumeradores;
 using SME.Acessos.Infra.Dominio.Extensions;
+using System.Net;
 
 namespace SME.Acessos.Aplicacao.Servicos
 {
@@ -17,7 +17,7 @@ namespace SME.Acessos.Aplicacao.Servicos
         private readonly IServicoTokenJwt servicoTokenJwt;
         private readonly IRepositorioUsuario repositorioUsuario;
 
-        public ServicoPerfilUsuario(IRepositorioUsuarioGrupoPessoa repositorioUsuarioGrupoPessoa,IServicoTokenJwt servicoTokenJwt,IRepositorioGrupoPermissao repositorioGrupoPermissao,IRepositorioPermissao repositorioPermissao,IRepositorioUsuario repositorioUsuario)
+        public ServicoPerfilUsuario(IRepositorioUsuarioGrupoPessoa repositorioUsuarioGrupoPessoa, IServicoTokenJwt servicoTokenJwt, IRepositorioGrupoPermissao repositorioGrupoPermissao, IRepositorioPermissao repositorioPermissao, IRepositorioUsuario repositorioUsuario)
         {
             this.repositorioUsuarioGrupoPessoa = repositorioUsuarioGrupoPessoa ?? throw new ArgumentNullException(nameof(repositorioUsuarioGrupoPessoa));
             this.servicoTokenJwt = servicoTokenJwt ?? throw new ArgumentNullException(nameof(servicoTokenJwt));
@@ -26,21 +26,27 @@ namespace SME.Acessos.Aplicacao.Servicos
             this.repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
         }
 
-        public async Task<RetornoPerfilUsuarioDTO> ObterPerfisToken(string login, int sistemaId)
+        public async Task<RetornoPerfilUsuarioDTO> ObterPerfisToken(string login, int sistemaId, Guid? perfilUsuarioId = null)
         {
             string nomeUsuario, emailUsuario;
-            Guid? perfilUsuarioId = null;
             var codPermissoes = Enumerable.Empty<long>();
 
-            var perfisUsuario = await repositorioUsuarioGrupoPessoa.ObterPerfisUsuario(login, sistemaId);
+            var perfisUsuario = await repositorioUsuarioGrupoPessoa.ObterPerfisUsuario(login, sistemaId) ?? Enumerable.Empty<UsuarioGrupoPessoa>();
             if (perfisUsuario.Any())
             {
-                var perfilUsuario = perfisUsuario.FirstOrDefault();
+                UsuarioGrupoPessoa perfilUsuario;
+                if (perfilUsuarioId.HasValue)
+                    perfilUsuario = perfisUsuario.FirstOrDefault(t => t.GrupoId == perfilUsuarioId) ??
+                        throw new NegocioException($"Perfil {perfilUsuarioId} não encontrado para o usuário {login}");
+                else
+                    perfilUsuario = perfisUsuario.FirstOrDefault() ??
+                        throw new NegocioException($"Nenhum Perfil encontrado para o usuário");
+
                 nomeUsuario = perfilUsuario.PessoaNome;
                 emailUsuario = perfilUsuario.UsuarioEmail;
                 perfilUsuarioId = perfilUsuario.GrupoId;
 
-                var modulos = await repositorioGrupoPermissao.ObterModulosPorPerfilSistema(perfilUsuario.GrupoId,sistemaId);
+                var modulos = await repositorioGrupoPermissao.ObterModulosPorPerfilSistema(perfilUsuarioId.Value, sistemaId);
                 if (modulos != null && modulos.Any())
                 {
                     var permissoes = await repositorioPermissao.ObterPermissoesPorModulos(modulos);
@@ -49,16 +55,17 @@ namespace SME.Acessos.Aplicacao.Servicos
             }
             else
             {
-                var usuarioCoreSSO = await repositorioUsuario.ObterPorLogin(login);
-                if (usuarioCoreSSO == null)
+                var usuarioCoreSSO = await repositorioUsuario.ObterPorLogin(login) ??
                     throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO, HttpStatusCode.Unauthorized);
 
                 nomeUsuario = usuarioCoreSSO.Pessoa.Nome;
                 emailUsuario = usuarioCoreSSO.Email;
             }
-            
+
             var token = servicoTokenJwt.GerarToken(login, nomeUsuario, perfilUsuarioId, codPermissoes);
             var dataExpiracaoToken = servicoTokenJwt.ObterDataHoraExpiracao();
+
+            var perfis = perfisUsuario.Select(s => new PerfilUsuarioDTO() { Perfil = s.GrupoId, PerfilNome = s.GrupoNome });
 
             var retorno = new RetornoPerfilUsuarioDTO()
             {
@@ -66,10 +73,7 @@ namespace SME.Acessos.Aplicacao.Servicos
                 UsuarioNome = nomeUsuario,
                 Email = emailUsuario,
                 Token = token,
-                PerfilUsuario = perfisUsuario.Any() 
-                    ? perfisUsuario.Select(s => 
-                        new PerfilUsuarioDTO() { Perfil = s.GrupoId, PerfilNome = s.GrupoNome }).ToList() 
-                    : null,
+                PerfilUsuario = perfis,
                 DataHoraExpiracao = dataExpiracaoToken,
                 Autenticado = true,
             };
