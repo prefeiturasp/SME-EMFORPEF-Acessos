@@ -12,11 +12,26 @@ namespace SME.Acessos.Api.Controllers
         [ProducesResponseType(typeof(RetornoPerfilUsuarioDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
-        public async Task<IActionResult> Autenticar([FromBody] AutenticacaoDTO autenticacaoDto, [FromServices] IServicoAutenticacao servicoAutenticacao)
+        public async Task<IActionResult> Autenticar(
+            [FromServices] IServicoAutenticacao servicoAutenticacao,
+            [FromBody] AutenticacaoDTO autenticacaoDto)
         {
             var retornoAutenticacao = await servicoAutenticacao.Autenticar(autenticacaoDto.Login, autenticacaoDto.Senha);
 
             return Ok(retornoAutenticacao);
+        }
+
+        [HttpPost("revalidar")]
+        [ProducesResponseType(typeof(RetornoPerfilUsuarioDTO), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> ObterDadosToken(
+            [FromServices] IServicoPerfilUsuario servicoPerfilUsuario,
+            [FromBody] AutenticacaoRevalidarDTO autenticacaoRevalidarDTO)
+        {
+            var retorno = await servicoPerfilUsuario.Revalidar(autenticacaoRevalidarDTO.Token);
+
+            return Ok(retorno);
         }
 
         [HttpGet("usuarios/{login}/sistemas/{sistemaId}/perfis")]

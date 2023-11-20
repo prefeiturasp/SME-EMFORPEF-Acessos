@@ -62,7 +62,7 @@ namespace SME.Acessos.Aplicacao.Servicos
                 emailUsuario = usuarioCoreSSO.Email;
             }
 
-            var token = servicoTokenJwt.GerarToken(login, nomeUsuario, perfilUsuarioId, codPermissoes);
+            var token = servicoTokenJwt.GerarToken(login, nomeUsuario, sistemaId, perfilUsuarioId, codPermissoes);
             var dataExpiracaoToken = servicoTokenJwt.ObterDataHoraExpiracao();
 
             var perfis = perfisUsuario.Select(s => new PerfilUsuarioDTO() { Perfil = s.GrupoId, PerfilNome = s.GrupoNome });
@@ -78,6 +78,12 @@ namespace SME.Acessos.Aplicacao.Servicos
                 Autenticado = true,
             };
             return retorno;
+        }
+
+        public Task<RetornoPerfilUsuarioDTO> Revalidar(string token)
+        {
+            var dadosUsuario = servicoTokenJwt.ObterDadosToken(token);
+            return ObterPerfisToken(dadosUsuario.Login, dadosUsuario.Sistema, dadosUsuario.Perfil);
         }
     }
 }
