@@ -40,10 +40,10 @@ BEGIN TRY
 	    select 'Gestão CODAE',1,getdate(),1,@sistema_id where not exists (select * from sys_grupo where gru_nome = 'Gestão CODAE');
 
 		insert into SYS_Grupo(gru_nome, gru_situacao,gru_dataCriacao, vis_id, sis_id)
-	    select 'Gestão DIPED',1,getdate(),1,@sistema_id where not exists (select * from sys_grupo where gru_nome = 'Gestão DIPED');
+	    select 'Gestão DIPED',1,getdate(),3,@sistema_id where not exists (select * from sys_grupo where gru_nome = 'Gestão DIPED');
 
 		insert into SYS_Grupo(gru_nome, gru_situacao,gru_dataCriacao, vis_id, sis_id)
-	    select 'Gestão DICEU',1,getdate(),1,@sistema_id where not exists (select * from sys_grupo where gru_nome = 'Gestão DICEU');
+	    select 'Gestão DICEU',1,getdate(),3,@sistema_id where not exists (select * from sys_grupo where gru_nome = 'Gestão DICEU');
 
 	 COMMIT TRAN;
 END TRY
