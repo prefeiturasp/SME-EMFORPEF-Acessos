@@ -7,6 +7,9 @@ BEGIN TRY
 		where ss.sis_nome = 'Conecta Formação';
 			  
 	    insert into SYS_Grupo(gru_nome, gru_situacao,gru_dataCriacao, vis_id, sis_id)
+	    select 'DF',1,getdate(),1,@sistema_id where not exists (select * from sys_grupo where gru_nome = 'DF');
+		
+		insert into SYS_Grupo(gru_nome, gru_situacao,gru_dataCriacao, vis_id, sis_id)
 	    select 'Gestão DIEFEM',1,getdate(),1,@sistema_id where not exists (select * from sys_grupo where gru_nome = 'Gestão DIEFEM');
 
 		insert into SYS_Grupo(gru_nome, gru_situacao,gru_dataCriacao, vis_id, sis_id)
@@ -44,7 +47,7 @@ BEGIN TRY
 
 		insert into SYS_Grupo(gru_nome, gru_situacao,gru_dataCriacao, vis_id, sis_id)
 	    select 'Gestão DICEU',1,getdate(),3,@sistema_id where not exists (select * from sys_grupo where gru_nome = 'Gestão DICEU');
-
+				
 	 COMMIT TRAN;
 END TRY
 BEGIN CATCH
@@ -53,5 +56,3 @@ BEGIN CATCH
     IF(@@TRANCOUNT > 0)
         ROLLBACK TRAN;
 END CATCH
-
-
