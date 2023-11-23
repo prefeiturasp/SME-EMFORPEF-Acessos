@@ -68,14 +68,14 @@ where not exists (select 1 from modulos where descricao = 'Devolver proposta - A
 --> Atribuir proposta para gestão
 insert into permissoes (idgrupo, idmodulo) 	
 select (select id from grupos where nome = 'Admin DF'),id 
-from modulos where idmodcoresso = 5 and not exists (select 1 from permissoes where idmodulo in (select id from modulos where idmodcoresso = 5 and idsistemacoresso =  1007));
+from modulos where idmodcoresso = 5 and idsistemacoresso =  1007 and not exists (select 1 from permissoes where idmodulo in (select id from modulos where idmodcoresso = 5 and idsistemacoresso =  1007));
 
 --> Dar parecer da proposta
 insert into permissoes (idgrupo, idmodulo) 	
 select (select id from grupos where nome = 'Admin DF'),id 
-from modulos where idmodcoresso = 6 and not exists (select 1 from permissoes where idmodulo in (select id from modulos where idmodcoresso = 6 and idsistemacoresso =  1007));
+from modulos where idmodcoresso = 6 and idsistemacoresso =  1007 and not exists (select 1 from permissoes where idmodulo in (select id from modulos where idmodcoresso = 6 and idsistemacoresso =  1007));
 
 --> Devolver proposta
 insert into permissoes (idgrupo, idmodulo) 	
 select (select id from grupos where nome = 'Admin DF'),id 
-from modulos where idmodcoresso = 7 and not exists (select 1 from permissoes where idmodulo in (select id from modulos where idmodcoresso = 7 and idsistemacoresso =  1007));
+from modulos where idmodcoresso = 7 and idsistemacoresso =  1007 and not exists (select 1 from permissoes where idmodulo in (select id from modulos where idmodcoresso = 7 and idsistemacoresso =  1007));
