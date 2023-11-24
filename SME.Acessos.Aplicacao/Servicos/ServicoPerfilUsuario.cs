@@ -62,7 +62,7 @@ namespace SME.Acessos.Aplicacao.Servicos
                 emailUsuario = usuarioCoreSSO.Email;
             }
 
-            var dres = await repositorioUsuario.ObterDresPorLogin(login);
+            var dres = await repositorioUsuario.ObterDresPorLoginEPerfil(login,perfilUsuarioId);
             
             var token = servicoTokenJwt.GerarToken(login, nomeUsuario, sistemaId, perfilUsuarioId, codPermissoes,perfisUsuario, dres);
             var dataExpiracaoToken = servicoTokenJwt.ObterDataHoraExpiracao();
