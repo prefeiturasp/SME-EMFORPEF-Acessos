@@ -12,5 +12,6 @@ namespace SME.Acessos.Infra.Dominio.CoreSSO.Repositorios
         Task AlterarSenha(Guid usuarioId, string senhaNova);
         Task InserirHistoricoSenha(Guid usuarioId, string senha, TipoCriptografia criptografia);
         Task AlterarEmail(Guid usuarioId, string email);
+        Task<IEnumerable<string>> ObterDresPorLoginEPerfil(string login, Guid? perfil);
     }
 }
