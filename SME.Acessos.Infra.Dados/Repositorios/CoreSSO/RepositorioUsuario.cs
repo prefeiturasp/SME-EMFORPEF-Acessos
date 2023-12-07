@@ -99,5 +99,18 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                                    where usu_id = @usuarioId ";
             await conexao.Obter().ExecuteAsync(alterarEmail, new {usuarioId, email});
         }
+        
+        public async Task<IEnumerable<string>> ObterDresPorLoginEPerfil(string login, Guid? perfil)
+        {
+            var query = $@"select distinct ua.uad_codigo 
+                          from SYS_UsuarioGrupoUA ug
+                            join SYS_UnidadeAdministrativa ua on ua.uad_id = ug.uad_id 
+                            join SYS_Usuario su on su.usu_id = ug.usu_id 
+                          where su.usu_login = @login and ug.gru_id = @perfil";
+
+            var usuarios = await conexao.Obter().QueryAsync<string>(query, new { login, perfil });
+            
+            return usuarios;
+        }
     }
 }

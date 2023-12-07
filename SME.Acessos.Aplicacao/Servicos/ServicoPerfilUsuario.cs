@@ -62,7 +62,9 @@ namespace SME.Acessos.Aplicacao.Servicos
                 emailUsuario = usuarioCoreSSO.Email;
             }
 
-            var token = servicoTokenJwt.GerarToken(login, nomeUsuario, sistemaId, perfilUsuarioId, codPermissoes);
+            var dres = await repositorioUsuario.ObterDresPorLoginEPerfil(login,perfilUsuarioId);
+            
+            var token = servicoTokenJwt.GerarToken(login, nomeUsuario, sistemaId, perfilUsuarioId, codPermissoes,perfisUsuario, dres);
             var dataExpiracaoToken = servicoTokenJwt.ObterDataHoraExpiracao();
 
             var perfis = perfisUsuario.Select(s => new PerfilUsuarioDTO() { Perfil = s.GrupoId, PerfilNome = s.GrupoNome });
