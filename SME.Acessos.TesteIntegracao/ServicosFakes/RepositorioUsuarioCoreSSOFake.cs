@@ -83,5 +83,10 @@ namespace SME.Acessos.TesteIntegracao.ServicosFakes
         {
             return Task.CompletedTask;
         }
+
+        public Task<IEnumerable<string>> ObterDresPorLoginEPerfil(string login, Guid? perfil)
+        {
+            return Task.FromResult<IEnumerable<string>>(new List<string> { "1", "2", "3", "4" });
+        }
     }
 }

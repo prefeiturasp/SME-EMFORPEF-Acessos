@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 
 namespace SME.Acessos.Aplicacao.Servicos
 {
@@ -21,7 +22,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             this.jwtTokenSettings = jwtTokenSettings?.Value ?? throw new ArgumentNullException(nameof(jwtTokenSettings));
         }
 
-        public string GerarToken(string usuarioLogin, string usuarioNome, int sistemaId, Guid? guidPerfil, IEnumerable<long> permissionamentos)
+        public string GerarToken(string usuarioLogin, string usuarioNome, int sistemaId, Guid? guidPerfil, IEnumerable<long> permissionamentos, IEnumerable<UsuarioGrupoPessoa> perfisUsuario, IEnumerable<string> dres)
         {
             List<Claim> claims = new()
             {
@@ -32,9 +33,11 @@ namespace SME.Acessos.Aplicacao.Servicos
                 new Claim("perfil", guidPerfil.HasValue ? guidPerfil.Value.ToString() : string.Empty),
             };
 
-            if (permissionamentos != null && permissionamentos.Any())
-                foreach (var permissao in permissionamentos)
-                    claims.Add(new Claim("roles", permissao.ToString()));
+            PreencherClaimsPerfis(perfisUsuario, claims);
+            
+            PreencherClaimsDres(dres, claims);
+
+            PreencherClaimsRoles(permissionamentos, claims);
 
             var now = DateTimeExtensions.HorarioBrasilia();
             var token = new JwtSecurityToken(
@@ -53,6 +56,35 @@ namespace SME.Acessos.Aplicacao.Servicos
                       .WriteToken(token);
 
             return tokenGerado;
+        }
+
+        private void PreencherClaimsRoles(IEnumerable<long> permissionamentos, List<Claim> claims)
+        {
+            if (permissionamentos.EhNulo())
+                return;
+            
+            foreach (var permissao in permissionamentos)
+                claims.Add(new Claim("roles", permissao.ToString()));
+            
+        }
+
+        private void PreencherClaimsDres(IEnumerable<string> dres, List<Claim> claims)
+        {
+            if (dres.EhNulo())
+                return;
+            
+            foreach (var dre in dres)
+                claims.Add(new Claim("dres", dre));
+            
+        }
+
+        private void PreencherClaimsPerfis(IEnumerable<UsuarioGrupoPessoa> perfisUsuario, List<Claim> claims)
+        {
+            if (perfisUsuario.EhNulo())
+                return;
+            
+            foreach (var perfil in perfisUsuario)
+                claims.Add(new Claim("perfis", perfil.GrupoId.ToString()));
         }
 
         public DateTime ObterDataHoraCriacao()
