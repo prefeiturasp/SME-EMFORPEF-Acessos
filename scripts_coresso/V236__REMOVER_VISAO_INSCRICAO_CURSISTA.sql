@@ -1,3 +1,9 @@
 
 DELETE FROM SYS_VisaoModulo
 WHERE vis_id=1 AND sis_id=1007 AND mod_id=5;
+
+DELETE FROM SYS_Modulo
+WHERE sis_id=1007 AND mod_id=5;
+
+DELETE FROM SYS_GrupoPermissao
+WHERE gru_id=N'651914B6-C4B6-4463-B773-B0960F4A148B' AND sis_id=1007 AND mod_id=6;
