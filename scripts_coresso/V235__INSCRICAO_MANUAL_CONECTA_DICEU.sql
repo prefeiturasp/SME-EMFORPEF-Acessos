@@ -2,7 +2,7 @@ Declare @sistema_id int;
 declare @grupo_perfil_id uniqueidentifier;
 Declare @mod_id_pai_perfil int;
 Declare @mod_id int = 6;
-Declare @grupo_nome varchar(max) = 'DICEU'
+Declare @grupo_nome varchar(max) = 'DICEU (DRE)'
 
 
 BEGIN TRY
