@@ -1,5 +1,6 @@
 ﻿using System.Data.SqlClient;
 using Dapper;
+using SME.Acessos.Infra.Dados.Constantes;
 using SME.Acessos.Infra.Dominio.CoreSSO;
 using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
@@ -20,17 +21,21 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                                  usu_email, 
                                  usu_senha,
                                  p.pes_id,
-                                 p.pes_nome
+                                 p.pes_nome,
+                                 pd.psd_numero
                          from SYS_Usuario u 
                          join pes_pessoa p on u.pes_id = p.pes_id
+                         left join pes_pessoadocumento pd on p.pes_id = pd.pes_id
+                         and pd.tdo_id = @tipoDocumentoCpf
                          where usu_login = @login ";
             
-            var usuarios = await conexao.Obter().QueryAsync<Usuario, Pessoa, Usuario>(query, 
-                (usuario, pessoa) =>
+            var usuarios = await conexao.Obter().QueryAsync<Usuario, Pessoa, PessoaDocumento,Usuario>(query, 
+                (usuario, pessoa, pessoaDocumento) =>
                 {
                     usuario.AdicionarPessoa(pessoa);
+                    usuario.AdicionarPessoaDocumento(pessoaDocumento);
                     return usuario;
-                }, new { login }, splitOn: "pes_id");
+                }, new { login, tipoDocumentoCpf = ConstantesDados.TIPO_DOCUMENTO_CPF, }, splitOn: "pes_id,psd_numero");
             return usuarios.FirstOrDefault();
         }
 
