@@ -28,7 +28,7 @@ namespace SME.Acessos.Aplicacao.Servicos
 
         public async Task<RetornoPerfilUsuarioDTO> ObterPerfisToken(string login, int sistemaId, Guid? perfilUsuarioId = null)
         {
-            string nomeUsuario, emailUsuario;
+            string nomeUsuario, emailUsuario,cpfUsuario;
             var codPermissoes = Enumerable.Empty<long>();
 
             var perfisUsuario = await repositorioUsuarioGrupoPessoa.ObterPerfisUsuario(login, sistemaId) ?? Enumerable.Empty<UsuarioGrupoPessoa>();
@@ -45,6 +45,7 @@ namespace SME.Acessos.Aplicacao.Servicos
                 nomeUsuario = perfilUsuario.PessoaNome;
                 emailUsuario = perfilUsuario.UsuarioEmail;
                 perfilUsuarioId = perfilUsuario.GrupoId;
+                cpfUsuario = perfilUsuario.Cpf;
 
                 var modulos = await repositorioGrupoPermissao.ObterModulosPorPerfilSistema(perfilUsuarioId.Value, sistemaId);
                 if (modulos != null && modulos.Any())
@@ -60,6 +61,7 @@ namespace SME.Acessos.Aplicacao.Servicos
 
                 nomeUsuario = usuarioCoreSSO.Pessoa.Nome;
                 emailUsuario = usuarioCoreSSO.Email;
+                cpfUsuario = usuarioCoreSSO.Documento.Numero;
             }
 
             var dres = await repositorioUsuario.ObterDresPorLoginEPerfil(login,perfilUsuarioId);
@@ -73,6 +75,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             {
                 UsuarioLogin = login,
                 UsuarioNome = nomeUsuario,
+                Cpf = cpfUsuario,
                 Email = emailUsuario,
                 Token = token,
                 PerfilUsuario = perfis,

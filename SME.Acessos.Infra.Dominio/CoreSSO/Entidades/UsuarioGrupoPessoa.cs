@@ -9,5 +9,6 @@ namespace SME.Acessos.Infra.Dominio.CoreSSO.Entidades
         public Guid GrupoId { get; set; }
         public string GrupoNome { get; set; }
         public string Login { get; set; }
+        public string Cpf { get; set; }
     }
 }
