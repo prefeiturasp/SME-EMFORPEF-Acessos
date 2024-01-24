@@ -1,7 +1,7 @@
 Declare @sistema_id int;
 declare @grupo_perfil_id uniqueidentifier;
 Declare @mod_id_pai_perfil int;
-Declare @mod_id int;
+Declare @mod_id int = 6;
 Declare @grupo_nome varchar(max) = 'Admin DF'
 
 BEGIN TRY
@@ -28,16 +28,7 @@ BEGIN TRY
 		end
 		
 		select @mod_id_pai_perfil = mod_id from SYS_Modulo where sis_id = @sistema_id and mod_idPai is null and mod_nome =  @grupo_nome;
-		
-		--> Inscrições
-		if not exists(select * from SYS_Modulo where sis_id = @sistema_id and mod_idPai = @mod_id_pai_perfil and mod_nome = 'Inscrições')
-		begin
-			print 'inserindo módulo Inscrições ' + @grupo_nome
-			insert into SYS_Modulo(sis_id, mod_id, mod_nome, mod_idPai,mod_auditoria,mod_situacao, mod_dataCriacao) 
-		    values(@sistema_id,(select Max(mod_id)+1 from SYS_Modulo where sis_id = @sistema_id), 'Inscrições', @mod_id_pai_perfil,0,1, getdate());
-		end
-		
-		select @mod_id = mod_id from SYS_Modulo where sis_id = @sistema_id and mod_idPai = @mod_id_pai_perfil and mod_nome = 'Inscrições';					 
+					
 		------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		--> Inserindo visão módulo			
 
@@ -47,9 +38,10 @@ BEGIN TRY
 		from sys_modulo m 
 	    where m.sis_id = @sistema_id 
 	      and not exists(select 1 from sys_visaomodulo v where v.sis_id = m.sis_id and v.mod_id = m.mod_id);
+	     
 		------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		--> Inserindo permissionamento  
-				
+	    
 		if not exists(select 1 from SYS_GrupoPermissao gp where gp.sis_id = @sistema_id and mod_id = @mod_id and gru_id = @grupo_perfil_id)
 		BEGIN 
 			print 'Inserindo permissionamento do perfil ' + @grupo_nome

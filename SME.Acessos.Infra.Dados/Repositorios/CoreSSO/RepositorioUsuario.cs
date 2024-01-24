@@ -1,6 +1,5 @@
-﻿using System.Data.SqlClient;
-using Dapper;
-using SME.Acessos.Infra.Dominio.CoreSSO;
+﻿using Dapper;
+using SME.Acessos.Infra.Dados.Constantes;
 using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 using SME.Acessos.Infra.Dominio.Enumeradores;
@@ -20,17 +19,21 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                                  usu_email, 
                                  usu_senha,
                                  p.pes_id,
-                                 p.pes_nome
+                                 p.pes_nome,
+                                 pd.psd_numero
                          from SYS_Usuario u 
                          join pes_pessoa p on u.pes_id = p.pes_id
+                         left join pes_pessoadocumento pd on p.pes_id = pd.pes_id
+                         and pd.tdo_id = @tipoDocumentoCpf
                          where usu_login = @login ";
             
-            var usuarios = await conexao.Obter().QueryAsync<Usuario, Pessoa, Usuario>(query, 
-                (usuario, pessoa) =>
+            var usuarios = await conexao.Obter().QueryAsync<Usuario, Pessoa, PessoaDocumento,Usuario>(query, 
+                (usuario, pessoa, pessoaDocumento) =>
                 {
                     usuario.AdicionarPessoa(pessoa);
+                    usuario.AdicionarPessoaDocumento(pessoaDocumento);
                     return usuario;
-                }, new { login }, splitOn: "pes_id");
+                }, new { login, tipoDocumentoCpf = ConstantesDados.TIPO_DOCUMENTO_CPF, }, splitOn: "pes_id,psd_numero");
             return usuarios.FirstOrDefault();
         }
 
@@ -111,6 +114,20 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
             var usuarios = await conexao.Obter().QueryAsync<string>(query, new { login, perfil });
             
             return usuarios;
+        }
+
+        public async Task<IEnumerable<DadosUsuario>> ObterUsuariosComPerfisResponsavel(Guid[] perfis, long sistemaId)
+        {
+            var query = @"select distinct su.usu_login as login, p.pes_nome as nome  
+                          from SYS_UsuarioGrupo sug
+                            join SYS_Usuario su on su.usu_id = sug.usu_id
+                            join SYS_Grupo sg on sg.gru_id = sug.gru_id
+                            join pes_pessoa p on p.pes_id = su.pes_id 
+                          where sg.sis_id = @sistemaId 
+                            and sg.gru_id in @perfis
+                          order by p.pes_nome";
+                
+            return await conexao.Obter().QueryAsync<DadosUsuario>(query, new { perfis, sistemaId });
         }
     }
 }

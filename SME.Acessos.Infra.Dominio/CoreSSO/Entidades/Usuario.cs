@@ -12,6 +12,7 @@
         public DateTime DataAlteracao { get; set; }
         public Guid PessoaId { get; set; }
         public Pessoa Pessoa { get; set; }
+        public PessoaDocumento Documento { get; set; }
         public int Integridade { get; set; }
         public int IntegracaoAD { get; set; }
         public int IntegracaoExterna { get; set; }
@@ -24,6 +25,13 @@
             {
                 Pessoa = pessoa;
                 PessoaId = pessoa.Id;
+            }
+        }
+        public void AdicionarPessoaDocumento(PessoaDocumento documento)
+        {
+            if (documento != null)
+            {
+                Documento = documento;
             }
         }
     }
