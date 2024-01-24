@@ -124,7 +124,8 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                             join SYS_Grupo sg on sg.gru_id = sug.gru_id
                             join pes_pessoa p on p.pes_id = su.pes_id 
                           where sg.sis_id = @sistemaId 
-                            and sg.gru_id in @perfis ";
+                            and sg.gru_id in @perfis
+                          order by p.pes_nome";
                 
             return await conexao.Obter().QueryAsync<DadosUsuario>(query, new { perfis, sistemaId });
         }
