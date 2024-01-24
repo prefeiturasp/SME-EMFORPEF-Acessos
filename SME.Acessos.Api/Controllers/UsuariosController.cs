@@ -120,7 +120,7 @@ namespace SME.Acessos.Api.Controllers
         }
         
         [HttpGet("perfis/responsaveis")] 
-        [ProducesResponseType(typeof(IEnumerator<string>), 200)]
+        [ProducesResponseType(typeof(IEnumerator<ResponsavelDTO>), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         public async Task<IActionResult> ObterUsuariosComPerfisResponsavel([FromQuery] Guid[] perfis, long sistemaId, [FromServices] IServicoUsuarios servicoUsuarios)
