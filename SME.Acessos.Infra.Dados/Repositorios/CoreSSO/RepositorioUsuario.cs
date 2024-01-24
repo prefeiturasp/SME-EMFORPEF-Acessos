@@ -1,7 +1,5 @@
-﻿using System.Data.SqlClient;
-using Dapper;
+﻿using Dapper;
 using SME.Acessos.Infra.Dados.Constantes;
-using SME.Acessos.Infra.Dominio.CoreSSO;
 using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 using SME.Acessos.Infra.Dominio.Enumeradores;
@@ -116,6 +114,19 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
             var usuarios = await conexao.Obter().QueryAsync<string>(query, new { login, perfil });
             
             return usuarios;
+        }
+
+        public async Task<IEnumerable<DadosUsuario>> ObterUsuariosComPerfisResponsavel(Guid[] perfis, long sistemaId)
+        {
+            var query = @"select distinct su.usu_login as login, p.pes_nome as nome  
+                          from SYS_UsuarioGrupo sug
+                            join SYS_Usuario su on su.usu_id = sug.usu_id
+                            join SYS_Grupo sg on sg.gru_id = sug.gru_id
+                            join pes_pessoa p on p.pes_id = su.pes_id 
+                          where sg.sis_id = @sistemaId 
+                            and sg.gru_id in @perfis ";
+                
+            return await conexao.Obter().QueryAsync<DadosUsuario>(query, new { perfis, sistemaId });
         }
     }
 }

@@ -88,5 +88,16 @@ namespace SME.Acessos.TesteIntegracao.ServicosFakes
         {
             return Task.FromResult<IEnumerable<string>>(new List<string> { "1", "2", "3", "4" });
         }
+
+        public Task<IEnumerable<DadosUsuario>> ObterUsuariosComPerfisResponsavel(Guid[] perfis, long sistemaId)
+        {
+            return Task.FromResult<IEnumerable<DadosUsuario>>(new List<DadosUsuario>
+            {
+                new () { Login = "1"},
+                new () { Login = "2"},
+                new () { Login = "3"},
+                new () { Login = "4"},
+            });
+        }
     }
 }
