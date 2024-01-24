@@ -118,5 +118,14 @@ namespace SME.Acessos.Api.Controllers
                 _ => Ok(retornoAlterar.Login)
             };
         }
+        
+        [HttpGet("perfis/responsaveis")] 
+        [ProducesResponseType(typeof(IEnumerator<ResponsavelDTO>), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> ObterUsuariosComPerfisResponsavel([FromQuery] Guid[] perfis, long sistemaId, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            return Ok(await servicoUsuarios.ObterUsuariosComPerfisResponsavel(perfis, sistemaId));
+        }
     }
 }

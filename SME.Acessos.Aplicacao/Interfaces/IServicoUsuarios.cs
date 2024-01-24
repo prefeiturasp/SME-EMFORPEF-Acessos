@@ -16,5 +16,6 @@ namespace SME.Acessos.Aplicacao.Interfaces
         Task<string> RecuperarSenha(string login, long sistemaId);
         Task<bool> ValidarTokenRecuperacaoSenha(Guid token, long sistemaId);
         Task<RetornoAlteracaoSenhaDto> AlterarSenhaPorToken(long sistemaId, AlterarSenhaPorTokenDto alterarSenha);
+        Task<IEnumerable<ResponsavelDTO>> ObterUsuariosComPerfisResponsavel(Guid[] perfis, long sistemaId);
     }
 }
