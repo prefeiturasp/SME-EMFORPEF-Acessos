@@ -196,5 +196,19 @@ namespace SME.Acessos.Aplicacao
             
             return AlterarSenhaStatus.OK;
         }
+
+        public async Task<IEnumerable<ResponsavelDTO>> ObterUsuariosComPerfisResponsavel(Guid[] perfis, long sistemaId)
+        {
+            var rfsResponsaveis = await repositorioUsuarioCoreSSO.ObterUsuariosComPerfisResponsavel(perfis, sistemaId);
+
+            if (rfsResponsaveis.NaoPossuiElementos())
+                throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
+
+            return rfsResponsaveis.Select(s => new ResponsavelDTO()
+            {
+                Login = s.Login,
+                Nome = s.Nome
+            });
+        }
     }
 }
