@@ -25,7 +25,7 @@ namespace SME.Acessos.TesteIntegracao.Autenticacao
                 Login = ConstantesTestes.LOGIN_99999999998
             });
             
-            var retorno = await GetServicoUsuarios().ValidarToken(token, ConstantesTestes.SISTEMA_98_ID);
+            var retorno = await GetServicoUsuarios().ValidarTokenSenha(token, ConstantesTestes.SISTEMA_98_ID);
             
             retorno.ShouldBeTrue();
         }
@@ -43,9 +43,9 @@ namespace SME.Acessos.TesteIntegracao.Autenticacao
                 Login = ConstantesTestes.LOGIN_99999999998
             });
             
-            var retorno = await GetServicoUsuarios().ValidarToken(token, ConstantesTestes.SISTEMA_98_ID);
+            var retorno = await GetServicoUsuarios().ValidarTokenSenha(token, ConstantesTestes.SISTEMA_98_ID);
             
-            retorno.ShouldBeFalse();
+            retorno.ShouldBeTrue();
         }
         
         [Fact(DisplayName = "Usuário - Deve retornar o e-mail cadastrado no CoreSSO")]

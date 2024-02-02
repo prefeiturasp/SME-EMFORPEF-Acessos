@@ -216,10 +216,16 @@ namespace SME.Acessos.Aplicacao
             };
         }
 
-        public async Task<bool> ValidarToken(Guid token, long sistemaId, TipoAcao tipoAcao)
+        public async Task<bool> ValidarTokenSenha(Guid token, long sistemaId, TipoAcao tipoAcao)
         {
-            var usuarioPorTokenRecuperacaoSenha = await _repositorioUsuarioValidacaoToken.ObterUsuarioPorTokenSistemaTipoAcao(token, sistemaId, tipoAcao);
-            return usuarioPorTokenRecuperacaoSenha?.TokenValido() ?? false;
+            var usuarioValidacaoToken = await _repositorioUsuarioValidacaoToken.ObterUsuarioPorTokenSistemaTipoAcao(token, sistemaId, tipoAcao);
+            return usuarioValidacaoToken?.TokenValido() ?? false;
+        }
+        
+        public async Task<string> ValidarTokenEmail(Guid token, long sistemaId, TipoAcao tipoAcao)
+        {
+            var usuarioValidacaoToken = await _repositorioUsuarioValidacaoToken.ObterUsuarioPorTokenSistemaTipoAcao(token, sistemaId, tipoAcao);
+            return usuarioValidacaoToken.NaoEhNulo() ? usuarioValidacaoToken.Login : string.Empty;
         }
 
         public async Task<RetornoAlteracaoSenhaDto> AlterarSenhaPorToken(long sistemaId, AlterarSenhaPorTokenDto alterarSenha)

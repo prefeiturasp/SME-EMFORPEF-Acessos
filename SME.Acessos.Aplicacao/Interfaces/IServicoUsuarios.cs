@@ -15,7 +15,8 @@ namespace SME.Acessos.Aplicacao.Interfaces
         Task<bool> AlterarSenha(string login, AlterarSenhaUsuarioDTO alterarSenhaUsuarioDto);
         Task<bool> AlterarEmail(string login, AlterarEmailUsuarioDTO alterarEmailUsuarioDto);
         Task<string> SolicitarRecuperacaoSenha(string login, long sistemaId);
-        Task<bool> ValidarToken(Guid token, long sistemaId, TipoAcao tipoAcao = TipoAcao.RecuperacaoSenha);
+        Task<bool> ValidarTokenSenha(Guid token, long sistemaId, TipoAcao tipoAcao = TipoAcao.RecuperacaoSenha);
+        Task<string> ValidarTokenEmail(Guid token, long sistemaId, TipoAcao tipoAcao = TipoAcao.RecuperacaoSenha);
         Task<RetornoAlteracaoSenhaDto> AlterarSenhaPorToken(long sistemaId, AlterarSenhaPorTokenDto alterarSenha);
         Task<IEnumerable<ResponsavelDTO>> ObterUsuariosComPerfisResponsavel(Guid[] perfis, long sistemaId);
         Task<bool> SolicitarValidacaoEmail(string login, long sistemaId);
