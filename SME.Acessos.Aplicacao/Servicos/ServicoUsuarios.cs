@@ -169,14 +169,14 @@ namespace SME.Acessos.Aplicacao
             return usuarioCore;
         }
 
-        private async Task EnviarEmailRecuperacaoSenha(Usuario usuario, Guid tokenRecuperacaoSenha, SistemaAcao sistema, string login)
+        private async Task EnviarEmailRecuperacaoSenha(Usuario usuario, Guid token, SistemaAcao sistema, string login)
         {
             string caminho = $"{Directory.GetCurrentDirectory()}/wwwroot/ModelosEmail/RecuperacaoSenha.txt";
             var textoArquivo = File.ReadAllText(caminho);
             var textoEmail = textoArquivo
                 .Replace("#NOME", usuario.Pessoa.Nome)
                 .Replace("#RF", login)
-                .Replace("#LINK", $"{sistema.Endereco}{tokenRecuperacaoSenha}");
+                .Replace("#LINK", string.Format(sistema.Endereco,token,sistema.CodigoSistema, sistema.TipoAcao));
 
             await servicoEmail.Enviar(usuario.Pessoa.Nome, usuario.Email, $"Recuperação de senha do(a) {sistema.NomeSistema}", textoEmail, sistema.CodigoSistema);
         }
@@ -207,7 +207,7 @@ namespace SME.Acessos.Aplicacao
             var textoEmail = textoArquivo
                 .Replace("#NOME", nomeUsuario)
                 .Replace("#SISTEMA", nomeSistema)
-                .Replace("#LINK", $"{endereco}{token}");
+                .Replace("#LINK", string.Format(endereco,token));
             
             return new ConteudoEAssuntoEmailDTO()
             {
@@ -216,20 +216,20 @@ namespace SME.Acessos.Aplicacao
             };
         }
 
-        public async Task<bool> ValidarTokenRecuperacaoSenha(Guid token, long sistemaId)
+        public async Task<bool> ValidarToken(Guid token)
         {
-            var usuarioPorTokenRecuperacaoSenha = await _repositorioUsuarioValidacaoToken.ObterUsuarioPorTokenSistemaTipoAcao(token, sistemaId);
-            return usuarioPorTokenRecuperacaoSenha?.TokenRecuperacaoSenhaValido() ?? false;
+            var usuarioPorTokenRecuperacaoSenha = await _repositorioUsuarioValidacaoToken.ObterUsuarioPorTokenSistemaTipoAcao(token);
+            return usuarioPorTokenRecuperacaoSenha?.TokenValido() ?? false;
         }
 
         public async Task<RetornoAlteracaoSenhaDto> AlterarSenhaPorToken(long sistemaId, AlterarSenhaPorTokenDto alterarSenha)
         {
-            var usuarioRecuperacaoSenha = await _repositorioUsuarioValidacaoToken.ObterUsuarioPorTokenSistemaTipoAcao(new Guid(alterarSenha.Token), sistemaId);
+            var usuarioRecuperacaoSenha = await _repositorioUsuarioValidacaoToken.ObterUsuarioPorTokenSistemaTipoAcao(new Guid(alterarSenha.Token));
 
             if (usuarioRecuperacaoSenha == null)
                 return new RetornoAlteracaoSenhaDto(AlterarSenhaStatus.NaoEncontrado);
 
-            if (!usuarioRecuperacaoSenha.TokenRecuperacaoSenhaValido())
+            if (!usuarioRecuperacaoSenha.TokenValido())
                 return new RetornoAlteracaoSenhaDto(AlterarSenhaStatus.TokenExpirado);
 
             try

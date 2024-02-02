@@ -13,7 +13,7 @@ namespace SME.Acessos.Infra.Dominio.Acessos.Entidades
         public long CodigoSistema { get; set; }
         public TipoAcao TipoAcao { get; set; }
         
-        public bool TokenRecuperacaoSenhaValido()
+        public bool TokenValido()
             => Expiracao > DateTimeExtensions.HorarioBrasilia();
         
         public void FinalizarRecuperacaoSenha()

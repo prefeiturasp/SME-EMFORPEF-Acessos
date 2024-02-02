@@ -25,7 +25,7 @@ namespace SME.Acessos.TesteIntegracao.Autenticacao
                 Login = ConstantesTestes.LOGIN_99999999998
             });
             
-            var retorno = await GetServicoUsuarios().ValidarTokenRecuperacaoSenha(token, ConstantesTestes.SISTEMA_98_ID);
+            var retorno = await GetServicoUsuarios().ValidarToken(token);
             
             retorno.ShouldBeTrue();
         }
@@ -43,7 +43,7 @@ namespace SME.Acessos.TesteIntegracao.Autenticacao
                 Login = ConstantesTestes.LOGIN_99999999998
             });
             
-            var retorno = await GetServicoUsuarios().ValidarTokenRecuperacaoSenha(token, ConstantesTestes.SISTEMA_98_ID);
+            var retorno = await GetServicoUsuarios().ValidarToken(token);
             
             retorno.ShouldBeFalse();
         }

@@ -3,6 +3,7 @@ using SME.Acessos.Aplicacao.Constantes;
 using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Enumerados;
 using SME.Acessos.Aplicacao.Interfaces;
+using SME.Acessos.Infra.Dominio.Enumeradores;
 
 namespace SME.Acessos.Api.Controllers
 {
@@ -95,13 +96,14 @@ namespace SME.Acessos.Api.Controllers
             return Ok(await servicoUsuarios.SolicitarValidacaoEmail(login, sistemaId)); 
         }
         
-        [HttpGet("{token}/sistemas/{sistemaId}/validar")] 
+        [HttpGet("{token}/sistemas/{sistemaId}/validar")] //Implementação obsoleta
+        [HttpGet("{token}/validar")] //implementação atual
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
-        public async Task<IActionResult> TokenRecuperacaoSenhaEstaValido([FromRoute] Guid token, long sistemaId, [FromServices] IServicoUsuarios servicoUsuarios)
+        public async Task<IActionResult> ValidarTokenRecuperacaoSenhaValido([FromRoute] Guid token, long sistemaId, [FromServices] IServicoUsuarios servicoUsuarios)
         {
-            return Ok(await servicoUsuarios.ValidarTokenRecuperacaoSenha(token, sistemaId));
+            return Ok(await servicoUsuarios.ValidarToken(token));
         }
         
         [HttpPut("sistemas/{sistemaId}/senha")] 

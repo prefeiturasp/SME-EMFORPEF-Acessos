@@ -1,5 +1,6 @@
 ﻿using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Infra.Dominio.CoreSSO;
+using SME.Acessos.Infra.Dominio.Enumeradores;
 
 namespace SME.Acessos.Aplicacao.Interfaces
 {
@@ -14,7 +15,7 @@ namespace SME.Acessos.Aplicacao.Interfaces
         Task<bool> AlterarSenha(string login, AlterarSenhaUsuarioDTO alterarSenhaUsuarioDto);
         Task<bool> AlterarEmail(string login, AlterarEmailUsuarioDTO alterarEmailUsuarioDto);
         Task<string> SolicitarRecuperacaoSenha(string login, long sistemaId);
-        Task<bool> ValidarTokenRecuperacaoSenha(Guid token, long sistemaId);
+        Task<bool> ValidarToken(Guid token);
         Task<RetornoAlteracaoSenhaDto> AlterarSenhaPorToken(long sistemaId, AlterarSenhaPorTokenDto alterarSenha);
         Task<IEnumerable<ResponsavelDTO>> ObterUsuariosComPerfisResponsavel(Guid[] perfis, long sistemaId);
         Task<bool> SolicitarValidacaoEmail(string login, long sistemaId);

@@ -9,7 +9,7 @@ alter table sistema_acao add column if not exists tipo int default 1;
 
 --> Adicionar endereço de validação de e-mail
 insert into sistema_acao (codigo_sistema, nome_sistema, endereco, tipo)
-select '1007', 'Conecta Formação', 'https://conectaformacao.sme.prefeitura.sp.gov.br/validar-email/', 2
+select '1007', 'Conecta Formação', 'https://conectaformacao.sme.prefeitura.sp.gov.br/{token}/validar', 2
 where not exists (select id from sistema_acao where codigo_sistema = '1007' and tipo = 2);
 
 --> Renomear tabela de 'usuario_recuperacao_senha' para 'usuario_validacao_token'
