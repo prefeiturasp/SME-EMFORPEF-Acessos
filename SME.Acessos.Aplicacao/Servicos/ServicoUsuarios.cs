@@ -176,7 +176,7 @@ namespace SME.Acessos.Aplicacao
             var textoEmail = textoArquivo
                 .Replace("#NOME", usuario.Pessoa.Nome)
                 .Replace("#RF", login)
-                .Replace("#LINK", string.Format(sistema.Endereco,token,sistema.CodigoSistema, sistema.TipoAcao));
+                .Replace("#LINK", sistema.Endereco);
 
             await servicoEmail.Enviar(usuario.Pessoa.Nome, usuario.Email, $"Recuperação de senha do(a) {sistema.NomeSistema}", textoEmail, sistema.CodigoSistema);
         }
