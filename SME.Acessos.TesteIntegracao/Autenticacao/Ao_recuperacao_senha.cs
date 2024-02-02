@@ -17,7 +17,7 @@ namespace SME.Acessos.TesteIntegracao.Autenticacao
         {
             var token = Guid.NewGuid();
 
-            await InserirNaBase(new UsuarioRecuperacaoSenha()
+            await InserirNaBase(new UsuarioValidacaoToken()
             {
                 CodigoSistema = ConstantesTestes.SISTEMA_98_ID,
                 Expiracao = DateTimeExtensions.HorarioBrasilia().AddMinutes(ConstantesTestes.EXPIRES_IN_720_MINUTES),
@@ -35,7 +35,7 @@ namespace SME.Acessos.TesteIntegracao.Autenticacao
         {
             var token = Guid.NewGuid();
 
-            await InserirNaBase(new UsuarioRecuperacaoSenha()
+            await InserirNaBase(new UsuarioValidacaoToken()
             {
                 CodigoSistema = ConstantesTestes.SISTEMA_98_ID,
                 Expiracao = DateTimeExtensions.HorarioBrasilia().AddMinutes(-ConstantesTestes.EXPIRES_IN_720_MINUTES),
@@ -53,7 +53,7 @@ namespace SME.Acessos.TesteIntegracao.Autenticacao
         {
             var token = Guid.NewGuid();
 
-            await InserirNaBase(new UsuarioRecuperacaoSenha()
+            await InserirNaBase(new UsuarioValidacaoToken()
             {
                 CodigoSistema = ConstantesTestes.SISTEMA_98_ID,
                 Expiracao = DateTimeExtensions.HorarioBrasilia().AddMinutes(ConstantesTestes.EXPIRES_IN_720_MINUTES),
@@ -61,8 +61,8 @@ namespace SME.Acessos.TesteIntegracao.Autenticacao
                 Login = ConstantesTestes.LOGIN_99999999998
             });
 
-            await InserirNaBase("sistema_recuperacao_senha",
-                new[] { "codigo_sistema", "nome_sistema", "pagina_recuperacao_senha" },
+            await InserirNaBase("sistema_acao",
+                new[] { "codigo_sistema", "nome_sistema", "endereco" },
                 new[]
                 {
                     ConstantesTestes.SISTEMA_98_ID.ToString(), 

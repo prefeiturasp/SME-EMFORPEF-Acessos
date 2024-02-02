@@ -13,7 +13,7 @@ public class RepositorioPermissao : RepositorioBaseAcessos<Modulo>, IRepositorio
     {
     }
 
-    public async Task<IList<Modulo>> ObterPermissoesPorModulos(IList<GrupoPermissao> modulosGrupoPermissao)
+    public async Task<IEnumerable<Modulo>> ObterPermissoesPorModulos(IEnumerable<GrupoPermissao> modulosGrupoPermissao)
     {
         var query = new StringBuilder();
 
@@ -44,6 +44,6 @@ public class RepositorioPermissao : RepositorioBaseAcessos<Modulo>, IRepositorio
         int indexOfOr = query.ToString().IndexOf(" or ");
         query.Replace(" or ", "and (", indexOfOr, " or ".Length).Append(")");
 
-        return (await conexao.Obter().QueryAsync<Modulo>(query.ToString())).ToList();
+        return await conexao.Obter().QueryAsync<Modulo>(query.ToString());
     }
 }

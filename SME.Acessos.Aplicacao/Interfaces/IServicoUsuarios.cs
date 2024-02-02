@@ -13,9 +13,10 @@ namespace SME.Acessos.Aplicacao.Interfaces
         Task<DadosUsuarioDTO?> ObterMeusDados(string login);
         Task<bool> AlterarSenha(string login, AlterarSenhaUsuarioDTO alterarSenhaUsuarioDto);
         Task<bool> AlterarEmail(string login, AlterarEmailUsuarioDTO alterarEmailUsuarioDto);
-        Task<string> RecuperarSenha(string login, long sistemaId);
+        Task<string> SolicitarRecuperacaoSenha(string login, long sistemaId);
         Task<bool> ValidarTokenRecuperacaoSenha(Guid token, long sistemaId);
         Task<RetornoAlteracaoSenhaDto> AlterarSenhaPorToken(long sistemaId, AlterarSenhaPorTokenDto alterarSenha);
         Task<IEnumerable<ResponsavelDTO>> ObterUsuariosComPerfisResponsavel(Guid[] perfis, long sistemaId);
+        Task<bool> SolicitarValidacaoEmail(string login, long sistemaId);
     }
 }

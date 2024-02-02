@@ -113,8 +113,8 @@ namespace SME.Acessos.IoC
             services.AddScoped<IRepositorioUsuarioGrupo, RepositorioUsuarioGrupo>();
             services.AddScoped<IRepositorioGrupoPermissao, RepositorioGrupoPermissao>();
             services.AddScoped<IRepositorioPermissao, RepositorioPermissao>();
-            services.AddScoped<IRepositorioSistemaRecuperacaoSenha, RepositorioSistemaRecuperacaoSenha>();
-            services.AddScoped<IRepositorioUsuarioRecuperacaoSenha, RepositorioUsuarioRecuperacaoSenha>();
+            services.AddScoped<IRepositorioSistemaAcao, RepositorioSistemaAcao>();
+            services.AddScoped<IRepositorioUsuarioValidacaoToken, RepositorioUsuarioValidacaoToken>();
             services.AddScoped<IRepositorioConfiguracaoEmail, RepositorioConfiguracaoEmail>();
             services.AddScoped<IRepositorioPessoa, RepositorioPessoa>();
             services.AddScoped<IRepositorioPessoaDocumento, RepositorioPessoaDocumento>();
@@ -151,9 +151,9 @@ namespace SME.Acessos.IoC
                 config.AddMap(new SistemaMap());
                 config.AddMap(new VisaoMap());
                 config.AddMap(new Infra.Dados.Mapeamentos.Acessos.ModuloMap());
-                config.AddMap(new UsuarioRecuperacaoSenhaMap());
+                config.AddMap(new UsuarioValidacaoTokenMap());
                 config.AddMap(new ConfiguracaoEmailMap());
-                config.AddMap(new SistemaRecuperacaoSenhaMap());
+                config.AddMap(new SistemaAcaoMap());
                 config.AddMap(new Infra.Dados.Mapeamentos.Acessos.GrupoMap());
                 config.AddMap(new AcaoMap());
                 config.AddMap(new PermissaoMap());
