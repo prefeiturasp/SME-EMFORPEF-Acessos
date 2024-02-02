@@ -26,8 +26,8 @@ public class RepositorioUsuarioValidacaoToken : RepositorioBaseAcessos<UsuarioVa
 
         return await conexao.Obter().QueryFirstOrDefaultAsync<UsuarioValidacaoToken>(query, new { login, sistema, tipoAcao });
     }
-
-    public async Task<UsuarioValidacaoToken> ObterUsuarioPorTokenSistemaTipoAcao(Guid token, long sistemaId, TipoAcao tipoAcao)
+    
+    public async Task<UsuarioValidacaoToken> ObterUsuarioPorTokenSistemaTipoAcao(Guid token, long sistemaId, TipoAcao tipoAcao = TipoAcao.RecuperacaoSenha)
     {
         var query = @"select id, 
                              login,
