@@ -96,14 +96,14 @@ namespace SME.Acessos.Api.Controllers
             return Ok(await servicoUsuarios.SolicitarValidacaoEmail(login, sistemaId)); 
         }
         
-        [HttpGet("{token}/sistemas/{sistemaId}/validar")] //Implementação obsoleta
-        [HttpGet("{token}/validar")] //implementação atual
+        [HttpGet("{token}/sistemas/{sistemaId}/validar")]
+        [HttpGet("{token}/sistemas/{sistemaId}/validar/{tipoAcao}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
-        public async Task<IActionResult> ValidarTokenRecuperacaoSenhaValido([FromRoute] Guid token, long sistemaId, [FromServices] IServicoUsuarios servicoUsuarios)
+        public async Task<IActionResult> ValidarTokenRecuperacaoSenhaValido([FromRoute] Guid token, long sistemaId, TipoAcao tipoAcao, [FromServices] IServicoUsuarios servicoUsuarios)
         {
-            return Ok(await servicoUsuarios.ValidarToken(token));
+            return Ok(await servicoUsuarios.ValidarToken(token,sistemaId, tipoAcao));
         }
         
         [HttpPut("sistemas/{sistemaId}/senha")] 

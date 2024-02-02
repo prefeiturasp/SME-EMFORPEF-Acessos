@@ -27,7 +27,7 @@ public class RepositorioUsuarioValidacaoToken : RepositorioBaseAcessos<UsuarioVa
         return await conexao.Obter().QueryFirstOrDefaultAsync<UsuarioValidacaoToken>(query, new { login, sistema, tipoAcao });
     }
 
-    public async Task<UsuarioValidacaoToken> ObterUsuarioPorTokenSistemaTipoAcao(Guid token)
+    public async Task<UsuarioValidacaoToken> ObterUsuarioPorTokenSistemaTipoAcao(Guid token, long sistemaId, TipoAcao tipoAcao)
     {
         var query = @"select id, 
                              login,
@@ -36,9 +36,11 @@ public class RepositorioUsuarioValidacaoToken : RepositorioBaseAcessos<UsuarioVa
                              codigo_sistema,
                              tipo
                       from usuario_validacao_token 
-                      where token = @token ";
+                      where token = @token
+                        and codigo_sistema = @sistemaId
+                        and tipo = @tipoAcao";
 
-        return await conexao.Obter().QueryFirstOrDefaultAsync<UsuarioValidacaoToken>(query, new { token });
+        return await conexao.Obter().QueryFirstOrDefaultAsync<UsuarioValidacaoToken>(query, new { token, sistemaId, tipoAcao });
     }
 
     public async Task Salvar(UsuarioValidacaoToken usuarioValidacaoToken)
