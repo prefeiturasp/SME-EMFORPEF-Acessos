@@ -92,8 +92,8 @@ namespace SME.Acessos.TesteIntegracao.Setup
             _serviceCollection.AddScoped<IRepositorioUsuarioGrupo, RepositorioUsuarioGrupo>();
             _serviceCollection.AddScoped<IRepositorioGrupoPermissao, RepositorioGrupoPermissaoCoreSSOFake>();
             _serviceCollection.AddScoped<IRepositorioPermissao, RepositorioPermissao>();
-            _serviceCollection.AddScoped<IRepositorioSistemaRecuperacaoSenha, RepositorioSistemaRecuperacaoSenha>();
-            _serviceCollection.AddScoped<IRepositorioUsuarioRecuperacaoSenha, RepositorioUsuarioRecuperacaoSenha>();
+            _serviceCollection.AddScoped<IRepositorioSistemaAcao, RepositorioSistemaAcao>();
+            _serviceCollection.AddScoped<IRepositorioUsuarioValidacaoToken, RepositorioUsuarioValidacaoToken>();
             _serviceCollection.AddScoped<IRepositorioConfiguracaoEmail, RepositorioConfiguracaoEmail>();
             _serviceCollection.AddScoped<IRepositorioPessoa, RepositorioPessoa>();
             _serviceCollection.AddScoped<IRepositorioPessoaDocumento, RepositorioPessoaDocumento>();

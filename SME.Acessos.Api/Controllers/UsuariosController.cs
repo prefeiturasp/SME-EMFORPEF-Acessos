@@ -82,7 +82,17 @@ namespace SME.Acessos.Api.Controllers
         [ProducesResponseType(601)]
         public async Task<IActionResult> SolicitarRecuperacaoSenha([FromRoute] string login, long sistemaId, [FromServices] IServicoUsuarios servicoUsuarios)
         {
-            return Ok(await servicoUsuarios.RecuperarSenha(login, sistemaId));
+            return Ok(await servicoUsuarios.SolicitarRecuperacaoSenha(login, sistemaId));
+        }
+        
+        [HttpGet("{login}/sistemas/{sistemaId}/validar-email")] 
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [ProducesResponseType(601)]
+        public async Task<IActionResult> SolicitarValidacaoEmail([FromRoute] string login, long sistemaId, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            return Ok(await servicoUsuarios.SolicitarValidacaoEmail(login, sistemaId)); 
         }
         
         [HttpGet("{token}/sistemas/{sistemaId}/validar")] 
