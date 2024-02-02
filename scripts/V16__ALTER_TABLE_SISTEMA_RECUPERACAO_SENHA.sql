@@ -18,7 +18,6 @@ update sistema_acao set endereco = 'https://intranet.sme.prefeitura.sp.gov.br/in
 update sistema_acao set endereco = 'https://sigpae.sme.prefeitura.sp.gov.br/redefinir-senha/{0}' where codigo_sistema = 3 and tipo = 1;
 update sistema_acao set endereco = 'https://cdep.sme.prefeitura.sp.gov.br/redefinir-senha/{0}' where codigo_sistema = 1006 and tipo = 1;
 update sistema_acao set endereco = 'https://conectaformacao.sme.prefeitura.sp.gov.br/redefinir-senha/{0}' where codigo_sistema = 1007 and tipo = 1;
-update sistema_acao set endereco = 'https://conectaformacao.sme.prefeitura.sp.gov.br/validar-email/{0}' where codigo_sistema = 1007 and tipo = 2;
 
 --> Renomear tabela de 'usuario_recuperacao_senha' para 'usuario_validacao_token'
 alter table usuario_recuperacao_senha rename to usuario_validacao_token;
