@@ -103,7 +103,7 @@ namespace SME.Acessos.Api.Controllers
         [ProducesResponseType(401)]
         public async Task<IActionResult> ValidarTokenRecuperacaoSenhaValido([FromRoute] Guid token, long sistemaId, TipoAcao tipoAcao, [FromServices] IServicoUsuarios servicoUsuarios)
         {
-            return Ok(await servicoUsuarios.ValidarToken(token,sistemaId, tipoAcao));
+            return Ok(await servicoUsuarios.ValidarToken(token,sistemaId, tipoAcao == 0 ? TipoAcao.RecuperacaoSenha : tipoAcao));
         }
         
         [HttpPut("sistemas/{sistemaId}/senha")] 
