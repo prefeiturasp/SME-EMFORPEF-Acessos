@@ -1,17 +1,19 @@
 ﻿using SME.Acessos.Infra.Dominio.Constantes;
 using SME.Acessos.Infra.Dominio.Extensions;
 using System.Text.RegularExpressions;
+using SME.Acessos.Infra.Dominio.Enumeradores;
 
 namespace SME.Acessos.Infra.Dominio.Acessos.Entidades
 {
-    public class UsuarioRecuperacaoSenha : EntidadeBaseAcessos
+    public class UsuarioValidacaoToken : EntidadeBaseAcessos
     {
         public string Login { get; set; }
         public DateTime? Expiracao { get; set; }
         public Guid? Token { get; set; }
         public long CodigoSistema { get; set; }
+        public TipoAcao TipoAcao { get; set; }
         
-        public bool TokenRecuperacaoSenhaValido()
+        public bool TokenValido()
             => Expiracao > DateTimeExtensions.HorarioBrasilia();
         
         public void FinalizarRecuperacaoSenha()
@@ -37,7 +39,7 @@ namespace SME.Acessos.Infra.Dominio.Acessos.Entidades
                 throw new NegocioException(MensagemNegocio.A_SENHA_DEVE_CONTER_SOMENTE);
         }
 
-        public void IniciarRecuperacaoDeSenha(string usuarioCoreEmail)
+        public void IniciarMovimentacaoTokenUsuario(string usuarioCoreEmail)
         {
             if (string.IsNullOrWhiteSpace(usuarioCoreEmail))
             {
