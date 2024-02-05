@@ -25,7 +25,20 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                          join pes_pessoa p on u.pes_id = p.pes_id
                          left join pes_pessoadocumento pd on p.pes_id = pd.pes_id
                          and pd.tdo_id = @tipoDocumentoCpf
-                         where usu_login = @login ";
+                        where u.usu_login = @login 
+                        union 
+                        select usu_id, 
+                                 usu_login, 
+                                 usu_email, 
+                                 usu_senha,
+                                 p.pes_id,
+                                 p.pes_nome,
+                                 pd.psd_numero
+                         from SYS_Usuario u 
+                         join pes_pessoa p on u.pes_id = p.pes_id
+                         left join pes_pessoadocumento pd on p.pes_id = pd.pes_id
+                         and pd.tdo_id = @tipoDocumentoCpf
+                        where pd.psd_numero = @login ";
             
             var usuarios = await conexao.Obter().QueryAsync<Usuario, Pessoa, PessoaDocumento,Usuario>(query, 
                 (usuario, pessoa, pessoaDocumento) =>
