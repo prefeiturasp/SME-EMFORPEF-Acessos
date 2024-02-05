@@ -3,6 +3,7 @@ using SME.Acessos.Aplicacao.Constantes;
 using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Enumerados;
 using SME.Acessos.Aplicacao.Interfaces;
+using SME.Acessos.Infra.Dominio.Enumeradores;
 
 namespace SME.Acessos.Api.Controllers
 {
@@ -82,16 +83,35 @@ namespace SME.Acessos.Api.Controllers
         [ProducesResponseType(601)]
         public async Task<IActionResult> SolicitarRecuperacaoSenha([FromRoute] string login, long sistemaId, [FromServices] IServicoUsuarios servicoUsuarios)
         {
-            return Ok(await servicoUsuarios.RecuperarSenha(login, sistemaId));
+            return Ok(await servicoUsuarios.SolicitarRecuperacaoSenha(login, sistemaId));
         }
         
-        [HttpGet("{token}/sistemas/{sistemaId}/validar")] 
+        [HttpPost("{login}/sistemas/{sistemaId}/enviar-email-validacao")] 
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
-        public async Task<IActionResult> TokenRecuperacaoSenhaEstaValido([FromRoute] Guid token, long sistemaId, [FromServices] IServicoUsuarios servicoUsuarios)
+        [ProducesResponseType(601)]
+        public async Task<IActionResult> SolicitarValidacaoEmail([FromRoute] string login, long sistemaId, [FromServices] IServicoUsuarios servicoUsuarios)
         {
-            return Ok(await servicoUsuarios.ValidarTokenRecuperacaoSenha(token, sistemaId));
+            return Ok(await servicoUsuarios.EnviarEmailValidacaoCadastro(login, sistemaId)); 
+        }
+        
+        [HttpGet("{token}/sistemas/{sistemaId}/validar")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> ValidarTokenSenha([FromRoute] Guid token, long sistemaId, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            return Ok(await servicoUsuarios.ValidarTokenSenha(token,sistemaId));
+        }
+        
+        [HttpGet("{token}/sistemas/{sistemaId}/validar/{tipoAcao}")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> ValidarEmailToken([FromRoute] Guid token, long sistemaId, TipoAcao tipoAcao, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            return Ok(await servicoUsuarios.ValidarTokenEmail(token,sistemaId, tipoAcao));
         }
         
         [HttpPut("sistemas/{sistemaId}/senha")] 

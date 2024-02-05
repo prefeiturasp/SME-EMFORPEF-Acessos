@@ -16,12 +16,18 @@ public class RepositorioConfiguracaoEmail : RepositorioBaseAcessos<ConfiguracaoE
 
     public async Task<ConfiguracaoEmail> ObterConfiguracaoEmailPorSistema(long sistemaId)
     {
-        return (await conexao.Obter()
-                .QueryAsync<ConfiguracaoEmail>(
-              "select id, codigo_sistema, email, nome, smtp, usuario,senha, porta,tls " +
-              "   from configuracao_email " +
-              "   where codigo_sistema = @sistemaId", new { sistemaId }))
-                 .ToList()
-                 .FirstOrDefault();
+        var query = @"select id, 
+                           codigo_sistema, 
+                           email, 
+                           nome, 
+                           smtp, 
+                           usuario,
+                           senha, 
+                           porta,
+                           tls 
+                   from configuracao_email 
+                   where codigo_sistema = @sistemaId";
+         
+        return await conexao.Obter().QueryFirstOrDefaultAsync<ConfiguracaoEmail>(query, new { sistemaId });
     }
 }

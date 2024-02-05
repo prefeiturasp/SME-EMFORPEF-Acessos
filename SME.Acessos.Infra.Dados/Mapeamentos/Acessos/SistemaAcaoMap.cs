@@ -3,15 +3,16 @@ using SME.Acessos.Infra.Dominio.Acessos.Entidades;
 
 namespace SME.Acessos.Infra.Dados.Mapeamentos.Acessos
 {
-    public class SistemaRecuperacaoSenhaMap : DommelEntityMap<SistemaRecuperacaoSenha>
+    public class SistemaAcaoMap : DommelEntityMap<SistemaAcao>
     {
-        public SistemaRecuperacaoSenhaMap()
+        public SistemaAcaoMap()
         {
-            ToTable("sistema_recuperacao_senha");
+            ToTable("sistema_acao");
             Map(a => a.Id).ToColumn("id");
             Map(a => a.CodigoSistema).ToColumn("codigo_sistema");
             Map(a => a.NomeSistema).ToColumn("nome_sistema");
-            Map(a => a.PaginaRecuperacaoSenha).ToColumn("pagina_recuperacao_senha");
+            Map(a => a.Endereco).ToColumn("endereco");
+            Map(a => a.TipoAcao).ToColumn("tipo");
         }
     }
 }

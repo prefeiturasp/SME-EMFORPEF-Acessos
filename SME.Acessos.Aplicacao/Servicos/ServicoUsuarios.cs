@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using SME.Acessos.Aplicacao.Constantes;
-using SME.Acessos.Aplicacao.Constantes;
 using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Enumerados;
 using SME.Acessos.Aplicacao.Interfaces;
@@ -20,21 +19,21 @@ namespace SME.Acessos.Aplicacao
         private readonly IRepositorioDadosUsuario repositorioDadosUsuario;
         private readonly IMapper mapper;
         private readonly IServicoEmail servicoEmail;
-        private readonly IRepositorioUsuarioRecuperacaoSenha repositorioUsuarioRecuperacaoSenha;
-        private readonly IRepositorioSistemaRecuperacaoSenha repositorioSistemaRecuperacaoSenha;
+        private readonly IRepositorioUsuarioValidacaoToken repositorioUsuarioValidacaoToken;
+        private readonly IRepositorioSistemaAcao repositorioSistemaAcao;
         private readonly IRepositorioPessoaDocumento repositorioPessoaDocumento;
 
         public ServicoUsuarios(IRepositorioUsuario repositorioUsuarioCoreSSO, IMapper mapper,IRepositorioPessoa repositorioPessoaCoreSSO,
-            IServicoEmail servicoEmail,IRepositorioDadosUsuario repositorioDadosUsuario,IRepositorioUsuarioRecuperacaoSenha repositorioUsuarioRecuperacaoSenha,
-            IRepositorioSistemaRecuperacaoSenha repositorioSistemaRecuperacaoSenha,IRepositorioPessoaDocumento repositorioPessoaDocumento)
+            IServicoEmail servicoEmail,IRepositorioDadosUsuario repositorioDadosUsuario,IRepositorioUsuarioValidacaoToken repositorioUsuarioValidacaoToken,
+            IRepositorioSistemaAcao repositorioSistemaAcao,IRepositorioPessoaDocumento repositorioPessoaDocumento)
         {
             this.repositorioUsuarioCoreSSO = repositorioUsuarioCoreSSO ?? throw new ArgumentNullException(nameof(repositorioUsuarioCoreSSO));
             this.repositorioPessoaCoreSSO = repositorioPessoaCoreSSO ?? throw new ArgumentNullException(nameof(repositorioPessoaCoreSSO));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.servicoEmail = servicoEmail ?? throw new ArgumentNullException(nameof(servicoEmail));
-            this.repositorioUsuarioRecuperacaoSenha = repositorioUsuarioRecuperacaoSenha ?? throw new ArgumentNullException(nameof(repositorioUsuarioRecuperacaoSenha));
+            this.repositorioUsuarioValidacaoToken = repositorioUsuarioValidacaoToken ?? throw new ArgumentNullException(nameof(repositorioUsuarioValidacaoToken));
             this.repositorioDadosUsuario = repositorioDadosUsuario ?? throw new ArgumentNullException(nameof(repositorioDadosUsuario));
-            this.repositorioSistemaRecuperacaoSenha = repositorioSistemaRecuperacaoSenha ?? throw new ArgumentNullException(nameof(repositorioSistemaRecuperacaoSenha));
+            this.repositorioSistemaAcao = repositorioSistemaAcao ?? throw new ArgumentNullException(nameof(repositorioSistemaAcao));
             this.repositorioPessoaDocumento = repositorioPessoaDocumento ?? throw new ArgumentNullException(nameof(repositorioPessoaDocumento));
         }
 
@@ -112,23 +111,53 @@ namespace SME.Acessos.Aplicacao
             return true;
         }
 
-        public async Task<string> RecuperarSenha(string login, long sistemaId)
+        public async Task<string> SolicitarRecuperacaoSenha(string login, long sistemaId)
         {
-            var sistemaRecuperacao = await repositorioSistemaRecuperacaoSenha.ObterSistema(sistemaId); 
-            if (sistemaRecuperacao is null)
-                throw new NegocioException(MensagemNegocio.O_SISTEMA_INFORMADO_NAO_FOI_IDENTIFICADO);
+            var sistemaAcao = await ObterSistemaAcaoPorAcaoESistema(sistemaId);
 
             var usuarioCore = await ValidarLogin(login);
 
-            var usuarioRecuperacaoSenha = await repositorioUsuarioRecuperacaoSenha.ObterUsuarioPorLoginSistema(login, sistemaRecuperacao.CodigoSistema);
-            if (usuarioRecuperacaoSenha == null)
-                usuarioRecuperacaoSenha = new UsuarioRecuperacaoSenha() { Login = usuarioCore.Login, CodigoSistema = sistemaId};
+            var token = await ObterOuCriarMovimentacaoTokenUsuario(login, sistemaId, sistemaAcao, usuarioCore);
             
-            usuarioRecuperacaoSenha.IniciarRecuperacaoDeSenha(usuarioCore.Email);
-            await repositorioUsuarioRecuperacaoSenha.Salvar(usuarioRecuperacaoSenha);
-
-            await EnviarEmailRecuperacao(usuarioCore, usuarioRecuperacaoSenha.Token.Value, sistemaRecuperacao, login);
+            await EnviarEmailRecuperacaoSenha(usuarioCore, token, sistemaAcao, login);
+            
             return usuarioCore.Email;
+        }
+        
+        public async Task<bool> EnviarEmailValidacaoCadastro(string login, long sistemaId)
+        {
+            var sistemaAcao = await ObterSistemaAcaoPorAcaoESistema(sistemaId, TipoAcao.ValidacaoEmail);
+
+            var usuarioCore = await ValidarLogin(login);
+
+            var token = await ObterOuCriarMovimentacaoTokenUsuario(login, sistemaId, sistemaAcao, usuarioCore, TipoAcao.ValidacaoEmail);
+
+            await EnviarEmailParaValidacaoEmail(usuarioCore, token, sistemaAcao, login);
+            
+            return true;
+        }
+
+        private async Task<Guid> ObterOuCriarMovimentacaoTokenUsuario(string login, long sistemaId, SistemaAcao? sistemaRecuperacao, Usuario? usuarioCore, TipoAcao tipoAcao = TipoAcao.RecuperacaoSenha)
+        {
+            var usuarioRecuperacaoSenha = await repositorioUsuarioValidacaoToken.ObterUsuarioPorLoginSistemaTipoAcao(login, sistemaRecuperacao.CodigoSistema, tipoAcao);
+            
+            if (usuarioRecuperacaoSenha.EhNulo())
+                usuarioRecuperacaoSenha = new UsuarioValidacaoToken() { Login = usuarioCore.Login, CodigoSistema = sistemaId, TipoAcao = tipoAcao};
+            
+            usuarioRecuperacaoSenha.IniciarMovimentacaoTokenUsuario(usuarioCore.Email);
+            await repositorioUsuarioValidacaoToken.Salvar(usuarioRecuperacaoSenha);
+            
+            return usuarioRecuperacaoSenha.Token.Value;
+        }
+
+        private async Task<SistemaAcao?> ObterSistemaAcaoPorAcaoESistema(long sistemaId, TipoAcao tipoAcao = TipoAcao.RecuperacaoSenha)
+        {
+            var sistemaRecuperacao = await repositorioSistemaAcao.ObterSistemaAcaoPorAcaoESistema(sistemaId, tipoAcao);
+            
+            if (sistemaRecuperacao.EhNulo())
+                throw new NegocioException(MensagemNegocio.O_SISTEMA_INFORMADO_NAO_FOI_IDENTIFICADO);
+            
+            return sistemaRecuperacao;
         }
 
         private async Task<Usuario?> ValidarLogin(string login)
@@ -140,32 +169,73 @@ namespace SME.Acessos.Aplicacao
             return usuarioCore;
         }
 
-        private async Task EnviarEmailRecuperacao(Usuario usuario, Guid tokenRecuperacaoSenha, SistemaRecuperacaoSenha sistema, string login)
+        private async Task EnviarEmailRecuperacaoSenha(Usuario usuario, Guid token, SistemaAcao sistema, string login)
         {
             string caminho = $"{Directory.GetCurrentDirectory()}/wwwroot/ModelosEmail/RecuperacaoSenha.txt";
             var textoArquivo = File.ReadAllText(caminho);
             var textoEmail = textoArquivo
                 .Replace("#NOME", usuario.Pessoa.Nome)
                 .Replace("#RF", login)
-                .Replace("#LINK", $"{sistema.PaginaRecuperacaoSenha}{tokenRecuperacaoSenha}");
+                .Replace("#LINK", string.Format(sistema.Endereco,token));
 
             await servicoEmail.Enviar(usuario.Pessoa.Nome, usuario.Email, $"Recuperação de senha do(a) {sistema.NomeSistema}", textoEmail, sistema.CodigoSistema);
         }
         
-        public async Task<bool> ValidarTokenRecuperacaoSenha(Guid token, long sistemaId)
+        private async Task EnviarEmailParaValidacaoEmail(Usuario usuario, Guid tokenRecuperacaoSenha, SistemaAcao sistema, string login)
         {
-            var usuarioPorTokenRecuperacaoSenha = await repositorioUsuarioRecuperacaoSenha.ObterUsuarioPorTokenRecuperacaoSenha(token, sistemaId);
-            return usuarioPorTokenRecuperacaoSenha?.TokenRecuperacaoSenhaValido() ?? false;
+            var conteudoEAssuntoEmail = ObterTextoEmailPorSistema(usuario, tokenRecuperacaoSenha, sistema);
+
+            await servicoEmail.Enviar(usuario.Pessoa.Nome, usuario.Email, conteudoEAssuntoEmail.Assunto, conteudoEAssuntoEmail.Conteudo, sistema.CodigoSistema);
+        }
+
+        private ConteudoEAssuntoEmailDTO ObterTextoEmailPorSistema(Usuario usuario, Guid token, SistemaAcao sistema)
+        {
+            switch (sistema.CodigoSistema)
+            {
+                case ConstantesAcessos.SISTEMA_CONECTA :
+                    return TratarTextoAssuntoConectaFormacao(sistema.NomeSistema, usuario.Pessoa.Nome, sistema.Endereco, token);
+            }
+            return default;
+        }
+
+        private ConteudoEAssuntoEmailDTO TratarTextoAssuntoConectaFormacao(string nomeSistema, string nomeUsuario, string endereco, Guid token)
+        {
+            var caminho = $"{Directory.GetCurrentDirectory()}/wwwroot/ModelosEmail/ValidacaoEmail_Conecta.txt";
+            
+            var textoArquivo = File.ReadAllText(caminho);
+            
+            var textoEmail = textoArquivo
+                .Replace("#NOME", nomeUsuario)
+                .Replace("#SISTEMA", nomeSistema)
+                .Replace("#LINK", string.Format(endereco,token));
+            
+            return new ConteudoEAssuntoEmailDTO()
+            {
+                Assunto = $"Validação do e-mail do {nomeSistema}",
+                Conteudo = textoEmail
+            };
+        }
+
+        public async Task<bool> ValidarTokenSenha(Guid token, long sistemaId, TipoAcao tipoAcao)
+        {
+            var usuarioValidacaoToken = await repositorioUsuarioValidacaoToken.ObterUsuarioPorTokenSistemaTipoAcao(token, sistemaId, tipoAcao);
+            return usuarioValidacaoToken?.TokenValido() ?? false;
+        }
+        
+        public async Task<string> ValidarTokenEmail(Guid token, long sistemaId, TipoAcao tipoAcao)
+        {
+            var usuarioValidacaoToken = await repositorioUsuarioValidacaoToken.ObterUsuarioPorTokenSistemaTipoAcao(token, sistemaId, tipoAcao);
+            return usuarioValidacaoToken.NaoEhNulo() ? usuarioValidacaoToken.Login : string.Empty;
         }
 
         public async Task<RetornoAlteracaoSenhaDto> AlterarSenhaPorToken(long sistemaId, AlterarSenhaPorTokenDto alterarSenha)
         {
-            var usuarioRecuperacaoSenha = await repositorioUsuarioRecuperacaoSenha.ObterUsuarioPorTokenRecuperacaoSenha(new Guid(alterarSenha.Token), sistemaId);
+            var usuarioRecuperacaoSenha = await repositorioUsuarioValidacaoToken.ObterUsuarioPorTokenSistemaTipoAcao(new Guid(alterarSenha.Token), sistemaId);
 
             if (usuarioRecuperacaoSenha == null)
                 return new RetornoAlteracaoSenhaDto(AlterarSenhaStatus.NaoEncontrado);
 
-            if (!usuarioRecuperacaoSenha.TokenRecuperacaoSenhaValido())
+            if (!usuarioRecuperacaoSenha.TokenValido())
                 return new RetornoAlteracaoSenhaDto(AlterarSenhaStatus.TokenExpirado);
 
             try
@@ -182,7 +252,7 @@ namespace SME.Acessos.Aplicacao
             if (retornoAlteracaoSenha == AlterarSenhaStatus.OK)
             {
                 usuarioRecuperacaoSenha.FinalizarRecuperacaoSenha();
-                await repositorioUsuarioRecuperacaoSenha.Salvar(usuarioRecuperacaoSenha);
+                await repositorioUsuarioValidacaoToken.Salvar(usuarioRecuperacaoSenha);
             }
 
             return new RetornoAlteracaoSenhaDto(retornoAlteracaoSenha, usuarioRecuperacaoSenha.Login);

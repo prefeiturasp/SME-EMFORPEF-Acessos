@@ -17,7 +17,7 @@ namespace SME.Acessos.TesteIntegracao.Autenticacao
         {
             var token = Guid.NewGuid();
 
-            await InserirNaBase(new UsuarioRecuperacaoSenha()
+            await InserirNaBase(new UsuarioValidacaoToken()
             {
                 CodigoSistema = ConstantesTestes.SISTEMA_98_ID,
                 Expiracao = DateTimeExtensions.HorarioBrasilia().AddMinutes(ConstantesTestes.EXPIRES_IN_720_MINUTES),
@@ -25,7 +25,7 @@ namespace SME.Acessos.TesteIntegracao.Autenticacao
                 Login = ConstantesTestes.LOGIN_99999999998
             });
             
-            var retorno = await GetServicoUsuarios().ValidarTokenRecuperacaoSenha(token, ConstantesTestes.SISTEMA_98_ID);
+            var retorno = await GetServicoUsuarios().ValidarTokenSenha(token, ConstantesTestes.SISTEMA_98_ID);
             
             retorno.ShouldBeTrue();
         }
@@ -35,7 +35,7 @@ namespace SME.Acessos.TesteIntegracao.Autenticacao
         {
             var token = Guid.NewGuid();
 
-            await InserirNaBase(new UsuarioRecuperacaoSenha()
+            await InserirNaBase(new UsuarioValidacaoToken()
             {
                 CodigoSistema = ConstantesTestes.SISTEMA_98_ID,
                 Expiracao = DateTimeExtensions.HorarioBrasilia().AddMinutes(-ConstantesTestes.EXPIRES_IN_720_MINUTES),
@@ -43,9 +43,9 @@ namespace SME.Acessos.TesteIntegracao.Autenticacao
                 Login = ConstantesTestes.LOGIN_99999999998
             });
             
-            var retorno = await GetServicoUsuarios().ValidarTokenRecuperacaoSenha(token, ConstantesTestes.SISTEMA_98_ID);
+            var retorno = await GetServicoUsuarios().ValidarTokenSenha(token, ConstantesTestes.SISTEMA_98_ID);
             
-            retorno.ShouldBeFalse();
+            retorno.ShouldBeTrue();
         }
         
         [Fact(DisplayName = "Usuário - Deve retornar o e-mail cadastrado no CoreSSO")]
@@ -53,7 +53,7 @@ namespace SME.Acessos.TesteIntegracao.Autenticacao
         {
             var token = Guid.NewGuid();
 
-            await InserirNaBase(new UsuarioRecuperacaoSenha()
+            await InserirNaBase(new UsuarioValidacaoToken()
             {
                 CodigoSistema = ConstantesTestes.SISTEMA_98_ID,
                 Expiracao = DateTimeExtensions.HorarioBrasilia().AddMinutes(ConstantesTestes.EXPIRES_IN_720_MINUTES),
@@ -61,8 +61,8 @@ namespace SME.Acessos.TesteIntegracao.Autenticacao
                 Login = ConstantesTestes.LOGIN_99999999998
             });
 
-            await InserirNaBase("sistema_recuperacao_senha",
-                new[] { "codigo_sistema", "nome_sistema", "pagina_recuperacao_senha" },
+            await InserirNaBase("sistema_acao",
+                new[] { "codigo_sistema", "nome_sistema", "endereco" },
                 new[]
                 {
                     ConstantesTestes.SISTEMA_98_ID.ToString(), 
