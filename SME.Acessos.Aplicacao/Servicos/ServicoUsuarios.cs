@@ -124,7 +124,7 @@ namespace SME.Acessos.Aplicacao
             return usuarioCore.Email;
         }
         
-        public async Task<bool> SolicitarValidacaoEmail(string login, long sistemaId)
+        public async Task<bool> EnviarEmailValidacaoCadastro(string login, long sistemaId)
         {
             var sistemaAcao = await ObterSistemaAcaoPorAcaoESistema(sistemaId, TipoAcao.ValidacaoEmail);
 
