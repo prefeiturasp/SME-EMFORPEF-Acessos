@@ -19,8 +19,8 @@ namespace SME.Acessos.Aplicacao
         private readonly IRepositorioDadosUsuario repositorioDadosUsuario;
         private readonly IMapper mapper;
         private readonly IServicoEmail servicoEmail;
-        private readonly IRepositorioUsuarioValidacaoToken _repositorioUsuarioValidacaoToken;
-        private readonly IRepositorioSistemaAcao _repositorioSistemaAcao;
+        private readonly IRepositorioUsuarioValidacaoToken repositorioUsuarioValidacaoToken;
+        private readonly IRepositorioSistemaAcao repositorioSistemaAcao;
         private readonly IRepositorioPessoaDocumento repositorioPessoaDocumento;
 
         public ServicoUsuarios(IRepositorioUsuario repositorioUsuarioCoreSSO, IMapper mapper,IRepositorioPessoa repositorioPessoaCoreSSO,
@@ -31,9 +31,9 @@ namespace SME.Acessos.Aplicacao
             this.repositorioPessoaCoreSSO = repositorioPessoaCoreSSO ?? throw new ArgumentNullException(nameof(repositorioPessoaCoreSSO));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.servicoEmail = servicoEmail ?? throw new ArgumentNullException(nameof(servicoEmail));
-            this._repositorioUsuarioValidacaoToken = repositorioUsuarioValidacaoToken ?? throw new ArgumentNullException(nameof(repositorioUsuarioValidacaoToken));
+            this.repositorioUsuarioValidacaoToken = repositorioUsuarioValidacaoToken ?? throw new ArgumentNullException(nameof(repositorioUsuarioValidacaoToken));
             this.repositorioDadosUsuario = repositorioDadosUsuario ?? throw new ArgumentNullException(nameof(repositorioDadosUsuario));
-            this._repositorioSistemaAcao = repositorioSistemaAcao ?? throw new ArgumentNullException(nameof(repositorioSistemaAcao));
+            this.repositorioSistemaAcao = repositorioSistemaAcao ?? throw new ArgumentNullException(nameof(repositorioSistemaAcao));
             this.repositorioPessoaDocumento = repositorioPessoaDocumento ?? throw new ArgumentNullException(nameof(repositorioPessoaDocumento));
         }
 
@@ -139,20 +139,20 @@ namespace SME.Acessos.Aplicacao
 
         private async Task<Guid> ObterOuCriarMovimentacaoTokenUsuario(string login, long sistemaId, SistemaAcao? sistemaRecuperacao, Usuario? usuarioCore, TipoAcao tipoAcao = TipoAcao.RecuperacaoSenha)
         {
-            var usuarioRecuperacaoSenha = await _repositorioUsuarioValidacaoToken.ObterUsuarioPorLoginSistemaTipoAcao(login, sistemaRecuperacao.CodigoSistema, tipoAcao);
+            var usuarioRecuperacaoSenha = await repositorioUsuarioValidacaoToken.ObterUsuarioPorLoginSistemaTipoAcao(login, sistemaRecuperacao.CodigoSistema, tipoAcao);
             
             if (usuarioRecuperacaoSenha.EhNulo())
                 usuarioRecuperacaoSenha = new UsuarioValidacaoToken() { Login = usuarioCore.Login, CodigoSistema = sistemaId, TipoAcao = tipoAcao};
             
             usuarioRecuperacaoSenha.IniciarMovimentacaoTokenUsuario(usuarioCore.Email);
-            await _repositorioUsuarioValidacaoToken.Salvar(usuarioRecuperacaoSenha);
+            await repositorioUsuarioValidacaoToken.Salvar(usuarioRecuperacaoSenha);
             
             return usuarioRecuperacaoSenha.Token.Value;
         }
 
         private async Task<SistemaAcao?> ObterSistemaAcaoPorAcaoESistema(long sistemaId, TipoAcao tipoAcao = TipoAcao.RecuperacaoSenha)
         {
-            var sistemaRecuperacao = await _repositorioSistemaAcao.ObterSistemaAcaoPorAcaoESistema(sistemaId, tipoAcao);
+            var sistemaRecuperacao = await repositorioSistemaAcao.ObterSistemaAcaoPorAcaoESistema(sistemaId, tipoAcao);
             
             if (sistemaRecuperacao.EhNulo())
                 throw new NegocioException(MensagemNegocio.O_SISTEMA_INFORMADO_NAO_FOI_IDENTIFICADO);
@@ -218,19 +218,19 @@ namespace SME.Acessos.Aplicacao
 
         public async Task<bool> ValidarTokenSenha(Guid token, long sistemaId, TipoAcao tipoAcao)
         {
-            var usuarioValidacaoToken = await _repositorioUsuarioValidacaoToken.ObterUsuarioPorTokenSistemaTipoAcao(token, sistemaId, tipoAcao);
+            var usuarioValidacaoToken = await repositorioUsuarioValidacaoToken.ObterUsuarioPorTokenSistemaTipoAcao(token, sistemaId, tipoAcao);
             return usuarioValidacaoToken?.TokenValido() ?? false;
         }
         
         public async Task<string> ValidarTokenEmail(Guid token, long sistemaId, TipoAcao tipoAcao)
         {
-            var usuarioValidacaoToken = await _repositorioUsuarioValidacaoToken.ObterUsuarioPorTokenSistemaTipoAcao(token, sistemaId, tipoAcao);
+            var usuarioValidacaoToken = await repositorioUsuarioValidacaoToken.ObterUsuarioPorTokenSistemaTipoAcao(token, sistemaId, tipoAcao);
             return usuarioValidacaoToken.NaoEhNulo() ? usuarioValidacaoToken.Login : string.Empty;
         }
 
         public async Task<RetornoAlteracaoSenhaDto> AlterarSenhaPorToken(long sistemaId, AlterarSenhaPorTokenDto alterarSenha)
         {
-            var usuarioRecuperacaoSenha = await _repositorioUsuarioValidacaoToken.ObterUsuarioPorTokenSistemaTipoAcao(new Guid(alterarSenha.Token), sistemaId);
+            var usuarioRecuperacaoSenha = await repositorioUsuarioValidacaoToken.ObterUsuarioPorTokenSistemaTipoAcao(new Guid(alterarSenha.Token), sistemaId);
 
             if (usuarioRecuperacaoSenha == null)
                 return new RetornoAlteracaoSenhaDto(AlterarSenhaStatus.NaoEncontrado);
@@ -252,7 +252,7 @@ namespace SME.Acessos.Aplicacao
             if (retornoAlteracaoSenha == AlterarSenhaStatus.OK)
             {
                 usuarioRecuperacaoSenha.FinalizarRecuperacaoSenha();
-                await _repositorioUsuarioValidacaoToken.Salvar(usuarioRecuperacaoSenha);
+                await repositorioUsuarioValidacaoToken.Salvar(usuarioRecuperacaoSenha);
             }
 
             return new RetornoAlteracaoSenhaDto(retornoAlteracaoSenha, usuarioRecuperacaoSenha.Login);

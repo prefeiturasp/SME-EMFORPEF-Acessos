@@ -86,7 +86,7 @@ namespace SME.Acessos.Api.Controllers
             return Ok(await servicoUsuarios.SolicitarRecuperacaoSenha(login, sistemaId));
         }
         
-        [HttpGet("{login}/sistemas/{sistemaId}/enviar-email-validacao")] 
+        [HttpPost("{login}/sistemas/{sistemaId}/enviar-email-validacao")] 
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
