@@ -225,7 +225,7 @@ namespace SME.Acessos.Aplicacao
         public async Task<string> ValidarTokenEmail(Guid token, long sistemaId, TipoAcao tipoAcao)
         {
             var usuarioValidacaoToken = await repositorioUsuarioValidacaoToken.ObterUsuarioPorTokenSistemaTipoAcao(token, sistemaId, tipoAcao);
-            return usuarioValidacaoToken.NaoEhNulo() ? usuarioValidacaoToken.Login : string.Empty;
+            return usuarioValidacaoToken.NaoEhNulo() && usuarioValidacaoToken.TokenValido() ? usuarioValidacaoToken.Login : string.Empty;
         }
 
         public async Task<RetornoAlteracaoSenhaDto> AlterarSenhaPorToken(long sistemaId, AlterarSenhaPorTokenDto alterarSenha)
