@@ -16,6 +16,7 @@ namespace SME.Acessos.Aplicacao.Servicos
         private readonly IRepositorioPermissao repositorioPermissao;
         private readonly IServicoTokenJwt servicoTokenJwt;
         private readonly IRepositorioUsuario repositorioUsuario;
+        private readonly int TAMANHO_LOGIN_CPF = 11;
 
         public ServicoPerfilUsuario(IRepositorioUsuarioGrupoPessoa repositorioUsuarioGrupoPessoa, IServicoTokenJwt servicoTokenJwt, IRepositorioGrupoPermissao repositorioGrupoPermissao, IRepositorioPermissao repositorioPermissao, IRepositorioUsuario repositorioUsuario)
         {
@@ -36,7 +37,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             {
                 UsuarioGrupoPessoa perfilUsuario;
                 if (perfilUsuarioId.HasValue)
-                    perfilUsuario = perfisUsuario.FirstOrDefault(t => t.GrupoId == perfilUsuarioId && t.Cpf == login) ??
+                    perfilUsuario = perfisUsuario.FirstOrDefault(t => t.GrupoId == perfilUsuarioId) ??
                         throw new NegocioException($"Perfil {perfilUsuarioId} não encontrado para o usuário {login}");
                 else
                     perfilUsuario = perfisUsuario.FirstOrDefault() ??
