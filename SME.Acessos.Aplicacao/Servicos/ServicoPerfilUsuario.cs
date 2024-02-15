@@ -36,7 +36,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             {
                 UsuarioGrupoPessoa perfilUsuario;
                 if (perfilUsuarioId.HasValue)
-                    perfilUsuario = perfisUsuario.FirstOrDefault(t => t.GrupoId == perfilUsuarioId && t.Cpf == login) ??
+                    perfilUsuario = perfisUsuario.FirstOrDefault(t => t.GrupoId == perfilUsuarioId) ??
                         throw new NegocioException($"Perfil {perfilUsuarioId} não encontrado para o usuário {login}");
                 else
                     perfilUsuario = perfisUsuario.FirstOrDefault() ??
