@@ -58,14 +58,12 @@ namespace SME.Acessos.Aplicacao
         {
             try
             {
-                var pessoa = await repositorioPessoaCoreSSO.InserirPessoaCustomizado(usuarioDto.Nome);
-                if (!pessoa.HasValue)
-                    return false;
+                var  pessoaId = await repositorioPessoaCoreSSO.InserirPessoaCustomizado(usuarioDto.Nome);
                 
-                await repositorioPessoaDocumento.InserirPessoaDocumentoCustomizado(usuarioDto.Login, pessoa.Value, new Guid(ConstantesCoreSSO.TIPO_DOCUMENTACAO_CPF));
+                await repositorioPessoaDocumento.InserirPessoaDocumentoCustomizado(usuarioDto.Login, pessoaId, new Guid(ConstantesCoreSSO.TIPO_DOCUMENTACAO_CPF));
                 
                 await repositorioUsuarioCoreSSO.InserirUsuarioCustomizado(usuarioDto.Login, usuarioDto.Email, 
-                    CriptografiaExtensions.CriptografarSenhaTripleDES(usuarioDto.Senha),pessoa.Value,
+                    CriptografiaExtensions.CriptografarSenhaTripleDES(usuarioDto.Senha),pessoaId,
                     new Guid(ConstantesCoreSSO.ENTIDADE_SME));
 
                 return true;

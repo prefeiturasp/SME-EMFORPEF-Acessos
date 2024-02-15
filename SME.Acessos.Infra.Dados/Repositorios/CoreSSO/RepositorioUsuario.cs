@@ -14,7 +14,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
 
         public async Task<Usuario> ObterPorLogin(string login)
         {
-            var query = @"select usu_id, 
+            var query = @"select * from (select usu_id, 
                                  usu_login, 
                                  usu_email, 
                                  usu_senha,
@@ -25,7 +25,8 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                          join pes_pessoa p on u.pes_id = p.pes_id
                          left join pes_pessoadocumento pd on p.pes_id = pd.pes_id
                          and pd.tdo_id = @tipoDocumentoCpf
-                        where u.usu_login = @login  ";
+                        where u.usu_login = @login ) as consulta
+                         where psd_numero = @login ";
             
             var usuarios = await conexao.Obter().QueryAsync<Usuario, Pessoa, PessoaDocumento,Usuario>(query, 
                 (usuario, pessoa, pessoaDocumento) =>
