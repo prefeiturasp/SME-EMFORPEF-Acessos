@@ -1,6 +1,4 @@
-﻿using System.Data.SqlClient;
-using Dapper;
-using SME.Acessos.Infra.Dominio.CoreSSO;
+﻿using Dapper;
 using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 
@@ -12,13 +10,12 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
         {
         }
 
-        public async Task<Guid?> InserirPessoaCustomizado(string nome)
+        public async Task<Guid> InserirPessoaCustomizado(string nome)
         {
-            var insertPessoa = $@"insert into [PES_Pessoa] ([pes_nome]) values ('{nome}'); 
-                                  select pes_id  from [PES_Pessoa] where [pes_nome] = '{nome}'";
-
-            var retorno = await conexao.Obter().ExecuteScalarAsync(insertPessoa);
-            return (Guid)retorno;
+            var insertPessoa = @" insert into [PES_Pessoa] ([pes_nome]) 
+                                       OUTPUT INSERTED.[pes_id]
+                                       values (@nome) ";
+            return  await conexao.Obter().QuerySingleOrDefaultAsync<Guid>(insertPessoa, new{nome});
         }
     }
 }
