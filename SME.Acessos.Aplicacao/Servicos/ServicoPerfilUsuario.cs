@@ -16,7 +16,6 @@ namespace SME.Acessos.Aplicacao.Servicos
         private readonly IRepositorioPermissao repositorioPermissao;
         private readonly IServicoTokenJwt servicoTokenJwt;
         private readonly IRepositorioUsuario repositorioUsuario;
-        private readonly int TAMANHO_LOGIN_CPF = 11;
 
         public ServicoPerfilUsuario(IRepositorioUsuarioGrupoPessoa repositorioUsuarioGrupoPessoa, IServicoTokenJwt servicoTokenJwt, IRepositorioGrupoPermissao repositorioGrupoPermissao, IRepositorioPermissao repositorioPermissao, IRepositorioUsuario repositorioUsuario)
         {
