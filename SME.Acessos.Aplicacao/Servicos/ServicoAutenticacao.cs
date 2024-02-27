@@ -1,11 +1,9 @@
-﻿using System.Net;
-using SME.Acessos.Aplicacao.Constantes;
+﻿using SME.Acessos.Aplicacao.Constantes;
 using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Interfaces;
-using SME.Acessos.Infra.Dominio.CoreSSO;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
-using SME.Acessos.Infra.Dominio.Enumeradores;
 using SME.Acessos.Infra.Dominio.Extensions;
+using System.Net;
 
 namespace SME.Acessos.Aplicacao.Servicos
 {
@@ -27,7 +25,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             if (usuarioCoreSSO == null)
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO, HttpStatusCode.Unauthorized);
 
-            if (!CriptografiaExtensions.EqualsSenha(senha, usuarioCoreSSO.Senha, TipoCriptografia.TripleDES))
+            if (!CriptografiaExtensions.EqualsSenha(senha, usuarioCoreSSO.Senha, usuarioCoreSSO.Criptografia))
                 throw new NegocioException(MensagemNegocio.USUARIO_OU_SENHA_INCORRETOS, HttpStatusCode.Unauthorized);
             
             var retorno = new RetornoAutenticacaoDTO()
