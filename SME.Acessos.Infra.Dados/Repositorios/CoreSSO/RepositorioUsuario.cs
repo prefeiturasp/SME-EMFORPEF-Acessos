@@ -18,6 +18,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                                  usu_login, 
                                  usu_email, 
                                  usu_senha,
+                                 usu_criptografia,                                 
                                  p.pes_id,
                                  p.pes_nome,
                                  pd.psd_numero
