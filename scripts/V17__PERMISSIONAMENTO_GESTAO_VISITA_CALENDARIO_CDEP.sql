@@ -43,5 +43,3 @@ insert into permissoes (idgrupo, idmodulo)
 select (select id from grupos where nome = 'Básico'),id 
 from modulos where idmodcoresso = 11 and not exists (select 1 from permissoes where idmodulo in (select id from modulos where idmodcoresso = 11 and idacao = 1));
 
-update modulos set idsistemacoresso = 1006 where id in (304,303,302,301,300,299,298,297);
-
