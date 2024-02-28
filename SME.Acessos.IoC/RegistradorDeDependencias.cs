@@ -20,6 +20,7 @@ using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 using SME.Acessos.Infra.IoC;
 using SME.Acessos.Infra.Polly;
 using SME.Acessos.Infra.Servicos;
+using SME.Acessos.Infra.Servicos.Eol;
 
 namespace SME.Acessos.IoC
 {
@@ -38,6 +39,7 @@ namespace SME.Acessos.IoC
         {
             RegistrarTelemetria();
             RegistrarConexao();
+            RegistrarHttpClients();
             RegistrarRepositorios();
             RegistrarServicos();
             RegistrarProfiles();
@@ -45,6 +47,11 @@ namespace SME.Acessos.IoC
             RegistrarPolly();
             RegistrarJwtSettings();
             RegistrarMapeamentos();
+        }
+
+        protected virtual void RegistrarHttpClients()
+        {
+            ServicoEolCHelper.ConfigurarServicoEol(services, configuration);
         }
 
         protected virtual void RegistrarJwtSettings()

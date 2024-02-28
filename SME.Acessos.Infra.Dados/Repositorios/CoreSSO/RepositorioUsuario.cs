@@ -41,13 +41,6 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
         public async Task<bool> UsuarioCadastradoCoreSSO(string login)
         {
             var query = @"select 1
-                          from SYS_Usuario su 
-                           join PES_Pessoa pp on pp.pes_id = su.pes_id 
-                           join PES_PessoaDocumento ppd on ppd.pes_id = pp.pes_id 
-                           join SYS_TipoDocumentacao std on std.tdo_id = ppd.tdo_id 
-                          where ppd.psd_numero = @login and tdo_sigla = 'CPF'
-                          union 
-                          select 1
                           from SYS_Usuario su
                           where su.usu_login = @login ";
             
@@ -129,6 +122,20 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                           order by p.pes_nome";
                 
             return await conexao.Obter().QueryAsync<DadosUsuario>(query, new { perfis, sistemaId });
+        }
+
+        public async Task<string> ObterLoginUsuarioPorCpfCadastradoCoreSSO(string login)
+        {
+            var query = @"select top 1 su.usu_login
+                        from SYS_Usuario su
+                        join PES_Pessoa pp on pp.pes_id = su.pes_id
+                        join PES_PessoaDocumento ppd on ppd.pes_id = pp.pes_id
+                        join SYS_TipoDocumentacao std on std.tdo_id = ppd.tdo_id
+                        where
+	                        ppd.psd_numero = @login
+	                        and tdo_sigla = 'CPF'";
+
+            return await conexao.Obter().QueryFirstOrDefaultAsync<string>(query, new { login });
         }
     }
 }

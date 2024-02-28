@@ -99,5 +99,10 @@ namespace SME.Acessos.TesteIntegracao.ServicosFakes
                 new () { Login = "4"},
             });
         }
+
+        public Task<string> ObterLoginUsuarioPorCpfCadastradoCoreSSO(string login)
+        {
+            return Task.FromResult(string.Empty);
+        }
     }
 }
