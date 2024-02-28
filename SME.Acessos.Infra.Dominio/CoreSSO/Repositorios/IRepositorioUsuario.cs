@@ -14,5 +14,6 @@ namespace SME.Acessos.Infra.Dominio.CoreSSO.Repositorios
         Task AlterarEmail(Guid usuarioId, string email);
         Task<IEnumerable<string>> ObterDresPorLoginEPerfil(string login, Guid? perfil);
         Task<IEnumerable<DadosUsuario>> ObterUsuariosComPerfisResponsavel(Guid[] perfis, long sistemaId);
+        Task<string> ObterLoginUsuarioPorCpfCadastradoCoreSSO(string login);
     }
 }

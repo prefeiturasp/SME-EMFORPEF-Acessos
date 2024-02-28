@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SME.Acessos.Infra.Dominio\SME.Acessos.Infra.Dominio.csproj" />
+    <ProjectReference Include="..\SME.Acessos.Infra\SME.Acessos.Infra.Servicos.csproj" />
   </ItemGroup>
 
   <ItemGroup>
