@@ -36,8 +36,7 @@ BEGIN TRAN
 		select 'B82673B9-52B9-4E01-9157-E19339B7211A',@Sistema_CDEP as sis_id,@mod_id_gestao_visita_calendario,1,1,1,1 union all
 		select '35F9D620-49A8-446A-8A75-0A0D26EBD79D',@Sistema_CDEP as sis_id,@mod_id_gestao_visita_calendario,1,1,1,1 union all
 		select '89C9D50D-B73B-4DDE-B870-7685FCD88B0C',@Sistema_CDEP as sis_id,@mod_id_gestao_visita_calendario,1,1,1,1 union all
-		select '064B3481-439B-4C67-8C88-5D1F1E9B91CE',@Sistema_CDEP as sis_id,@mod_id_gestao_visita_calendario,1,0,0,0 union all
-		select '3092428D-CA98-4788-9717-E706DF1945A0',@Sistema_CDEP as sis_id,@mod_id_gestao_visita_calendario,1,1,1,1;
+		select '064B3481-439B-4C67-8C88-5D1F1E9B91CE',@Sistema_CDEP as sis_id,@mod_id_gestao_visita_calendario,1,0,0,0;
 		
 	end			
 COMMIT TRAN
