@@ -1,6 +1,6 @@
 ﻿--> Remover módulos não usados
-delete from permissoes where idmodulo in (select id from modulos where idsistemacoresso = 1006 and id >277 and idmodcoresso in (1,8));
-delete from modulos where idsistemacoresso = 1006 and id >277 and idmodcoresso in (1,8);
+delete from permissoes where idmodulo in (select id from modulos where idsistemacoresso = 1006 and id >276 and idmodcoresso in (1,8));
+delete from modulos where idsistemacoresso = 1006 and id >276 and idmodcoresso in (1,8);
 
 --> Gestão de visitas (Calendário)
 insert into modulos (id, descricao, idmodcoresso,idacao,idsistemacoresso) 	
