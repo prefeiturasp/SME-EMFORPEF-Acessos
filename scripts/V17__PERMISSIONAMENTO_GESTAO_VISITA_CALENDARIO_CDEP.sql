@@ -1,4 +1,8 @@
-﻿--> Gestão de visitas (Calendário)
+﻿--> Remover módulos não usados
+delete from permissoes where idmodulo in (select id from modulos where idsistemacoresso = 1006 and id >277 and idmodcoresso in (1,8));
+delete from modulos where idsistemacoresso = 1006 and id >277 and idmodcoresso in (1,8);
+
+--> Gestão de visitas (Calendário)
 insert into modulos (id, descricao, idmodcoresso,idacao,idsistemacoresso) 	
 select (select max(id)+1 from modulos),'Gestão de visitas (Calendário) - Consulta',11,1,1006
 where not exists (select 1 from modulos where descricao = 'Gestão de visitas (Calendário) - Consulta');
