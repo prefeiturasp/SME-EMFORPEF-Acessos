@@ -290,5 +290,13 @@ namespace SME.Acessos.Aplicacao
                 Nome = s.Nome
             });
         }
+
+        public async Task<bool> AlterarNome(string login, string nome)
+        {
+            var usuario = await ValidarLogin(login);
+
+            await repositorioUsuarioCoreSSO.AlterarNome(usuario.Id, nome);
+            return true;
+        }
     }
 }

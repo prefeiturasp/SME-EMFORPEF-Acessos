@@ -147,5 +147,16 @@ namespace SME.Acessos.Api.Controllers
         {
             return Ok(await servicoUsuarios.ObterUsuariosComPerfisResponsavel(perfis, sistemaId));
         }
+        
+        [HttpPut("{login}/nome")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> AlterarNome([FromRoute] string login, [FromBody] AlterarNomeUsuarioDTO alterarNomeUsuarioDto, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            var retorno = await servicoUsuarios.AlterarNome(login, alterarNomeUsuarioDto.Nome);
+
+            return Ok(retorno);
+        }
     }
 }
