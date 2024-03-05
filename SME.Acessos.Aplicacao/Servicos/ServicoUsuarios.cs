@@ -176,7 +176,7 @@ namespace SME.Acessos.Aplicacao
 
             if (usuarioCore == null)
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
-            if (!usuarioCore.Email.Trim().EhNulo())
+            if (!usuarioCore.Email.EhNulo())
                 throw new NegocioException(MensagemNegocio.USUARIO_COM_EMAIL_INVALIDO);
             if (!usuarioCore.Email.EmailEhValido())
                 throw new NegocioException(MensagemNegocio.USUARIO_COM_EMAIL_INVALIDO);
