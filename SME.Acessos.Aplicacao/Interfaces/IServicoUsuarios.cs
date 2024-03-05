@@ -1,5 +1,4 @@
 ﻿using SME.Acessos.Aplicacao.DTO;
-using SME.Acessos.Infra.Dominio.CoreSSO;
 using SME.Acessos.Infra.Dominio.Enumeradores;
 
 namespace SME.Acessos.Aplicacao.Interfaces
@@ -21,5 +20,6 @@ namespace SME.Acessos.Aplicacao.Interfaces
         Task<IEnumerable<ResponsavelDTO>> ObterUsuariosComPerfisResponsavel(Guid[] perfis, long sistemaId);
         Task<bool> EnviarEmailValidacaoCadastro(string login, long sistemaId);
         Task<bool> AlterarNome(string login, string nome);
+        Task<bool> Alterar(string login, UsuarioDTO usuarioDTO);
     }
 }

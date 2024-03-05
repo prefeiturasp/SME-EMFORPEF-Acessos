@@ -53,7 +53,17 @@ namespace SME.Acessos.Api.Controllers
 
             return Ok(retorno);
         }
-        
+
+        [HttpPut("{login}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> Alterar([FromRoute] string login, [FromBody] UsuarioDTO usuarioDTO, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            var retorno = await servicoUsuarios.Alterar(login, usuarioDTO);
+            return Ok(retorno);
+        }
+
         [HttpPut("{login}/senha")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
