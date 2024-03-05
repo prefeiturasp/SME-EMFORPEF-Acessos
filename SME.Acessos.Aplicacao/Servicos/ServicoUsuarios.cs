@@ -300,5 +300,16 @@ namespace SME.Acessos.Aplicacao
             await repositorioUsuarioCoreSSO.AlterarNome(usuario.Id, nome);
             return true;
         }
+
+        public async Task<bool> Alterar(string login, UsuarioDTO usuarioDTO)
+        {
+            var usuario = await ValidarLogin(login);
+
+            await repositorioUsuarioCoreSSO.AlterarNome(usuario.Id, usuarioDTO.Nome);
+            await repositorioUsuarioCoreSSO.AlterarEmail(usuario.Id, usuarioDTO.Email);
+            await AlterarSenhaRegistrarHistorico(usuarioDTO.Senha, usuario.Id);
+
+            return true;
+        }
     }
 }
