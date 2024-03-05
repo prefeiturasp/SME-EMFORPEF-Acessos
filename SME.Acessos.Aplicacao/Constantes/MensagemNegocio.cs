@@ -12,5 +12,6 @@ public class MensagemNegocio
     public const string USUARIO_OU_SENHA_INCORRETOS = "Usuário ou senha incorretos.";
     public const string USUARIO_NAO_ENCONTRADO = "Usuário não encontrado.";
     public const string USUARIO_COM_EMAIL_INVALIDO = "E-mail do usuário é inválido.";
+    public const string USUARIO_NAO_POSSUI_EMAIL = "Usuário não possui e-mail cadastrado.";
     public const string RESPONSAVEIS_NAO_ENCONTRADO = "Responsáveis não encontrados.";
 }
