@@ -137,5 +137,17 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
 
             return await conexao.Obter().QueryFirstOrDefaultAsync<string>(query, new { login });
         }
+
+        public async Task AlterarNome(Guid usuarioId, string nome)
+        {
+            var alterarNome = @"UPDATE PES_Pessoa
+                                 	SET pes_nome = @nome,
+                                 	    pes_dataalteracao = getdate()
+                                 FROM SYS_Usuario su
+                                 JOIN PES_Pessoa pp ON pp.pes_id = su.pes_id
+                                 WHERE su.usu_id = @usuarioId ";
+            
+            await conexao.Obter().ExecuteAsync(alterarNome, new {usuarioId, nome});
+        }
     }
 }

@@ -104,5 +104,10 @@ namespace SME.Acessos.TesteIntegracao.ServicosFakes
         {
             return Task.FromResult(string.Empty);
         }
+
+        public Task AlterarNome(Guid usuarioId, string nome)
+        {
+            return Task.CompletedTask;
+        }
     }
 }

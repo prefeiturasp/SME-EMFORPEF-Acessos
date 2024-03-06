@@ -294,5 +294,25 @@ namespace SME.Acessos.Aplicacao
                 Nome = s.Nome
             });
         }
+
+        public async Task<bool> AlterarNome(string login, string nome)
+        {
+            var usuario = await ValidarLogin(login);
+
+            await repositorioUsuarioCoreSSO.AlterarNome(usuario.Id, nome);
+            return true;
+        }
+
+        public async Task<bool> Alterar(string login, UsuarioDTO usuarioDTO)
+        {
+            var usuario = await repositorioUsuarioCoreSSO.ObterPorLogin(login) ??
+                throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
+
+            await repositorioUsuarioCoreSSO.AlterarNome(usuario.Id, usuarioDTO.Nome);
+            await repositorioUsuarioCoreSSO.AlterarEmail(usuario.Id, usuarioDTO.Email);
+            await AlterarSenhaRegistrarHistorico(usuarioDTO.Senha, usuario.Id);
+
+            return true;
+        }
     }
 }
