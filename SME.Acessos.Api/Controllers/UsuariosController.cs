@@ -54,7 +54,7 @@ namespace SME.Acessos.Api.Controllers
             return Ok(retorno);
         }
 
-        [HttpPut("{login}")]
+        [HttpPut("{login}/atualizar")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
