@@ -305,7 +305,8 @@ namespace SME.Acessos.Aplicacao
 
         public async Task<bool> Alterar(string login, UsuarioDTO usuarioDTO)
         {
-            var usuario = await ValidarLogin(login);
+            var usuario = await repositorioUsuarioCoreSSO.ObterPorLogin(login) ??
+                throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
             await repositorioUsuarioCoreSSO.AlterarNome(usuario.Id, usuarioDTO.Nome);
             await repositorioUsuarioCoreSSO.AlterarEmail(usuario.Id, usuarioDTO.Email);
