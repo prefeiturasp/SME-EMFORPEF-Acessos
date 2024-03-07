@@ -118,7 +118,10 @@ namespace SME.Acessos.Aplicacao
 
         public async Task<bool> AlterarEmail(string login, AlterarEmailUsuarioDTO alterarEmailUsuarioDto)
         {
-            var usuario = await ValidarLogin(login);
+            if (!alterarEmailUsuarioDto.Email.EmailEhValido())
+                throw new NegocioException(MensagemNegocio.USUARIO_COM_EMAIL_INVALIDO);
+
+            var usuario = await repositorioUsuarioCoreSSO.ObterPorLogin(login);
 
             await repositorioUsuarioCoreSSO.AlterarEmail(usuario.Id, alterarEmailUsuarioDto.Email);
             return true;
@@ -259,7 +262,7 @@ namespace SME.Acessos.Aplicacao
             {
                 usuarioRecuperacaoSenha.ValidarSenha(alterarSenha.Senha);
             }
-            catch (NegocioException e)
+            catch
             {
                 return new RetornoAlteracaoSenhaDto(AlterarSenhaStatus.ForaPadrao);
             }
@@ -277,7 +280,7 @@ namespace SME.Acessos.Aplicacao
 
         private async Task<AlterarSenhaStatus> AlterarSenha(string login, string senha)
         {
-            var usuarioCore = await ValidarLogin(login);
+            var usuarioCore = await repositorioUsuarioCoreSSO.ObterPorLogin(login);
 
             await AlterarSenhaRegistrarHistorico(senha, usuarioCore.Id);
 
@@ -300,7 +303,7 @@ namespace SME.Acessos.Aplicacao
 
         public async Task<bool> AlterarNome(string login, string nome)
         {
-            var usuario = await ValidarLogin(login);
+            var usuario = await repositorioUsuarioCoreSSO.ObterPorLogin(login);
 
             await repositorioUsuarioCoreSSO.AlterarNome(usuario.Id, nome);
             return true;
