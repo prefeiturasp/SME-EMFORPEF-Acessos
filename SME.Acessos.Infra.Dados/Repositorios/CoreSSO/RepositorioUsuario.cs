@@ -14,10 +14,11 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
 
         public async Task<Usuario> ObterPorLogin(string login)
         {
-            var query = @"select usu_id, 
+            var query = @" select usu_id, 
                                  usu_login, 
                                  usu_email, 
                                  usu_senha,
+                                 usu_criptografia,                                 
                                  p.pes_id,
                                  p.pes_nome,
                                  pd.psd_numero
@@ -25,9 +26,9 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                          join pes_pessoa p on u.pes_id = p.pes_id
                          left join pes_pessoadocumento pd on p.pes_id = pd.pes_id
                          and pd.tdo_id = @tipoDocumentoCpf
-                         where usu_login = @login ";
-            
-            var usuarios = await conexao.Obter().QueryAsync<Usuario, Pessoa, PessoaDocumento,Usuario>(query, 
+                        where u.usu_login = @login ";
+
+            var usuarios = await conexao.Obter().QueryAsync<Usuario, Pessoa, PessoaDocumento, Usuario>(query,
                 (usuario, pessoa, pessoaDocumento) =>
                 {
                     usuario.AdicionarPessoa(pessoa);
@@ -40,18 +41,11 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
         public async Task<bool> UsuarioCadastradoCoreSSO(string login)
         {
             var query = @"select 1
-                          from SYS_Usuario su 
-                           join PES_Pessoa pp on pp.pes_id = su.pes_id 
-                           join PES_PessoaDocumento ppd on ppd.pes_id = pp.pes_id 
-                           join SYS_TipoDocumentacao std on std.tdo_id = ppd.tdo_id 
-                          where ppd.psd_numero = @login and tdo_sigla = 'CPF'
-                          union 
-                          select 1
                           from SYS_Usuario su
                           where su.usu_login = @login ";
-            
+
             var usuarios = await conexao.Obter().QueryAsync(query, new { login });
-            
+
             return usuarios.Any();
         }
 
@@ -68,20 +62,21 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                           from SYS_Usuario 
                           where usu_id = @usuarioId 
                             and usu_senha = @senhaAtual ";
-            
-            var usuarios = await conexao.Obter().QueryAsync<int>(query, new { usuarioId,senhaAtual });
-            
+
+            var usuarios = await conexao.Obter().QueryAsync<int>(query, new { usuarioId, senhaAtual });
+
             return usuarios.Any();
         }
 
-        public async Task AlterarSenha(Guid usuarioId, string senhaNova)
+        public async Task AlterarSenha(Guid usuarioId, string senhaNova, TipoCriptografia criptografia)
         {
             var atualizarSenha = @"update SYS_Usuario 
                                         set usu_senha = @senhaNova, 
+                                            usu_criptografia = @criptografia,
                                             usu_dataalteracao = getdate(), 
                                             usu_dataalteracaosenha = getdate() 
                                    where usu_id = @usuarioId ";
-            await conexao.Obter().ExecuteAsync(atualizarSenha, new {usuarioId, senhaNova});
+            await conexao.Obter().ExecuteAsync(atualizarSenha, new { usuarioId, senhaNova, criptografia });
         }
 
         public async Task InserirHistoricoSenha(Guid usuarioId, string senha, TipoCriptografia criptografia)
@@ -90,8 +85,8 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                                         (usu_id ,ush_senha ,ush_criptografia ,ush_id ,ush_data)
                                     VALUES
                                         (@usuarioId ,@senha ,@tipoCriptografia ,NEWID() ,GETDATE())";
-            
-            await conexao.Obter().ExecuteAsync(inserirHistorico, new {usuarioId, senha, tipoCriptografia = (int)criptografia});
+
+            await conexao.Obter().ExecuteAsync(inserirHistorico, new { usuarioId, senha, tipoCriptografia = (int)criptografia });
         }
 
         public async Task AlterarEmail(Guid usuarioId, string email)
@@ -100,9 +95,24 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                                         set usu_email = @email, 
                                             usu_dataalteracao = getdate()
                                    where usu_id = @usuarioId ";
-            await conexao.Obter().ExecuteAsync(alterarEmail, new {usuarioId, email});
+            await conexao.Obter().ExecuteAsync(alterarEmail, new { usuarioId, email });
         }
-        
+
+        public async Task AlterarUsuario(Guid usuarioId, string senhaNova, TipoCriptografia criptografia, string email)
+        {
+            var situacao = 1;
+            var atualizarUsuario = @"update SYS_Usuario 
+                                        set usu_senha = @senhaNova, 
+                                            usu_criptografia = @criptografia,
+                                            usu_email = @email,
+                                            usu_situacao = @situacao,
+                                            usu_dataalteracao = getdate(), 
+                                            usu_dataalteracaosenha = getdate() 
+                                   where usu_id = @usuarioId ";
+
+            await conexao.Obter().ExecuteAsync(atualizarUsuario, new { usuarioId, senhaNova, email, criptografia, situacao });
+        }
+
         public async Task<IEnumerable<string>> ObterDresPorLoginEPerfil(string login, Guid? perfil)
         {
             var query = $@"select distinct ua.uad_codigo 
@@ -112,7 +122,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                           where su.usu_login = @login and ug.gru_id = @perfil";
 
             var usuarios = await conexao.Obter().QueryAsync<string>(query, new { login, perfil });
-            
+
             return usuarios;
         }
 
@@ -126,8 +136,34 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                           where sg.sis_id = @sistemaId 
                             and sg.gru_id in @perfis
                           order by p.pes_nome";
-                
+
             return await conexao.Obter().QueryAsync<DadosUsuario>(query, new { perfis, sistemaId });
+        }
+
+        public async Task<string> ObterLoginUsuarioPorCpfCadastradoCoreSSO(string login)
+        {
+            var query = @"select top 1 su.usu_login
+                        from SYS_Usuario su
+                        join PES_Pessoa pp on pp.pes_id = su.pes_id
+                        join PES_PessoaDocumento ppd on ppd.pes_id = pp.pes_id
+                        join SYS_TipoDocumentacao std on std.tdo_id = ppd.tdo_id
+                        where
+	                        ppd.psd_numero = @login
+	                        and tdo_sigla = 'CPF'";
+
+            return await conexao.Obter().QueryFirstOrDefaultAsync<string>(query, new { login });
+        }
+
+        public async Task AlterarNome(Guid usuarioId, string nome)
+        {
+            var alterarNome = @"UPDATE PES_Pessoa
+                                 	SET pes_nome = @nome,
+                                 	    pes_dataalteracao = getdate()
+                                 FROM SYS_Usuario su
+                                 JOIN PES_Pessoa pp ON pp.pes_id = su.pes_id
+                                 WHERE su.usu_id = @usuarioId ";
+
+            await conexao.Obter().ExecuteAsync(alterarNome, new { usuarioId, nome });
         }
     }
 }

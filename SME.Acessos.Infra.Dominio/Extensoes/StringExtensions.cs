@@ -1,4 +1,6 @@
 ﻿
+using System.Text.RegularExpressions;
+
 namespace SME.Acessos.Infra.Dominio.Extensions
 {
     public static class StringExtensions
@@ -11,6 +13,12 @@ namespace SME.Acessos.Infra.Dominio.Extensions
         public static bool IsNull(this string value)
         {
             return string.IsNullOrWhiteSpace(value);
+        }
+        
+        public static bool EmailEhValido(this string email)
+        {
+            var regex = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+            return Regex.IsMatch(email, regex);
         }
 
         public static bool IsEqualsToInvariantCulture(this string source, string target)

@@ -1,8 +1,5 @@
-﻿using System.Data.SqlClient;
-using Dapper;
-using SME.Acessos.Infra.Dados;
+﻿using SME.Acessos.Infra.Dados;
 using SME.Acessos.Infra.Dados.Repositorios.CoreSSO;
-using SME.Acessos.Infra.Dominio.CoreSSO;
 using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 using SME.Acessos.Infra.Dominio.Enumeradores;
@@ -98,6 +95,26 @@ namespace SME.Acessos.TesteIntegracao.ServicosFakes
                 new () { Login = "3"},
                 new () { Login = "4"},
             });
+        }
+
+        public Task<string> ObterLoginUsuarioPorCpfCadastradoCoreSSO(string login)
+        {
+            return Task.FromResult(string.Empty);
+        }
+
+        public Task AlterarNome(Guid usuarioId, string nome)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task AlterarSenha(Guid usuarioId, string senhaNova, TipoCriptografia criptografia)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task AlterarUsuario(Guid usuarioId, string senhaNova, TipoCriptografia criptografia, string email)
+        {
+            return Task.CompletedTask;
         }
     }
 }

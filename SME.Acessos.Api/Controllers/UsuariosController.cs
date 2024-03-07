@@ -53,7 +53,17 @@ namespace SME.Acessos.Api.Controllers
 
             return Ok(retorno);
         }
-        
+
+        [HttpPut("{login}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> Alterar([FromRoute] string login, [FromBody] UsuarioDTO usuarioDTO, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            var retorno = await servicoUsuarios.Alterar(login, usuarioDTO);
+            return Ok(retorno);
+        }
+
         [HttpPut("{login}/senha")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]
@@ -146,6 +156,17 @@ namespace SME.Acessos.Api.Controllers
         public async Task<IActionResult> ObterUsuariosComPerfisResponsavel([FromQuery] Guid[] perfis, long sistemaId, [FromServices] IServicoUsuarios servicoUsuarios)
         {
             return Ok(await servicoUsuarios.ObterUsuariosComPerfisResponsavel(perfis, sistemaId));
+        }
+        
+        [HttpPut("{login}/nome")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> AlterarNome([FromRoute] string login, [FromBody] AlterarNomeUsuarioDTO alterarNomeUsuarioDto, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            var retorno = await servicoUsuarios.AlterarNome(login, alterarNomeUsuarioDto.Nome);
+
+            return Ok(retorno);
         }
     }
 }

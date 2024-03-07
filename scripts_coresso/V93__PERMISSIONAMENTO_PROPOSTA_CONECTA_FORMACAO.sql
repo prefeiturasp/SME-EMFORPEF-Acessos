@@ -1,7 +1,7 @@
 ﻿
 Declare @sistema_id int;
 declare @grupo_admin_df_id uniqueidentifier;
-Declare @mod_id_pai_cadastros int;
+Declare @mod_id_pai_propostas int;
 Declare @mod_id int;
 
 BEGIN TRY
@@ -42,7 +42,7 @@ BEGIN TRY
 
 		print 'inserindo visão módulos'
 		insert into sys_visaomodulo 
-		select 1,m.sis_id,m.mod_id from sys_modulo m where m.sis_id = @sistema_id where not exists(select 1 from sys_visaomodulo v where v.sis_id = m.sis_id and v.mod_id = m.mod_id);
+		select 1,m.sis_id,m.mod_id from sys_modulo m where m.sis_id = @sistema_id and not exists(select 1 from sys_visaomodulo v where v.sis_id = m.sis_id and v.mod_id = m.mod_id);
 		------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		--> Inserindo permissionamento grupo Admin DF
 				

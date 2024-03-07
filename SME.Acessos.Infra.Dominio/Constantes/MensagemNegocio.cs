@@ -2,7 +2,7 @@
 
 public class MensagemNegocio
 {
-    public const string VOCE_NAO_TEM_EMAIL_CADASTRADO_PARA_RECUPERAR_SENHA_CONECTA = "Você não possui e-mail cadastrado. Procure a DF para regularizar seu acesso.";
+    public const string VOCE_NAO_TEM_EMAIL_CADASTRADO_PARA_RECUPERAR_SENHA_CONECTA = "Você não possui e-mail cadastrado. Entre em contato com o suporte para regularizar o seu acesso.";
     public const string VOCE_NAO_TEM_EMAIL_CADASTRADO_PARA_RECUPERAR_SENHA = "Você não tem um e-mail cadastrado para recuperar sua senha. Para restabelecer o seu acesso, procure o Diretor da sua UE ou Administrador do SGP da sua unidade.";
     public const string A_SENHA_DEVE_CONTER_SOMENTE = "A senha deve conter pelo menos 1 letra maiúscula, 1 minúscula, 1 número e/ou 1 caractere especial e não pode conter acentuação";
     public const string A_SENHA_NAO_PODE_CONTER_ESPACOS_EM_BRANCO = "A senha não pode conter espaço em branco";

@@ -1,4 +1,6 @@
-﻿namespace SME.Acessos.Infra.Dominio.CoreSSO.Entidades
+﻿using SME.Acessos.Infra.Dominio.Enumeradores;
+
+namespace SME.Acessos.Infra.Dominio.CoreSSO.Entidades
 {
     public class Usuario : EntidadeBaseCoreSSO
     {
@@ -6,7 +8,7 @@
         public string Dominio { get; set; }
         public string Email { get; set; }
         public string Senha { get; set; }
-        public int Criptografia { get; set; }
+        public TipoCriptografia Criptografia { get; set; }
         public int Situacao { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataAlteracao { get; set; }
