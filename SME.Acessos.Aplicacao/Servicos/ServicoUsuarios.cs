@@ -88,7 +88,7 @@ namespace SME.Acessos.Aplicacao
 
         public async Task<bool> AlterarSenha(string login, AlterarSenhaUsuarioDTO alterarSenhaUsuarioDto)
         {
-            var usuario = await repositorioUsuarioCoreSSO.ObterPorLogin(login);
+            var usuario = await ValidarLogin(login);
 
             var senhaAtualCorreta = await repositorioUsuarioCoreSSO.ValidarSenhaAtual(usuario.Id, CriptografiaExtensions.CriptografarSenha(alterarSenhaUsuarioDto.SenhaAtual, TipoCriptografia.TripleDES));
             if (!senhaAtualCorreta)
@@ -121,7 +121,7 @@ namespace SME.Acessos.Aplicacao
             if (!alterarEmailUsuarioDto.Email.EmailEhValido())
                 throw new NegocioException(MensagemNegocio.USUARIO_COM_EMAIL_INVALIDO);
 
-            var usuario = await repositorioUsuarioCoreSSO.ObterPorLogin(login);
+            var usuario = await ValidarLogin(login);
 
             await repositorioUsuarioCoreSSO.AlterarEmail(usuario.Id, alterarEmailUsuarioDto.Email);
             return true;
@@ -131,7 +131,7 @@ namespace SME.Acessos.Aplicacao
         {
             var sistemaAcao = await ObterSistemaAcaoPorAcaoESistema(sistemaId);
 
-            var usuarioCore = await ValidarLogin(login);
+            var usuarioCore = await ValidarLogin(login, true);
 
             var token = await ObterOuCriarMovimentacaoTokenUsuario(login, sistemaId, sistemaAcao, usuarioCore);
 
@@ -144,7 +144,7 @@ namespace SME.Acessos.Aplicacao
         {
             var sistemaAcao = await ObterSistemaAcaoPorAcaoESistema(sistemaId, TipoAcao.ValidacaoEmail);
 
-            var usuarioCore = await ValidarLogin(login);
+            var usuarioCore = await ValidarLogin(login, true);
 
             var token = await ObterOuCriarMovimentacaoTokenUsuario(login, sistemaId, sistemaAcao, usuarioCore, TipoAcao.ValidacaoEmail);
 
@@ -176,16 +176,19 @@ namespace SME.Acessos.Aplicacao
             return sistemaRecuperacao;
         }
 
-        private async Task<Usuario?> ValidarLogin(string login)
+        private async Task<Usuario?> ValidarLogin(string login, bool validarEmail = false)
         {
-            var usuarioCore = await repositorioUsuarioCoreSSO.ObterPorLogin(login);
-
-            if (usuarioCore == null)
+            var usuarioCore = await repositorioUsuarioCoreSSO.ObterPorLogin(login) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
-            if (usuarioCore.Email.EhNulo())
-                throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_EMAIL);
-            if (!usuarioCore.Email.EmailEhValido())
-                throw new NegocioException(MensagemNegocio.USUARIO_COM_EMAIL_INVALIDO);
+
+            if (validarEmail)
+            {
+
+                if (usuarioCore.Email.EhNulo())
+                    throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_EMAIL);
+                if (!usuarioCore.Email.EmailEhValido())
+                    throw new NegocioException(MensagemNegocio.USUARIO_COM_EMAIL_INVALIDO);
+            }
             return usuarioCore;
         }
 
@@ -280,9 +283,9 @@ namespace SME.Acessos.Aplicacao
 
         private async Task<AlterarSenhaStatus> AlterarSenha(string login, string senha)
         {
-            var usuarioCore = await repositorioUsuarioCoreSSO.ObterPorLogin(login);
+            var usuario = await ValidarLogin(login);
 
-            await AlterarSenhaRegistrarHistorico(senha, usuarioCore.Id);
+            await AlterarSenhaRegistrarHistorico(senha, usuario.Id);
 
             return AlterarSenhaStatus.OK;
         }
@@ -303,7 +306,10 @@ namespace SME.Acessos.Aplicacao
 
         public async Task<bool> AlterarNome(string login, string nome)
         {
-            var usuario = await repositorioUsuarioCoreSSO.ObterPorLogin(login);
+            if (nome.IsNull())
+                throw new NegocioException(MensagemNegocio.USUARIO_NOME_NAO_PREENCHIDO);
+
+            var usuario = await ValidarLogin(login);
 
             await repositorioUsuarioCoreSSO.AlterarNome(usuario.Id, nome);
             return true;
@@ -315,9 +321,10 @@ namespace SME.Acessos.Aplicacao
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_EMAIL);
             if (!usuarioDTO.Email.EmailEhValido())
                 throw new NegocioException(MensagemNegocio.USUARIO_COM_EMAIL_INVALIDO);
+            if (usuarioDTO.Nome.IsNull())
+                throw new NegocioException(MensagemNegocio.USUARIO_NOME_NAO_PREENCHIDO);
 
-            var usuario = await repositorioUsuarioCoreSSO.ObterPorLogin(login) ??
-                throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
+            var usuario = await ValidarLogin(login);
 
             var criptografia = TipoCriptografia.TripleDES;
             var senhaCriptografada = CriptografiaExtensions.CriptografarSenha(usuarioDTO.Senha, criptografia);
