@@ -100,8 +100,11 @@ namespace SME.Acessos.Aplicacao
 
         private async Task AlterarSenhaRegistrarHistorico(string senhaNova, Guid usuarioId)
         {
-            await repositorioUsuarioCoreSSO.AlterarSenha(usuarioId, CriptografiaExtensions.CriptografarSenha(senhaNova, TipoCriptografia.TripleDES));
-            await repositorioUsuarioCoreSSO.InserirHistoricoSenha(usuarioId, senhaNova, TipoCriptografia.TripleDES);
+            var criptografia = TipoCriptografia.TripleDES;
+            var senhaCriptografada = CriptografiaExtensions.CriptografarSenha(senhaNova, criptografia);
+
+            await repositorioUsuarioCoreSSO.AlterarSenha(usuarioId, senhaCriptografada, criptografia);
+            await repositorioUsuarioCoreSSO.InserirHistoricoSenha(usuarioId, senhaCriptografada, criptografia);
         }
 
         public async Task<DadosUsuarioDTO?> ObterMeusDados(string login)
@@ -305,12 +308,20 @@ namespace SME.Acessos.Aplicacao
 
         public async Task<bool> Alterar(string login, UsuarioDTO usuarioDTO)
         {
+            if (usuarioDTO.Email.EhNulo())
+                throw new NegocioException(MensagemNegocio.USUARIO_NAO_POSSUI_EMAIL);
+            if (!usuarioDTO.Email.EmailEhValido())
+                throw new NegocioException(MensagemNegocio.USUARIO_COM_EMAIL_INVALIDO);
+
             var usuario = await repositorioUsuarioCoreSSO.ObterPorLogin(login) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
 
+            var criptografia = TipoCriptografia.TripleDES;
+            var senhaCriptografada = CriptografiaExtensions.CriptografarSenha(usuarioDTO.Senha, criptografia);
+
             await repositorioUsuarioCoreSSO.AlterarNome(usuario.Id, usuarioDTO.Nome);
-            await repositorioUsuarioCoreSSO.AlterarEmail(usuario.Id, usuarioDTO.Email);
-            await AlterarSenhaRegistrarHistorico(usuarioDTO.Senha, usuario.Id);
+            await repositorioUsuarioCoreSSO.AlterarUsuario(usuario.Id, senhaCriptografada, criptografia, usuarioDTO.Email);
+            await repositorioUsuarioCoreSSO.InserirHistoricoSenha(usuario.Id, senhaCriptografada, criptografia);
 
             return true;
         }
