@@ -1,10 +1,6 @@
-﻿using MailKit.Net.Smtp;
-using MimeKit;
-using SME.Acessos.Aplicacao.Constantes;
+﻿using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Interfaces;
-using SME.Acessos.Infra.Dominio.Acessos.Entidades;
 using SME.Acessos.Infra.Dominio.Acessos.Repositorios;
-using SME.Acessos.Infra.Dominio.Extensions;
 
 namespace SME.Acessos.TesteIntegracao.ServicosFakes
 {
@@ -20,6 +16,11 @@ namespace SME.Acessos.TesteIntegracao.ServicosFakes
         public Task Enviar(string nomeDestinatario, string emailDestinatario, string assunto, string mensagemHtml, long sistemaId)
         {
             return Task.CompletedTask;
+        }
+
+        public Task<ConfiguracaoEmailDTO> ObterConfiguracaoEmail(long sistemaId)
+        {
+            return Task.FromResult(new ConfiguracaoEmailDTO());
         }
     }
 }
