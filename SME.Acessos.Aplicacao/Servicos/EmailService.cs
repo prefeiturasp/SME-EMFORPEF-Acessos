@@ -1,8 +1,9 @@
-﻿using MailKit.Net.Smtp;
+﻿using AutoMapper;
+using MailKit.Net.Smtp;
 using MimeKit;
 using SME.Acessos.Aplicacao.Constantes;
+using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Interfaces;
-using SME.Acessos.Infra.Dominio.Acessos.Entidades;
 using SME.Acessos.Infra.Dominio.Acessos.Repositorios;
 using SME.Acessos.Infra.Dominio.Extensions;
 
@@ -11,10 +12,12 @@ namespace SME.Acessos.Aplicacao
     public class ServicoEmail : IServicoEmail
     {
         private readonly IRepositorioConfiguracaoEmail repositorioConfiguracaoEmail;
+        private readonly IMapper mapper;
 
-        public ServicoEmail(IRepositorioConfiguracaoEmail repositorioConfiguracaoEmail)
+        public ServicoEmail(IRepositorioConfiguracaoEmail repositorioConfiguracaoEmail, IMapper mapper)
         {
             this.repositorioConfiguracaoEmail = repositorioConfiguracaoEmail ?? throw new ArgumentNullException(nameof(repositorioConfiguracaoEmail));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task Enviar(string nomeDestinatario, string emailDestinatario, string assunto, string mensagemHtml, long sistemaId)
@@ -31,25 +34,20 @@ namespace SME.Acessos.Aplicacao
                 Text = mensagemHtml
             };
 
-            using (var client = new SmtpClient())
-            {
-                client.Connect(configuracaoEmail.Smtp, configuracaoEmail.Porta, configuracaoEmail.TLS);
-
-                client.Authenticate(configuracaoEmail.Usuario, configuracaoEmail.Senha);
-
-                client.Send(message);
-                client.Disconnect(true);
-            }
+            using var client = new SmtpClient();
+            await client.ConnectAsync(configuracaoEmail.Smtp, configuracaoEmail.Porta, configuracaoEmail.TLS);
+            await client.AuthenticateAsync(configuracaoEmail.Usuario, configuracaoEmail.Senha);
+            await client.SendAsync(message);
+            await client.DisconnectAsync(true);
         }
 
-        private async Task<ConfiguracaoEmail> ObterConfiguracaoEmail(long sistemaId)
+        public async Task<ConfiguracaoEmailDTO> ObterConfiguracaoEmail(long sistemaId)
         {
             var configuracoes = await repositorioConfiguracaoEmail.ObterConfiguracaoEmailPorSistema(sistemaId);
-
             if (configuracoes == null)
                 throw new NegocioException(MensagemNegocio.NAO_LOCALIZADO_CONFIGURACAO_EMAIL);
 
-            return configuracoes;
+            return mapper.Map<ConfiguracaoEmailDTO>(configuracoes);
         }
     }
 }
