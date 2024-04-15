@@ -6,7 +6,7 @@ namespace SME.Acessos.Api.Controllers
 {
     public class ConfiguracaoController : BaseController
     {
-        [HttpGet("/email/sistema/{sistemaId}")]
+        [HttpGet("email/sistema/{sistemaId}")]
         [ProducesResponseType(typeof(ConfiguracaoEmailDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
