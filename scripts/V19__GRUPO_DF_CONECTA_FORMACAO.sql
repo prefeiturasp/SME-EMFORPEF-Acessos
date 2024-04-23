@@ -1,0 +1,1 @@
+﻿insert into grupos (id, guidPerfil, nome, idabrangencia) select (select COALESCE(max(id)+1,1) from grupos),'1BE31B9F-26D0-EE11-84F4-782BCB3D218E', 'DF', 6 where not exists (select 1 from grupos where nome = 'DF');
