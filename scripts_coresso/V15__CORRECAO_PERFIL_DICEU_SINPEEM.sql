@@ -1,4 +1,4 @@
-IF NOT EXISTS (select 1 from CoreSSO_hom.dbo.SYS_VisaoModulo where vis_id =3 and sis_id =1007 and mod_id =6)
+IF NOT EXISTS (select 1 from dbo.SYS_VisaoModulo where vis_id =3 and sis_id =1007 and mod_id =6)
 BEGIN
 	--Correção Perfil DICEU(DRE)							     
 	INSERT INTO dbo.SYS_VisaoModulo
@@ -6,7 +6,7 @@ BEGIN
 	VALUES(3, 1007, 6);
 END
 
-IF NOT EXISTS (select 1 from CoreSSO_hom.dbo.SYS_GrupoPermissao where gru_id ='AAA08B83-5DEC-4930-BF5B-44DE9876843F' and sis_id =1007 and mod_id =6)
+IF NOT EXISTS (select 1 from dbo.SYS_GrupoPermissao where gru_id ='AAA08B83-5DEC-4930-BF5B-44DE9876843F' and sis_id =1007 and mod_id =6)
 BEGIN
 	-- Correção Perfil SINPEEM
 	INSERT INTO dbo.SYS_GrupoPermissao
