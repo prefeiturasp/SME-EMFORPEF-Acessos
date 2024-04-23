@@ -38,7 +38,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
             return usuariosGrupos.ToList();
         }
 
-        public async Task<IList<UsuarioGrupoPessoa>> ObterUsuariosPerfilPareceristasConecta(string login, string nome)
+        public async Task<IList<UsuarioGrupoPessoa>> ObterUsuariosPerfilPareceristasConecta(string? login, string? nome)
         {
             const int sistemaIdConecta = 1007;
             var query = new StringBuilder($@" select
