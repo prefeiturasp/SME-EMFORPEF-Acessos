@@ -38,7 +38,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
             return usuariosGrupos.ToList();
         }
 
-        public async Task<IList<UsuarioGrupoPessoa>> ObterUsuariosPerfilPareceristasConecta(string? login, string? nome)
+        public async Task<IList<UsuarioGrupoPessoa>> ObterUsuariosPerfilPareceristasConecta()
         {
             const int sistemaIdConecta = 1007;
             var query = new StringBuilder($@" select
@@ -55,13 +55,9 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                              left join pes_pessoadocumento pd on p.pes_id = pd.pes_id
                              and pd.tdo_id = @tipoDocumentoCpf
                         where g.gru_id = @perfilParecerista ");
-            if (!string.IsNullOrEmpty(login))
-                query.AppendLine(" and u.usu_login like @login ");
-            if (!string.IsNullOrEmpty(nome))
-                query.AppendLine("  and p.pes_nome like @nome ");
             
             query.AppendLine(" and g.sis_id = @sistemaIdConecta; ");       
-            var usuariosGrupos = await conexao.Obter().QueryAsync<UsuarioGrupoPessoa>(query.ToString(),new { login, nome,sistemaIdConecta, tipoDocumentoCpf = ConstantesDados.TIPO_DOCUMENTO_CPF,perfilParecerista = ConstantesCoreSSO.PERFIL_PARECERISTA });
+            var usuariosGrupos = await conexao.Obter().QueryAsync<UsuarioGrupoPessoa>(query.ToString(),new { sistemaIdConecta, tipoDocumentoCpf = ConstantesDados.TIPO_DOCUMENTO_CPF,perfilParecerista = ConstantesCoreSSO.PERFIL_PARECERISTA });
             return usuariosGrupos.ToList();
         }
     }

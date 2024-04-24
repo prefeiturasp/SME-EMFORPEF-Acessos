@@ -91,9 +91,9 @@ namespace SME.Acessos.Aplicacao.Servicos
             return ObterPerfisToken(dadosUsuario.Login, dadosUsuario.Sistema, dadosUsuario.Perfil);
         }
 
-        public async Task<IEnumerable<RetornoUsuriosPareceristasDTO>> ObterUsuariosPerfilPareceristasConecta(string? login, string? nome)
+        public async Task<IEnumerable<RetornoUsuriosPareceristasDTO>> ObterUsuariosPerfilPareceristasConecta()
         {
-            var pareceristas = await repositorioUsuarioGrupoPessoa.ObterUsuariosPerfilPareceristasConecta(login, nome) ?? Enumerable.Empty<UsuarioGrupoPessoa>();
+            var pareceristas = await repositorioUsuarioGrupoPessoa.ObterUsuariosPerfilPareceristasConecta() ?? Enumerable.Empty<UsuarioGrupoPessoa>();
             var retorno = Enumerable.Empty<RetornoUsuriosPareceristasDTO>();
             
             if(pareceristas.Any() )
