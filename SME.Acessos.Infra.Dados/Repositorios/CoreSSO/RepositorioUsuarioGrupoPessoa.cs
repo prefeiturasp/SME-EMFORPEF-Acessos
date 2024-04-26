@@ -47,7 +47,8 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                             p.pes_nome PessoaNome,
                             ug.gru_id GrupoId,
                             g.gru_nome GrupoNome,
-                            pd.psd_numero as cpf 
+                            pd.psd_numero as cpf,
+                            u.usu_login as login
                         from sys_usuario u
                             inner join sys_usuariogrupo ug on u.usu_id = ug.usu_id
                             inner join sys_grupo g on g.gru_id = ug.gru_id
