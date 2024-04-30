@@ -169,7 +169,7 @@ namespace SME.Acessos.Api.Controllers
             return Ok(retorno);
         }
 
-        [HttpGet("usuarios-pareristas")]
+        [HttpGet("usuarios-pareceristas")]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         public async Task<IActionResult> ObterPareceristas([FromServices] IServicoPerfilUsuario servico)
