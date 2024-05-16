@@ -22,5 +22,8 @@ where not exists (select 1 from modulos where descricao = 'Rede de Parceria (Usu
 
 --> Rede de Parceria (Usuários)
 insert into permissoes (idgrupo, idmodulo) 	
-select (select id from grupos where nome = 'Admin DF'),id 
-from modulos where idmodcoresso = 39 and not exists (select 1 from permissoes where idmodulo in (select id from modulos where idmodcoresso = 2));
+select g.id, m.id
+from modulos m 
+left join grupos g on g.nome = 'Admin DF'
+where m.idmodcoresso = 39 and idsistemacoresso = 1007
+and not exists(select 1 from permissoes p where p.idgrupo = g.id and p.idmodulo = m.id);
