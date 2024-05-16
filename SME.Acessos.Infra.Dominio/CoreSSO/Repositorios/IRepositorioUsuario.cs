@@ -5,7 +5,7 @@ namespace SME.Acessos.Infra.Dominio.CoreSSO.Repositorios
 {
     public interface IRepositorioUsuario : IRepositorioBaseCoreSSO<Usuario>
     {
-        Task<Usuario> ObterPorLogin(string login);
+        Task<Usuario> ObterPorLogin(string login, bool somenteAtivos = false);
         Task<bool> UsuarioCadastradoCoreSSO(string login);
         Task InserirUsuarioCustomizado(string login, string email, string senha, Guid pessoa, Guid entidade);
         Task<bool> ValidarSenhaAtual(Guid usuarioId, string senhaAtual);
@@ -17,5 +17,6 @@ namespace SME.Acessos.Infra.Dominio.CoreSSO.Repositorios
         Task<string> ObterLoginUsuarioPorCpfCadastradoCoreSSO(string login);
         Task AlterarNome(Guid usuarioId, string nome);
         Task AlterarUsuario(Guid usuarioId, string senhaNova, TipoCriptografia criptografia, string email);
+        Task Inativar(Guid id);
     }
 }

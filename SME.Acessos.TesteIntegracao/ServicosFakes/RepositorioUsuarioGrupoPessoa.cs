@@ -41,5 +41,10 @@ namespace SME.Acessos.TesteIntegracao.ServicosFakes
 
             return Task.FromResult(usuariosGruposPessoas.Where(f => f.Login.Equals(login)).ToList() as IList<UsuarioGrupoPessoa>);
         }
+
+        public Task<IList<UsuarioGrupoPessoa>> ObterUsuariosPerfilPareceristasConecta()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
