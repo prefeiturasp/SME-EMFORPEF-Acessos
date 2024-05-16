@@ -31,5 +31,19 @@ namespace SME.Acessos.Aplicacao
                 return false;
             }
         }
+
+        public async Task<bool> DesvincularPerfil(string login, Guid perfilId)
+        {
+            try
+            {
+                var usuario = await repositorioUsuario.ObterPorLogin(login);
+                var retorno = await repositorioUsuarioGrupo.DeletarUsuarioGrupoCustomizado(usuario.Id, perfilId);
+                return retorno;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }

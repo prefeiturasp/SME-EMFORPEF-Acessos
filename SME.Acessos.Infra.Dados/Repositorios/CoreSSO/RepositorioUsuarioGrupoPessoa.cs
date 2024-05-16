@@ -32,7 +32,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                              and pd.tdo_id = @tipoDocumentoCpf
                         where
                             u.usu_login = @login
-                            and g.sis_id = @sistemaId ";
+                            and g.sis_id = @sistemaId and u.usu_situacao = 1";
             
             var usuariosGrupos = await conexao.Obter().QueryAsync<UsuarioGrupoPessoa>(query,new { login, sistemaId, tipoDocumentoCpf = ConstantesDados.TIPO_DOCUMENTO_CPF });
             return usuariosGrupos.ToList();
