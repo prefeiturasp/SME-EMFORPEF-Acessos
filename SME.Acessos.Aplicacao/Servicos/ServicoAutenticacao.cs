@@ -10,7 +10,7 @@ namespace SME.Acessos.Aplicacao.Servicos
     public class ServicoAutenticacao : IServicoAutenticacao
     {
         private readonly IRepositorioUsuario repositorioUsuario;
-
+        
         public ServicoAutenticacao(IRepositorioUsuario repositorioUsuario)
         {
             this.repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
@@ -21,8 +21,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             if (string.IsNullOrEmpty(login) && string.IsNullOrEmpty(senha))
                 throw new NegocioException(MensagemNegocio.LOGIN_SENHA_SAO_OBRIGATORIOS, HttpStatusCode.BadRequest);
             
-            var usuarioCoreSSO = await repositorioUsuario.ObterPorLogin(login);
-            if (usuarioCoreSSO == null)
+            var usuarioCoreSSO = await repositorioUsuario.ObterPorLogin(login, true) ?? 
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO, HttpStatusCode.Unauthorized);
 
             if (!CriptografiaExtensions.EqualsSenha(senha, usuarioCoreSSO.Senha, usuarioCoreSSO.Criptografia))

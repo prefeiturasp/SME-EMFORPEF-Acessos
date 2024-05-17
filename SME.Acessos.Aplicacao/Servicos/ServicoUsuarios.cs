@@ -327,12 +327,22 @@ namespace SME.Acessos.Aplicacao
             var usuario = await ValidarLogin(login);
 
             var criptografia = TipoCriptografia.TripleDES;
-            var senhaCriptografada = CriptografiaExtensions.CriptografarSenha(usuarioDTO.Senha, criptografia);
+            var senhaCriptografada = string.IsNullOrEmpty(usuarioDTO.Senha) ? usuario.Senha : CriptografiaExtensions.CriptografarSenha(usuarioDTO.Senha, criptografia);
 
             await repositorioUsuarioCoreSSO.AlterarNome(usuario.Id, usuarioDTO.Nome);
             await repositorioUsuarioCoreSSO.AlterarUsuario(usuario.Id, senhaCriptografada, criptografia, usuarioDTO.Email);
-            await repositorioUsuarioCoreSSO.InserirHistoricoSenha(usuario.Id, senhaCriptografada, criptografia);
 
+            if (!string.IsNullOrEmpty(usuarioDTO.Senha))
+                await repositorioUsuarioCoreSSO.InserirHistoricoSenha(usuario.Id, senhaCriptografada, criptografia);
+
+            return true;
+        }
+
+        public async Task<bool> Inativar(string login)
+        {
+            var usuario = await ValidarLogin(login);
+
+            await repositorioUsuarioCoreSSO.Inativar(usuario.Id);
             return true;
         }
     }

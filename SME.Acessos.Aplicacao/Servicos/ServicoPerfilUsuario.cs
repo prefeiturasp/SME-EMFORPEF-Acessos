@@ -56,7 +56,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             }
             else
             {
-                var usuarioCoreSSO = await repositorioUsuario.ObterPorLogin(login) ??
+                var usuarioCoreSSO = await repositorioUsuario.ObterPorLogin(login, true) ??
                     throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO, HttpStatusCode.Unauthorized);
 
                 nomeUsuario = usuarioCoreSSO.Pessoa.Nome;

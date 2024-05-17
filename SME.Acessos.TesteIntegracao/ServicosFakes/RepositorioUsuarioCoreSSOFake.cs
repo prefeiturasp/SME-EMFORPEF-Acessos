@@ -14,7 +14,7 @@ namespace SME.Acessos.TesteIntegracao.ServicosFakes
         {
         }
 
-        public async Task<Usuario> ObterPorLogin(string login)
+        public async Task<Usuario> ObterPorLogin(string login, bool somenteAtivos = false)
         {
             switch (login)
             {
@@ -113,6 +113,11 @@ namespace SME.Acessos.TesteIntegracao.ServicosFakes
         }
 
         public Task AlterarUsuario(Guid usuarioId, string senhaNova, TipoCriptografia criptografia, string email)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task Inativar(Guid id)
         {
             return Task.CompletedTask;
         }

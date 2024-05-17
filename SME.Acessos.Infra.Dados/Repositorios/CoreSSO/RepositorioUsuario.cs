@@ -12,7 +12,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
         {
         }
 
-        public async Task<Usuario> ObterPorLogin(string login)
+        public async Task<Usuario> ObterPorLogin(string login, bool somenteAtivos = false)
         {
             var query = @" select usu_id, 
                                  usu_login, 
@@ -27,6 +27,9 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                          left join pes_pessoadocumento pd on p.pes_id = pd.pes_id
                          and pd.tdo_id = @tipoDocumentoCpf
                         where u.usu_login = @login ";
+
+            if (somenteAtivos)
+                query += " and u.usu_situacao = 1";
 
             var usuarios = await conexao.Obter().QueryAsync<Usuario, Pessoa, PessoaDocumento, Usuario>(query,
                 (usuario, pessoa, pessoaDocumento) =>
@@ -164,6 +167,15 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                                  WHERE su.usu_id = @usuarioId ";
 
             await conexao.Obter().ExecuteAsync(alterarNome, new { usuarioId, nome });
+        }
+
+        public async Task Inativar(Guid usuarioId)
+        {
+            var query = @"update SYS_Usuario 
+                                        set usu_situacao = 3,
+                                            usu_dataalteracao = getdate()
+                                   where usu_id = @usuarioId ";
+            await conexao.Obter().ExecuteAsync(query, new { usuarioId });
         }
     }
 }
