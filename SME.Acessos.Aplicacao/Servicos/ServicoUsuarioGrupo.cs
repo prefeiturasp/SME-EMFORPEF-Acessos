@@ -1,9 +1,5 @@
-﻿using AutoMapper;
-using SME.Acessos.Aplicacao.DTO;
-using SME.Acessos.Aplicacao.Interfaces;
-using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
+﻿using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
-using SME.Acessos.Infra.Dominio.Extensions;
 
 namespace SME.Acessos.Aplicacao
 {
@@ -23,8 +19,14 @@ namespace SME.Acessos.Aplicacao
             try
             {
                 var usuario = await repositorioUsuario.ObterPorLogin(login);
-                var retorno = await repositorioUsuarioGrupo.InserirUsuarioGrupoCustomizado(usuario.Id, perfilId);
-                return retorno;
+
+                var perfilJaVinculado = await repositorioUsuarioGrupo.PerfilJaVinculado(usuario.Id, perfilId);
+                if (perfilJaVinculado)
+                    await repositorioUsuarioGrupo.AtivarVinculo(usuario.Id, perfilId);
+                else
+                    await repositorioUsuarioGrupo.InserirUsuarioGrupoCustomizado(usuario.Id, perfilId);
+
+                return true;
             }
             catch (Exception)
             {
