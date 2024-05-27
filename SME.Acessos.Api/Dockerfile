@@ -24,4 +24,6 @@ RUN apt-get update \
 	  && locale-gen en_US.UTF-8
 COPY --from=publish /app/publish .
 
+RUN sed -i 's/TLSv1.2/TLSv1.0/g' /etc/ssl/openssl.cnf
+
 ENTRYPOINT ["dotnet", "SME.Acessos.Api.dll"]
