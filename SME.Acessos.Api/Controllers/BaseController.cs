@@ -4,7 +4,7 @@ namespace SME.Acessos.Api.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    [ChaveIntegracaoApi]
+    // [ChaveIntegracaoApi]
     public class BaseController : ControllerBase
     {
     }
