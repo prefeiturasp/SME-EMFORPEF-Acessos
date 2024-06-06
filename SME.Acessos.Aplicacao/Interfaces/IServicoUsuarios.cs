@@ -21,5 +21,6 @@ namespace SME.Acessos.Aplicacao.Interfaces
         Task<bool> EnviarEmailValidacaoCadastro(string login, long sistemaId);
         Task<bool> AlterarNome(string login, string nome);
         Task<bool> Alterar(string login, UsuarioDTO usuarioDTO);
+        Task<bool> Inativar(string login);
     }
 }
