@@ -56,7 +56,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             }
             else
             {
-                var usuarioCoreSSO = await repositorioUsuario.ObterPorLogin(login) ??
+                var usuarioCoreSSO = await repositorioUsuario.ObterPorLogin(login, true) ??
                     throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO, HttpStatusCode.Unauthorized);
 
                 nomeUsuario = usuarioCoreSSO.Pessoa.Nome;
@@ -89,6 +89,18 @@ namespace SME.Acessos.Aplicacao.Servicos
         {
             var dadosUsuario = servicoTokenJwt.ObterDadosToken(token);
             return ObterPerfisToken(dadosUsuario.Login, dadosUsuario.Sistema, dadosUsuario.Perfil);
+        }
+
+        public async Task<IEnumerable<RetornoUsuriosPareceristasDTO>> ObterUsuariosPerfilPareceristasConecta()
+        {
+            var pareceristas = await repositorioUsuarioGrupoPessoa.ObterUsuariosPerfilPareceristasConecta() ?? Enumerable.Empty<UsuarioGrupoPessoa>();
+            var retorno = Enumerable.Empty<RetornoUsuriosPareceristasDTO>();
+            
+            if(pareceristas.Any() )
+                retorno = pareceristas?.Select(x => new RetornoUsuriosPareceristasDTO() { Nome = x.PessoaNome, Login = x.Login});
+            
+            
+            return retorno;
         }
     }
 }

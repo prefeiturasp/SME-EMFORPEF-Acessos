@@ -6,5 +6,6 @@ namespace SME.Acessos.Aplicacao.Interfaces
     {
         Task<RetornoPerfilUsuarioDTO> ObterPerfisToken(string login, int sistemaId, Guid? perfilUsuarioId = null);
         Task<RetornoPerfilUsuarioDTO> Revalidar(string token);
+        Task<IEnumerable<RetornoUsuriosPareceristasDTO>> ObterUsuariosPerfilPareceristasConecta();
     }
 }

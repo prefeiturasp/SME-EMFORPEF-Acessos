@@ -41,7 +41,18 @@ namespace SME.Acessos.Api.Controllers
 
             return Ok(retorno);
         }
-        
+
+        [HttpPost("{login}/desvincular-perfil/{perfilId}")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> DesvincularPerfil([FromRoute] string login, Guid perfilId, [FromServices] IServicoUsuarioGrupo servicoUsuarioGrupo)
+        {
+            var retorno = await servicoUsuarioGrupo.DesvincularPerfil(login, perfilId);
+
+            return Ok(retorno);
+        }
+
         [HttpGet("{login}")]
         [ProducesResponseType(typeof(DadosUsuarioDTO), 200)]
         [ProducesResponseType(400)]
@@ -85,7 +96,18 @@ namespace SME.Acessos.Api.Controllers
 
             return Ok(retorno);
         }
-        
+
+        [HttpPut("{login}/inativar")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> Inativar([FromRoute] string login, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            var retorno = await servicoUsuarios.Inativar(login);
+
+            return Ok(retorno);
+        }
+
         [HttpGet("{login}/sistemas/{sistemaId}/recuperar-senha")] 
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(400)]
@@ -168,5 +190,15 @@ namespace SME.Acessos.Api.Controllers
 
             return Ok(retorno);
         }
+
+        [HttpGet("usuarios-pareceristas")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> ObterPareceristas([FromServices] IServicoPerfilUsuario servico)
+        {
+            var retorno = await servico.ObterUsuariosPerfilPareceristasConecta();
+            return Ok(retorno);
+        }
+        
     }
 }

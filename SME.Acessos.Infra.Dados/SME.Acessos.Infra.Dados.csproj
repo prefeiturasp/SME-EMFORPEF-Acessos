@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SME.Acessos.Aplicacao\SME.Acessos.Aplicacao.csproj" />
     <ProjectReference Include="..\SME.Acessos.Infra.Dominio\SME.Acessos.Infra.Dominio.csproj" />
   </ItemGroup>
 
