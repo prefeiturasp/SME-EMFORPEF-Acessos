@@ -65,6 +65,16 @@ namespace SME.Acessos.Api.Controllers
             return Ok(retorno);
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(IEnumerator<DadosUsuarioDTO>), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> ObterTodosAsync([FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            var retorno = await servicoUsuarios.ObterTodosUsuarios();
+            return Ok(retorno);
+        }
+
         [HttpPut("{login}")]
         [ProducesResponseType(typeof(bool), 200)]
         [ProducesResponseType(400)]

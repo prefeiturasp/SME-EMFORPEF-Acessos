@@ -15,7 +15,7 @@ namespace SME.Acessos.Aplicacao.Servicos
     public class ServicoTokenJwt : IServicoTokenJwt
     {
         private readonly JwtTokenSettings jwtTokenSettings;
-        private string tokenGerado;
+        private string? tokenGerado;
 
         public ServicoTokenJwt(IOptions<JwtTokenSettings> jwtTokenSettings)
         {
@@ -58,7 +58,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             return tokenGerado;
         }
 
-        private void PreencherClaimsRoles(IEnumerable<long> permissionamentos, List<Claim> claims)
+        private static void PreencherClaimsRoles(IEnumerable<long> permissionamentos, List<Claim> claims)
         {
             if (permissionamentos.EhNulo())
                 return;
@@ -68,7 +68,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             
         }
 
-        private void PreencherClaimsDres(IEnumerable<string> dres, List<Claim> claims)
+        private static void PreencherClaimsDres(IEnumerable<string> dres, List<Claim> claims)
         {
             if (dres.EhNulo())
                 return;
@@ -78,7 +78,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             
         }
 
-        private void PreencherClaimsPerfis(IEnumerable<UsuarioGrupoPessoa> perfisUsuario, List<Claim> claims)
+        private static void PreencherClaimsPerfis(IEnumerable<UsuarioGrupoPessoa> perfisUsuario, List<Claim> claims)
         {
             if (perfisUsuario.EhNulo())
                 return;
@@ -95,8 +95,8 @@ namespace SME.Acessos.Aplicacao.Servicos
             var tokenStr = ObterTokenAtual();
             if (!string.IsNullOrEmpty(tokenStr))
             {
-                var token = (new JwtSecurityTokenHandler()).ReadToken(tokenStr) as JwtSecurityToken;
-                return token.ValidTo;
+                if (new JwtSecurityTokenHandler().ReadToken(tokenStr) is JwtSecurityToken token)
+                    return token.ValidTo;
             }
             return DateTime.MinValue;
         }
@@ -158,8 +158,8 @@ namespace SME.Acessos.Aplicacao.Servicos
         {
             if (!string.IsNullOrEmpty(tokenStr))
             {
-                var token = (new JwtSecurityTokenHandler()).ReadToken(tokenStr) as JwtSecurityToken;
-                return token.ValidFrom;
+                if (new JwtSecurityTokenHandler().ReadToken(tokenStr) is JwtSecurityToken token)
+                    return token.ValidFrom;
             }
 
             return DateTime.MinValue;
@@ -170,7 +170,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             var claim = principal.Claims.FirstOrDefault(c => c.Type == tipo);
             if (claim != null && !string.IsNullOrEmpty(claim.Value))
             {
-                return (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromInvariantString(claim.Value);
+                return (T?)TypeDescriptor.GetConverter(typeof(T)).ConvertFromInvariantString(claim.Value);
             }
 
             return default;
