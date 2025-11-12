@@ -3,9 +3,11 @@ using SME.Acessos.Infra.Dados.Constantes;
 using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 using SME.Acessos.Infra.Dominio.Enumeradores;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
 {
+    [ExcludeFromCodeCoverage]
     public class RepositorioUsuario : RepositorioBaseCoreSSO<Usuario>, IRepositorioUsuario
     {
         public RepositorioUsuario(IConexaoCoreSSO conexao) : base(conexao)

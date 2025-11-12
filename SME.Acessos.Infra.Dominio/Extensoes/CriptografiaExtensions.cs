@@ -2,7 +2,7 @@
 using System.Text;
 using SME.Acessos.Infra.Dominio.Enumeradores;
 
-namespace SME.Acessos.Infra.Dominio.Extensions
+namespace SME.Acessos.Infra.Dominio.Extensoes
 {
     public static class CriptografiaExtensions
     {
@@ -11,10 +11,8 @@ namespace SME.Acessos.Infra.Dominio.Extensions
 
         public static string CriptografarSenhaSHA512(string senha)
         {
-            using (SHA512 sha512 = SHA512.Create())
-            {
-                return Convert.ToBase64String(sha512.ComputeHash(Encoding.Unicode.GetBytes(senha))).TrimStart('/');
-            }
+            using SHA512 sha512 = SHA512.Create();
+            return Convert.ToBase64String(sha512.ComputeHash(Encoding.Unicode.GetBytes(senha))).TrimStart('/');
         }
 
         /// Compara duas senhas - Uma que já está criptografada e outra não
@@ -33,10 +31,10 @@ namespace SME.Acessos.Infra.Dominio.Extensions
 
         public static string CriptografarSenhaTripleDES(string senha)
         {
-            byte[] plainByte = ASCIIEncoding.ASCII.GetBytes(senha);
-            MemoryStream ms = new MemoryStream();
+            byte[] plainByte = Encoding.ASCII.GetBytes(senha);
+            var ms = new MemoryStream();
             SymmetricAlgorithm sym = TripleDES.Create();
-            CryptoStream encStream = new CryptoStream(ms, sym.CreateEncryptor(tdesKey, tdesIV), CryptoStreamMode.Write);
+            var encStream = new CryptoStream(ms, sym.CreateEncryptor(tdesKey, tdesIV), CryptoStreamMode.Write);
             encStream.Write(plainByte, 0, plainByte.Length);
             encStream.FlushFinalBlock();
             byte[] cryptoByte = ms.ToArray();
@@ -47,43 +45,36 @@ namespace SME.Acessos.Infra.Dominio.Extensions
         {
             byte[] cryptoByte = Convert.FromBase64String(senha);
             var sym = TripleDES.Create();
-            MemoryStream ms = new MemoryStream(cryptoByte, 0, cryptoByte.Length);
-            CryptoStream cs = new CryptoStream(ms, sym.CreateDecryptor(tdesKey, tdesIV), CryptoStreamMode.Read);
-            var ret = _ReadBytes(cs);
+            var ms = new MemoryStream(cryptoByte, 0, cryptoByte.Length);
+            var cs = new CryptoStream(ms, sym.CreateDecryptor(tdesKey, tdesIV), CryptoStreamMode.Read);
+            var ret = ReadBytes(cs);
             return Encoding.ASCII.GetString(ret);
         }
 
         public static string CriptografarSenha(string senha, TipoCriptografia tipo)
         {
-            switch (tipo)
+            return tipo switch
             {
-                case TipoCriptografia.TripleDES:
-                    return CriptografarSenhaTripleDES(senha);
-                case TipoCriptografia.MD5:
-                    throw new NotImplementedException();
-                case TipoCriptografia.SHA512:
-                    return CriptografarSenhaSHA512(senha);
-                default:
-                    throw new NotImplementedException();
-            }
+                TipoCriptografia.TripleDES => CriptografarSenhaTripleDES(senha),
+                TipoCriptografia.MD5 => throw new NotImplementedException(),
+                TipoCriptografia.SHA512 => CriptografarSenhaSHA512(senha),
+                _ => throw new NotImplementedException(),
+            };
         }
 
-        private static byte[] _ReadBytes(Stream s)
+        private static byte[] ReadBytes(Stream s)
         {
             int length = 10000000;
             byte[] buffer = new byte[length];
             int bytesLidos = length;
-            using (MemoryStream ms = new MemoryStream())
+            using var ms = new MemoryStream();
+            while (bytesLidos == length)
             {
-                while (bytesLidos == length)
-                {
-                    bytesLidos = s.Read(buffer, 0, length);
-                    ms.Write(buffer, 0, bytesLidos);
-                }
-
-                return ms.ToArray();
+                bytesLidos = s.Read(buffer, 0, length);
+                ms.Write(buffer, 0, bytesLidos);
             }
 
+            return ms.ToArray();
         }
     }
 }

@@ -3,6 +3,7 @@ using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 using SME.Acessos.Infra.Dominio.Extensions;
+using SME.Acessos.Infra.Dominio.Extensoes;
 using System.Net;
 
 namespace SME.Acessos.Aplicacao.Servicos

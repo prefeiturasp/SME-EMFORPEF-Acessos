@@ -9,6 +9,7 @@ using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 using SME.Acessos.Infra.Dominio.Enumeradores;
 using SME.Acessos.Infra.Dominio.Extensions;
+using SME.Acessos.Infra.Dominio.Extensoes;
 using SME.Acessos.Infra.Servicos.Eol;
 
 namespace SME.Acessos.Aplicacao
