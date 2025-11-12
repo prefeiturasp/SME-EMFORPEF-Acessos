@@ -1,14 +1,14 @@
-﻿using System.Collections;
-using System.Text;
-using Dapper;
+﻿using Dapper;
 using SME.Acessos.Aplicacao.Constantes;
 using SME.Acessos.Infra.Dados.Constantes;
-using SME.Acessos.Infra.Dominio.CoreSSO;
 using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
 {
+    [ExcludeFromCodeCoverage]
     public class RepositorioUsuarioGrupoPessoa : RepositorioBaseCoreSSO<UsuarioGrupoPessoa>, IRepositorioUsuarioGrupoPessoa
     {
         public RepositorioUsuarioGrupoPessoa(IConexaoCoreSSO conexao) : base(conexao)
@@ -33,8 +33,8 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                         where
                             u.usu_login = @login
                             and g.sis_id = @sistemaId and u.usu_situacao = 1";
-            
-            var usuariosGrupos = await conexao.Obter().QueryAsync<UsuarioGrupoPessoa>(query,new { login, sistemaId, tipoDocumentoCpf = ConstantesDados.TIPO_DOCUMENTO_CPF });
+
+            var usuariosGrupos = await conexao.Obter().QueryAsync<UsuarioGrupoPessoa>(query, new { login, sistemaId, tipoDocumentoCpf = ConstantesDados.TIPO_DOCUMENTO_CPF });
             return usuariosGrupos.ToList();
         }
 
@@ -56,9 +56,9 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                              left join pes_pessoadocumento pd on p.pes_id = pd.pes_id
                              and pd.tdo_id = @tipoDocumentoCpf
                         where g.gru_id = @perfilParecerista ");
-            
-            query.AppendLine(" and g.sis_id = @sistemaIdConecta; ");       
-            var usuariosGrupos = await conexao.Obter().QueryAsync<UsuarioGrupoPessoa>(query.ToString(),new { sistemaIdConecta, tipoDocumentoCpf = ConstantesDados.TIPO_DOCUMENTO_CPF,perfilParecerista = ConstantesCoreSSO.PERFIL_PARECERISTA });
+
+            query.AppendLine(" and g.sis_id = @sistemaIdConecta; ");
+            var usuariosGrupos = await conexao.Obter().QueryAsync<UsuarioGrupoPessoa>(query.ToString(), new { sistemaIdConecta, tipoDocumentoCpf = ConstantesDados.TIPO_DOCUMENTO_CPF, perfilParecerista = ConstantesCoreSSO.PERFIL_PARECERISTA });
             return usuariosGrupos.ToList();
         }
     }
