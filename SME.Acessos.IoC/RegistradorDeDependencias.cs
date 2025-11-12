@@ -98,7 +98,7 @@ namespace SME.Acessos.IoC
 
         protected virtual void RegistrarProfiles()
         {
-            services.AddAutoMapper(typeof(DominioParaDTOProfile));
+            services.AddAutoMapper(cfg => cfg.AddMaps(typeof(DominioParaDTOProfile).Assembly));
         }
 
         protected virtual void RegistrarServicos()
