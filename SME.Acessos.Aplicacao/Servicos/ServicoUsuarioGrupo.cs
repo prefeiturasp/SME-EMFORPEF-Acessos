@@ -19,7 +19,6 @@ namespace SME.Acessos.Aplicacao
             try
             {
                 var usuario = await repositorioUsuario.ObterPorLogin(login, true);
-
                 var perfilJaVinculado = await repositorioUsuarioGrupo.PerfilJaVinculado(usuario.Id, perfilId);
                 if (perfilJaVinculado)
                     await repositorioUsuarioGrupo.AtivarVinculo(usuario.Id, perfilId);

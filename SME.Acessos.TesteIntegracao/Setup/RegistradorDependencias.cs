@@ -1,6 +1,4 @@
-﻿using Dapper.FluentMap;
-using Dapper.FluentMap.Dommel;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
@@ -10,21 +8,15 @@ using SME.Acessos.Aplicacao.Servicos;
 using SME.Acessos.Aplicacao.Settings;
 using SME.Acessos.Infra.Dados;
 using SME.Acessos.Infra.Dados.Acessos;
-using SME.Acessos.Infra.Dados.Mapeamentos.Acessos;
-using SME.Acessos.Infra.Dados.Mapeamentos.CoreSSO;
 using SME.Acessos.Infra.Dados.Repositorios.CoreSSO;
 using SME.Acessos.Infra.Dominio.Acessos.Repositorios;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
-using SME.Acessos.Infra.Dominio.Extensions;
 using SME.Acessos.Infra.IoC;
 using SME.Acessos.Infra.Polly;
 using SME.Acessos.Infra.Servicos;
 using SME.Acessos.IoC;
 using SME.Acessos.TesteIntegracao.Constantes;
 using SME.Acessos.TesteIntegracao.ServicosFakes;
-using SME.Acessos.TesteIntegracao.Setup;
-using GrupoMap = SME.Acessos.Infra.Dados.Mapeamentos.Acessos.GrupoMap;
-using ModuloMap = SME.Acessos.Infra.Dados.Mapeamentos.Acessos.ModuloMap;
 
 namespace SME.Acessos.TesteIntegracao.Setup
 {
@@ -63,16 +55,16 @@ namespace SME.Acessos.TesteIntegracao.Setup
                 var provider = serviceProvider.GetService<IOptions<DefaultObjectPoolProvider>>().Value;
                 return new ConexoesRabbitLogs(options, provider);
             });
-            
+
             _serviceCollection.AddSingleton<IServicoTokenJwt>(serviceProvider =>
             {
                 var options = serviceProvider.GetService<IOptions<JwtTokenSettings>>();
-                
+
                 options.Value.Audience = ConstantesTestes.TOKEN_AUDIENCE;
                 options.Value.Issuer = ConstantesTestes.TOKEN_ISSUER;
                 options.Value.IssuerSigningKey = ConstantesTestes.TOKEN_ISSUER_SIGNING_KEY;
                 options.Value.ExpiresInMinutes = ConstantesTestes.EXPIRES_IN_720_MINUTES;
-                
+
                 return new ServicoTokenJwt(options);
             });
 
@@ -81,9 +73,9 @@ namespace SME.Acessos.TesteIntegracao.Setup
 
         protected override void RegistrarProfiles()
         {
-            _serviceCollection.AddAutoMapper(typeof(DominioParaDTOProfile));
+            _serviceCollection.AddAutoMapper(cfg => cfg.AddMaps(typeof(DominioParaDTOProfile).Assembly));
         }
-        
+
         protected override void RegistrarRepositorios()
         {
             _serviceCollection.AddScoped<IRepositorioUsuario, RepositorioUsuarioCoreSSOFake>();
@@ -98,7 +90,7 @@ namespace SME.Acessos.TesteIntegracao.Setup
             _serviceCollection.AddScoped<IRepositorioPessoa, RepositorioPessoa>();
             _serviceCollection.AddScoped<IRepositorioPessoaDocumento, RepositorioPessoaDocumento>();
         }
-        
+
         protected override void RegistrarServicos()
         {
             _serviceCollection.AddScoped<IServicoUsuarios, ServicoUsuarios>();
@@ -118,8 +110,8 @@ namespace SME.Acessos.TesteIntegracao.Setup
         {
             var retorno = _serviceCollection.FirstOrDefault(f => f.ServiceType == typeof(System.Data.IDbConnection));
             var conexao = ((CollectionFixture)retorno.ImplementationFactory.Target).Database.Conexao;
-            _serviceCollection.AddScoped<IConexaoAcessos, ConexaoAcessos>(_ =>new ConexaoAcessos(conexao.ConnectionString));
-            _serviceCollection.AddScoped<IConexaoCoreSSO, ConexaoCoreSSOFake>(_ =>new ConexaoCoreSSOFake(string.Empty));
+            _serviceCollection.AddScoped<IConexaoAcessos, ConexaoAcessos>(_ => new ConexaoAcessos(conexao.ConnectionString));
+            _serviceCollection.AddScoped<IConexaoCoreSSO, ConexaoCoreSSOFake>(_ => new ConexaoCoreSSOFake(string.Empty));
         }
 
         protected override void RegistrarPolly()

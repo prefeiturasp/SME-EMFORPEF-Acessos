@@ -31,7 +31,7 @@ namespace SME.Acessos.Api
             catch (Exception ex)
             {
                 var mensagem = "Houve um comportamento inesperado do sistema de Acessos. Por favor, contate a SME.";
-                await servicoLogs.Enviar(mensagem, observacao: ex.Message, rastreamento: ex.StackTrace);
+                await servicoLogs.Enviar(mensagem, observacao: ex.Message, rastreamento: ex.StackTrace, exception: ex);
                 await TratarExcecao(context, mensagem);
             }
         }

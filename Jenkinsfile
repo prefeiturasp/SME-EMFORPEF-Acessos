@@ -27,8 +27,8 @@ pipeline {
 
         stage('Sonar') {
           agent { kubernetes { 
-              label 'dotnet6-sonar'
-              defaultContainer 'dotnet6-sonar'
+              label 'dotnet10-sonar'
+              defaultContainer 'dotnet10-sonar'
             }
           }
           when { anyOf { branch 'ci/testesunitarios'; branch 'release'; } } 

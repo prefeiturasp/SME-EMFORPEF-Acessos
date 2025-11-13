@@ -23,11 +23,23 @@ namespace SME.Acessos.TesteIntegracao.Setup
 
             foreach (var file in files)
             {
-                var b = File.ReadAllBytes(file.FullName);
+                string? textoComEncodeCerto = string.Empty;
 
-                Encoding enc = null;
+                if (file.Name.Contains("V8__"))
+                {
+                    var pathNovoArquivo = Path.Combine("Setup", "V8__PERMISSIONAMENTO_PROPOSTA_CONECTA_FORMACAO.sql");
+                    var b = File.ReadAllBytes(pathNovoArquivo);
+                    Encoding enc = Encoding.UTF8;
+                    textoComEncodeCerto = ReadFileAndGetEncoding(b, ref enc);
+                }
+                else
+                {
+                    var b = File.ReadAllBytes(file.FullName);
 
-                var textoComEncodeCerto = ReadFileAndGetEncoding(b, ref enc);
+                    Encoding enc = null;
+
+                    textoComEncodeCerto = ReadFileAndGetEncoding(b, ref enc);
+                }
 
                 using (var cmd = new NpgsqlCommand(textoComEncodeCerto, connection))
                 {

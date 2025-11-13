@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dommel;
+﻿using Dommel;
 using SME.Acessos.Infra.Dominio;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SME.Acessos.Infra.Dados
 {
+    [ExcludeFromCodeCoverage]
     public abstract class RepositorioBase<TEntidade, TChave> : IRepositorioBase<TEntidade, TChave>
         where TEntidade : EntidadeBase<TChave>
         where TChave : struct
