@@ -1,32 +1,34 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Polly;
 using Polly.Registry;
-using SME.Acessos.Infra.Dominio;
+using SME.Acessos.Infra.Dominio.Enumeradores;
 using SME.Acessos.Infra.Polly;
 using System.Text;
-using SME.Acessos.Infra.Dominio.Enumeradores;
 
 namespace SME.Acessos.Infra.Servicos
 {
-    public class ServicoLogs : IServicoLogs
+    public class ServicoLogs(IConexoesRabbitLogs conexoesRabbit, IReadOnlyPolicyRegistry<string> registry, ILogger<ServicoLogs> logger) : IServicoLogs
     {
-        private readonly IConexoesRabbitLogs conexoesRabbit;
-        private readonly IAsyncPolicy policy;
+        private readonly IConexoesRabbitLogs conexoesRabbit = conexoesRabbit ?? throw new ArgumentNullException(nameof(conexoesRabbit));
+        private readonly IAsyncPolicy policy = registry.Get<IAsyncPolicy>(PoliticaPolly.PublicaFila);
 
-        public ServicoLogs(IConexoesRabbitLogs conexoesRabbit, IReadOnlyPolicyRegistry<string> registry)
+        public async Task Enviar(string mensagem, LogContexto contexto = LogContexto.Geral, LogNivel nivel = LogNivel.Critico, string observacao = "", string rastreamento = "", Exception? exception = null)
         {
-            this.conexoesRabbit = conexoesRabbit ?? throw new ArgumentNullException(nameof(conexoesRabbit));
-            this.policy = registry.Get<IAsyncPolicy>(PoliticaPolly.PublicaFila);
-        }
-
-        public async Task Enviar(string mensagem, LogContexto contexto = LogContexto.Geral, LogNivel nivel = LogNivel.Critico, string observacao = "", string rastreamento = "")
-        {
+            if (exception != null)
+            {
+                logger.LogError(exception, "{mensagem}", mensagem);
+            }
+            else
+            {
+                logger.LogInformation("{mensagem}", mensagem);
+            }
             var logMensagem = JsonConvert.SerializeObject(new LogMensagem(mensagem, contexto.ToString(), nivel.ToString(), observacao, rastreamento),
                 new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 
             var body = Encoding.UTF8.GetBytes(logMensagem);
 
-            await policy.ExecuteAsync(async () 
+            await policy.ExecuteAsync(async ()
                 => await PublicarMensagem(body));
         }
 
