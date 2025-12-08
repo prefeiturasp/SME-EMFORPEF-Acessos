@@ -1,0 +1,125 @@
+﻿using SME.Acessos.Infra.Dados;
+using SME.Acessos.Infra.Dados.Repositorios;
+using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
+using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
+using SME.Acessos.Infra.Dominio.Enumeradores;
+using SME.Acessos.Infra.Dominio.Extensoes;
+using SME.Acessos.TesteIntegracao.Constantes;
+
+namespace SME.Acessos.TesteIntegracao.ServicosFakes
+{
+    public class RepositorioUsuarioCoreSSOFake : RepositorioBaseCoreSSO<Usuario>, IRepositorioUsuario
+    {
+        public RepositorioUsuarioCoreSSOFake(IConexaoCoreSSO conexao) : base(conexao)
+        {
+        }
+
+        public async Task<Usuario> ObterPorLogin(string login, bool somenteAtivos = false)
+        {
+            switch (login)
+            {
+                case ConstantesTestes.LOGIN_99999999998:
+                    return new Usuario()
+                    {
+                        Id = new Guid(ConstantesTestes.ID_99999999998),
+                        Login = ConstantesTestes.LOGIN_99999999998,
+                        Email = ConstantesTestes.EMAIL_99999999998,
+                        Senha = CriptografiaExtensions.CriptografarSenhaTripleDES(ConstantesTestes.SENHA_99999999998),
+                        PessoaId = new Guid(ConstantesTestes.ID_99999999998),
+                        Pessoa = new Pessoa()
+                        {
+                            Id = new Guid(ConstantesTestes.ID_99999999998),
+                            Nome = ConstantesTestes.NOME_99999999998
+                        }
+                    };
+                case ConstantesTestes.LOGIN_99999999999:
+                    return new Usuario()
+                    {
+                        Id = new Guid(ConstantesTestes.ID_99999999999),
+                        Login = ConstantesTestes.LOGIN_99999999999,
+                        Email = ConstantesTestes.EMAIL_99999999999,
+                        Senha = CriptografiaExtensions.CriptografarSenhaTripleDES(ConstantesTestes.SENHA_99999999998),
+                        PessoaId = new Guid(ConstantesTestes.ID_99999999999),
+                        Pessoa = new Pessoa()
+                        {
+                            Id = new Guid(ConstantesTestes.ID_99999999999),
+                            Nome = ConstantesTestes.NOME_99999999999
+                        }
+                    };
+                default: 
+                    return null;
+            }
+        }
+
+        public async Task<bool> UsuarioCadastradoCoreSSO(string login)
+        {
+            return login.Equals(ConstantesTestes.LOGIN_99999999998);
+        }
+
+        public Task InserirUsuarioCustomizado(string login, string email, string senha, Guid pessoa, Guid entidade)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> ValidarSenhaAtual(Guid usuarioId, string senhaAtual)
+        {
+            return Task.FromResult(true);
+        }
+
+        public Task AlterarSenha(Guid usuarioId, string senhaNova)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task InserirHistoricoSenha(Guid usuarioId, string senha, TipoCriptografia criptografia)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task AlterarEmail(Guid usuarioId, string email)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task<IEnumerable<string>> ObterDresPorLoginEPerfil(string login, Guid? perfil)
+        {
+            return Task.FromResult<IEnumerable<string>>(new List<string> { "1", "2", "3", "4" });
+        }
+
+        public Task<IEnumerable<DadosUsuario>> ObterUsuariosComPerfisResponsavel(Guid[] perfis, long sistemaId)
+        {
+            return Task.FromResult<IEnumerable<DadosUsuario>>(new List<DadosUsuario>
+            {
+                new () { Login = "1"},
+                new () { Login = "2"},
+                new () { Login = "3"},
+                new () { Login = "4"},
+            });
+        }
+
+        public Task<string> ObterLoginUsuarioPorCpfCadastradoCoreSSO(string login)
+        {
+            return Task.FromResult(string.Empty);
+        }
+
+        public Task AlterarNome(Guid usuarioId, string nome)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task AlterarSenha(Guid usuarioId, string senhaNova, TipoCriptografia criptografia)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task AlterarUsuario(Guid usuarioId, string senhaNova, TipoCriptografia criptografia, string email)
+        {
+            return Task.CompletedTask;
+        }
+
+        public Task Inativar(Guid id)
+        {
+            return Task.CompletedTask;
+        }
+    }
+}

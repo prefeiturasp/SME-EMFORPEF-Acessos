@@ -1,0 +1,49 @@
+﻿using Dapper;
+using SME.Acessos.Infra.Dominio.Acessos.Entidades;
+using SME.Acessos.Infra.Dominio.Acessos.Repositorios;
+using SME.Acessos.Infra.Dominio.Enumeradores;
+
+namespace SME.Acessos.Infra.Dados.Repositorios.Acessos;
+
+public class RepositorioUsuarioValidacaoToken(IConexaoAcessos conexao) : RepositorioBaseAcessos<UsuarioValidacaoToken>(conexao), IRepositorioUsuarioValidacaoToken
+{
+    public async Task<UsuarioValidacaoToken> ObterUsuarioPorLoginSistemaTipoAcao(string login, long sistema, TipoAcao tipoAcao = TipoAcao.RecuperacaoSenha)
+    {
+        var query = @"select id, 
+                             login,
+                             Expiracao, 
+                             Token, 
+                             codigo_sistema,
+                             tipo
+                      from usuario_validacao_token 
+                      where login = @login 
+                        and codigo_sistema = @sistema
+                        and tipo = @tipoAcao";
+
+        return await conexao.Obter().QueryFirstOrDefaultAsync<UsuarioValidacaoToken>(query, new { login, sistema, tipoAcao });
+    }
+
+    public async Task<UsuarioValidacaoToken> ObterUsuarioPorTokenSistemaTipoAcao(Guid token, long sistemaId, TipoAcao tipoAcao = TipoAcao.RecuperacaoSenha)
+    {
+        var query = @"select id, 
+                             login,
+                             Expiracao, 
+                             Token, 
+                             codigo_sistema,
+                             tipo
+                      from usuario_validacao_token 
+                      where token = @token
+                        and codigo_sistema = @sistemaId
+                        and tipo = @tipoAcao";
+
+        return await conexao.Obter().QueryFirstOrDefaultAsync<UsuarioValidacaoToken>(query, new { token, sistemaId, tipoAcao });
+    }
+
+    public async Task Salvar(UsuarioValidacaoToken usuarioValidacaoToken)
+    {
+        if (usuarioValidacaoToken.Id > 0)
+            await Atualizar(usuarioValidacaoToken);
+        else
+            await Inserir(usuarioValidacaoToken);
+    }
+}
