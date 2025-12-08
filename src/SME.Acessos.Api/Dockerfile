@@ -3,13 +3,20 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
+# Configurações de Localização e Timezone
+ENV TZ=America/Sao_Paulo
+ENV LANG=pt_BR.UTF-8
+ENV LANGUAGE=pt_BR:pt
+ENV LC_ALL=pt_BR.UTF-8
+
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
-COPY ["SME.Acessos.Api/SME.Acessos.Api.csproj", "SME.Acessos.Api/"]
-RUN dotnet restore "SME.Acessos.Api/SME.Acessos.Api.csproj"
 
+COPY ["src/SME.Acessos.Api/SME.Acessos.Api.csproj", "SME.Acessos.Api/"]
+
+RUN dotnet restore "src/SME.Acessos.Api/SME.Acessos.Api.csproj"
 COPY . .
-WORKDIR "/src/SME.Acessos.Api"
+WORKDIR "/src/src/SME.Acessos.Api"
 RUN dotnet build "SME.Acessos.Api.csproj" -c Release -o /app/build
 
 FROM build AS publish
@@ -17,7 +24,6 @@ RUN dotnet publish "SME.Acessos.Api.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
-ENV TZ=America/Sao_Paulo
 RUN apt-get update \
     && apt-get install -yq tzdata locales -y \
     && dpkg-reconfigure --frontend noninteractive tzdata \
