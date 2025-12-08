@@ -1,7 +1,7 @@
 using Elastic.Apm.AspNetCore;
 using Elastic.Apm.DiagnosticSource;
 using Elastic.Apm.SqlClient;
-using SME.Acessos.Api;
+using SME.Acessos.Api.Middlewares;
 using SME.Acessos.Api.SwaggerOperationFilters;
 using SME.Acessos.IoC;
 

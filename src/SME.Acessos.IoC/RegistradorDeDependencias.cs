@@ -11,9 +11,9 @@ using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.Aplicacao.Servicos;
 using SME.Acessos.Aplicacao.Settings;
 using SME.Acessos.Infra.Dados;
-using SME.Acessos.Infra.Dados.Acessos;
 using SME.Acessos.Infra.Dados.Mapeamentos.Acessos;
 using SME.Acessos.Infra.Dados.Mapeamentos.CoreSSO;
+using SME.Acessos.Infra.Dados.Repositorios.Acessos;
 using SME.Acessos.Infra.Dados.Repositorios.CoreSSO;
 using SME.Acessos.Infra.Dominio.Acessos.Repositorios;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
@@ -21,6 +21,7 @@ using SME.Acessos.Infra.IoC;
 using SME.Acessos.Infra.Polly;
 using SME.Acessos.Infra.Servicos;
 using SME.Acessos.Infra.Servicos.Eol;
+using SME.Acessos.Infra.Servicos.Log;
 
 namespace SME.Acessos.IoC
 {

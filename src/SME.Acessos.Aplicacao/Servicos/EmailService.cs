@@ -7,19 +7,10 @@ using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.Infra.Dominio.Acessos.Repositorios;
 using SME.Acessos.Infra.Dominio.Extensions;
 
-namespace SME.Acessos.Aplicacao
+namespace SME.Acessos.Aplicacao.Servicos
 {
-    public class ServicoEmail : IServicoEmail
+    public class ServicoEmail(IRepositorioConfiguracaoEmail repositorioConfiguracaoEmail, IMapper mapper) : IServicoEmail
     {
-        private readonly IRepositorioConfiguracaoEmail repositorioConfiguracaoEmail;
-        private readonly IMapper mapper;
-
-        public ServicoEmail(IRepositorioConfiguracaoEmail repositorioConfiguracaoEmail, IMapper mapper)
-        {
-            this.repositorioConfiguracaoEmail = repositorioConfiguracaoEmail ?? throw new ArgumentNullException(nameof(repositorioConfiguracaoEmail));
-            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        }
-
         public async Task Enviar(string nomeDestinatario, string emailDestinatario, string assunto, string mensagemHtml, long sistemaId)
         {
             var configuracaoEmail = await ObterConfiguracaoEmail(sistemaId);
@@ -44,10 +35,9 @@ namespace SME.Acessos.Aplicacao
         public async Task<ConfiguracaoEmailDTO> ObterConfiguracaoEmail(long sistemaId)
         {
             var configuracoes = await repositorioConfiguracaoEmail.ObterConfiguracaoEmailPorSistema(sistemaId);
-            if (configuracoes == null)
-                throw new NegocioException(MensagemNegocio.NAO_LOCALIZADO_CONFIGURACAO_EMAIL);
-
-            return mapper.Map<ConfiguracaoEmailDTO>(configuracoes);
+            return configuracoes == null
+                ? throw new NegocioException(MensagemNegocio.NAO_LOCALIZADO_CONFIGURACAO_EMAIL)
+                : mapper.Map<ConfiguracaoEmailDTO>(configuracoes);
         }
     }
 }

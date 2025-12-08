@@ -5,14 +5,10 @@ using SME.Acessos.Infra.Dominio.Enumeradores;
 using System.Text;
 using Modulo = SME.Acessos.Infra.Dominio.Acessos.Entidades.Modulo;
 
-namespace SME.Acessos.Infra.Dados.Acessos;
+namespace SME.Acessos.Infra.Dados.Repositorios.Acessos;
 
-public class RepositorioPermissao : RepositorioBaseAcessos<Modulo>, IRepositorioPermissao
+public class RepositorioPermissao(IConexaoAcessos conexao) : RepositorioBaseAcessos<Modulo>(conexao), IRepositorioPermissao
 {
-    public RepositorioPermissao(IConexaoAcessos conexao) : base(conexao)
-    {
-    }
-
     public async Task<IEnumerable<Modulo>> ObterPermissoesPorModulos(IEnumerable<GrupoPermissao> modulosGrupoPermissao)
     {
         var query = new StringBuilder();

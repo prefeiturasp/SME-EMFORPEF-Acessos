@@ -22,7 +22,7 @@ namespace SME.Acessos.Infra.Dominio.Acessos.Entidades
             Expiracao = null;
         }
 
-        public void ValidarSenha(string novaSenha)
+        public static void ValidarSenha(string novaSenha)
         {
             if (novaSenha.Length < 8)
                 throw new NegocioException(MensagemNegocio.A_SENHA_DEVE_TER_NO_MINIMO_8_CARACTERES);

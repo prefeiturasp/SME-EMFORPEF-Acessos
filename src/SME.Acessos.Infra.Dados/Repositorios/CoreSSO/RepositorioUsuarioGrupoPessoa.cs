@@ -9,12 +9,8 @@ using System.Text;
 namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
 {
     [ExcludeFromCodeCoverage]
-    public class RepositorioUsuarioGrupoPessoa : RepositorioBaseCoreSSO<UsuarioGrupoPessoa>, IRepositorioUsuarioGrupoPessoa
+    public class RepositorioUsuarioGrupoPessoa(IConexaoCoreSSO conexao) : RepositorioBaseCoreSSO<UsuarioGrupoPessoa>(conexao), IRepositorioUsuarioGrupoPessoa
     {
-        public RepositorioUsuarioGrupoPessoa(IConexaoCoreSSO conexao) : base(conexao)
-        {
-        }
-
         public async Task<IList<UsuarioGrupoPessoa>> ObterPerfisUsuario(string login, int sistemaId)
         {
             var query = @"select
@@ -35,7 +31,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                             and g.sis_id = @sistemaId and u.usu_situacao = 1";
 
             var usuariosGrupos = await conexao.Obter().QueryAsync<UsuarioGrupoPessoa>(query, new { login, sistemaId, tipoDocumentoCpf = ConstantesDados.TIPO_DOCUMENTO_CPF });
-            return usuariosGrupos.ToList();
+            return [.. usuariosGrupos];
         }
 
         public async Task<IList<UsuarioGrupoPessoa>> ObterUsuariosPerfilPareceristasConecta()
@@ -59,7 +55,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
 
             query.AppendLine(" and g.sis_id = @sistemaIdConecta; ");
             var usuariosGrupos = await conexao.Obter().QueryAsync<UsuarioGrupoPessoa>(query.ToString(), new { sistemaIdConecta, tipoDocumentoCpf = ConstantesDados.TIPO_DOCUMENTO_CPF, perfilParecerista = ConstantesCoreSSO.PERFIL_PARECERISTA });
-            return usuariosGrupos.ToList();
+            return [.. usuariosGrupos];
         }
     }
 }

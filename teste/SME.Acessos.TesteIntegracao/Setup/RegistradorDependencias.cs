@@ -7,30 +7,22 @@ using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.Aplicacao.Servicos;
 using SME.Acessos.Aplicacao.Settings;
 using SME.Acessos.Infra.Dados;
-using SME.Acessos.Infra.Dados.Acessos;
+using SME.Acessos.Infra.Dados.Repositorios.Acessos;
 using SME.Acessos.Infra.Dados.Repositorios.CoreSSO;
 using SME.Acessos.Infra.Dominio.Acessos.Repositorios;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 using SME.Acessos.Infra.IoC;
 using SME.Acessos.Infra.Polly;
 using SME.Acessos.Infra.Servicos;
+using SME.Acessos.Infra.Servicos.Log;
 using SME.Acessos.IoC;
 using SME.Acessos.TesteIntegracao.Constantes;
 using SME.Acessos.TesteIntegracao.ServicosFakes;
 
 namespace SME.Acessos.TesteIntegracao.Setup
 {
-    public class RegistradorDependencias : RegistradorDeDependencias
+    public class RegistradorDependencias(IServiceCollection services, IConfiguration configuration) : RegistradorDeDependencias(services, configuration)
     {
-        private readonly IServiceCollection _serviceCollection;
-        private readonly IConfiguration _configuration;
-
-        public RegistradorDependencias(IServiceCollection services, IConfiguration configuration) : base(services, configuration)
-        {
-            _serviceCollection = services;
-            _configuration = configuration;
-        }
-
         public override void Registrar()
         {
             RegistrarTelemetria();
@@ -45,20 +37,20 @@ namespace SME.Acessos.TesteIntegracao.Setup
 
         protected override void RegistrarLogs()
         {
-            _serviceCollection.AddOptions<ConfiguracaoRabbitLogsOptions>()
-                .Bind(_configuration.GetSection(ConfiguracaoRabbitLogsOptions.Secao), c => c.BindNonPublicProperties = true);
+            services.AddOptions<ConfiguracaoRabbitLogsOptions>()
+                .Bind(configuration.GetSection(ConfiguracaoRabbitLogsOptions.Secao), c => c.BindNonPublicProperties = true);
 
-            _serviceCollection.AddSingleton<ConfiguracaoRabbitLogsOptions>();
-            _serviceCollection.AddSingleton<IConexoesRabbitLogs>(serviceProvider =>
+            services.AddSingleton<ConfiguracaoRabbitLogsOptions>();
+            services.AddSingleton<IConexoesRabbitLogs>(serviceProvider =>
             {
-                var options = serviceProvider.GetService<IOptions<ConfiguracaoRabbitLogsOptions>>().Value;
-                var provider = serviceProvider.GetService<IOptions<DefaultObjectPoolProvider>>().Value;
+                var options = serviceProvider.GetService<IOptions<ConfiguracaoRabbitLogsOptions>>()!.Value;
+                var provider = serviceProvider.GetService<IOptions<DefaultObjectPoolProvider>>()!.Value;
                 return new ConexoesRabbitLogs(options, provider);
             });
 
-            _serviceCollection.AddSingleton<IServicoTokenJwt>(serviceProvider =>
+            services.AddSingleton<IServicoTokenJwt>(serviceProvider =>
             {
-                var options = serviceProvider.GetService<IOptions<JwtTokenSettings>>();
+                var options = serviceProvider.GetService<IOptions<JwtTokenSettings>>()!;
 
                 options.Value.Audience = ConstantesTestes.TOKEN_AUDIENCE;
                 options.Value.Issuer = ConstantesTestes.TOKEN_ISSUER;
@@ -68,55 +60,55 @@ namespace SME.Acessos.TesteIntegracao.Setup
                 return new ServicoTokenJwt(options);
             });
 
-            _serviceCollection.AddSingleton<IServicoLogs, ServicoLogs>();
+            services.AddSingleton<IServicoLogs, ServicoLogs>();
         }
 
         protected override void RegistrarProfiles()
         {
-            _serviceCollection.AddAutoMapper(cfg => cfg.AddMaps(typeof(DominioParaDTOProfile).Assembly));
+            services.AddAutoMapper(cfg => cfg.AddMaps(typeof(DominioParaDTOProfile).Assembly));
         }
 
         protected override void RegistrarRepositorios()
         {
-            _serviceCollection.AddScoped<IRepositorioUsuario, RepositorioUsuarioCoreSSOFake>();
-            _serviceCollection.AddScoped<IRepositorioDadosUsuario, RepositorioDadosUsuario>();
-            _serviceCollection.AddScoped<IRepositorioUsuarioGrupoPessoa, RepositorioUsuarioGrupoPessoaCoreSSOFake>();
-            _serviceCollection.AddScoped<IRepositorioUsuarioGrupo, RepositorioUsuarioGrupo>();
-            _serviceCollection.AddScoped<IRepositorioGrupoPermissao, RepositorioGrupoPermissaoCoreSSOFake>();
-            _serviceCollection.AddScoped<IRepositorioPermissao, RepositorioPermissao>();
-            _serviceCollection.AddScoped<IRepositorioSistemaAcao, RepositorioSistemaAcao>();
-            _serviceCollection.AddScoped<IRepositorioUsuarioValidacaoToken, RepositorioUsuarioValidacaoToken>();
-            _serviceCollection.AddScoped<IRepositorioConfiguracaoEmail, RepositorioConfiguracaoEmail>();
-            _serviceCollection.AddScoped<IRepositorioPessoa, RepositorioPessoa>();
-            _serviceCollection.AddScoped<IRepositorioPessoaDocumento, RepositorioPessoaDocumento>();
+            services.AddScoped<IRepositorioUsuario, RepositorioUsuarioCoreSSOFake>();
+            services.AddScoped<IRepositorioDadosUsuario, RepositorioDadosUsuario>();
+            services.AddScoped<IRepositorioUsuarioGrupoPessoa, RepositorioUsuarioGrupoPessoaCoreSSOFake>();
+            services.AddScoped<IRepositorioUsuarioGrupo, RepositorioUsuarioGrupo>();
+            services.AddScoped<IRepositorioGrupoPermissao, RepositorioGrupoPermissaoCoreSSOFake>();
+            services.AddScoped<IRepositorioPermissao, RepositorioPermissao>();
+            services.AddScoped<IRepositorioSistemaAcao, RepositorioSistemaAcao>();
+            services.AddScoped<IRepositorioUsuarioValidacaoToken, RepositorioUsuarioValidacaoToken>();
+            services.AddScoped<IRepositorioConfiguracaoEmail, RepositorioConfiguracaoEmail>();
+            services.AddScoped<IRepositorioPessoa, RepositorioPessoa>();
+            services.AddScoped<IRepositorioPessoaDocumento, RepositorioPessoaDocumento>();
         }
 
         protected override void RegistrarServicos()
         {
-            _serviceCollection.AddScoped<IServicoUsuarios, ServicoUsuarios>();
-            _serviceCollection.AddScoped<IServicoEmail, ServicoEmailFake>();
-            _serviceCollection.AddScoped<IServicoUsuarioGrupo, ServicoUsuarioGrupo>();
-            _serviceCollection.AddScoped<IServicoAutenticacao, ServicoAutenticacao>();
-            _serviceCollection.AddScoped<IServicoPerfilUsuario, ServicoPerfilUsuario>();
-            _serviceCollection.AddScoped<IServicoTokenJwt, ServicoTokenJwt>();
+            services.AddScoped<IServicoUsuarios, ServicoUsuarios>();
+            services.AddScoped<IServicoEmail, ServicoEmailFake>();
+            services.AddScoped<IServicoUsuarioGrupo, ServicoUsuarioGrupo>();
+            services.AddScoped<IServicoAutenticacao, ServicoAutenticacao>();
+            services.AddScoped<IServicoPerfilUsuario, ServicoPerfilUsuario>();
+            services.AddScoped<IServicoTokenJwt, ServicoTokenJwt>();
         }
 
         protected override void RegistrarTelemetria()
         {
-            _serviceCollection.ConfigurarTelemetria(_configuration);
+            services.ConfigurarTelemetria(configuration);
         }
 
         protected override void RegistrarConexao()
         {
-            var retorno = _serviceCollection.FirstOrDefault(f => f.ServiceType == typeof(System.Data.IDbConnection));
+            var retorno = services.FirstOrDefault(f => f.ServiceType == typeof(System.Data.IDbConnection));
             var conexao = ((CollectionFixture)retorno.ImplementationFactory.Target).Database.Conexao;
-            _serviceCollection.AddScoped<IConexaoAcessos, ConexaoAcessos>(_ => new ConexaoAcessos(conexao.ConnectionString));
-            _serviceCollection.AddScoped<IConexaoCoreSSO, ConexaoCoreSSOFake>(_ => new ConexaoCoreSSOFake(string.Empty));
+            services.AddScoped<IConexaoAcessos, ConexaoAcessos>(_ => new ConexaoAcessos(conexao.ConnectionString));
+            services.AddScoped<IConexaoCoreSSO, ConexaoCoreSSOFake>(_ => new ConexaoCoreSSOFake(string.Empty));
         }
 
         protected override void RegistrarPolly()
         {
-            _serviceCollection.ConfigurarPolly();
+            services.ConfigurarPolly();
         }
     }
 }

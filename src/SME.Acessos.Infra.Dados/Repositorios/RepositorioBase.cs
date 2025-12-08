@@ -2,7 +2,7 @@
 using SME.Acessos.Infra.Dominio;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SME.Acessos.Infra.Dados
+namespace SME.Acessos.Infra.Dados.Repositorios
 {
     [ExcludeFromCodeCoverage]
     public abstract class RepositorioBase<TEntidade, TChave> : IRepositorioBase<TEntidade, TChave>

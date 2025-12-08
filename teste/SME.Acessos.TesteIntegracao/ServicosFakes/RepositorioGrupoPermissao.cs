@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using SME.Acessos.Infra.Dados;
-using SME.Acessos.Infra.Dados.Repositorios.CoreSSO;
+using SME.Acessos.Infra.Dados.Repositorios;
 using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 using SME.Acessos.TesteIntegracao.Constantes;

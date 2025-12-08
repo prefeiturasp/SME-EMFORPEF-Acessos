@@ -5,12 +5,8 @@ using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 
 namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
 {
-    public class RepositorioDadosUsuario : RepositorioBaseCoreSSO<DadosUsuario>, IRepositorioDadosUsuario
+    public class RepositorioDadosUsuario(IConexaoCoreSSO conexao) : RepositorioBaseCoreSSO<DadosUsuario>(conexao), IRepositorioDadosUsuario
     {
-        public RepositorioDadosUsuario(IConexaoCoreSSO conexao) : base(conexao)
-        {
-        }
-
         public async Task<DadosUsuario> ObterMeusDados(string login)
         {
             var query = @"SELECT    
@@ -47,7 +43,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                 tipoMeioContatoEmail = ConstantesDados.TIPO_MEIO_CONTATO_EMAIL
             });
             
-            return dadosUsuario.Any() ? dadosUsuario.FirstOrDefault() : default;
+            return dadosUsuario.Any() ? dadosUsuario.First() : default!;
         }
     }
 }

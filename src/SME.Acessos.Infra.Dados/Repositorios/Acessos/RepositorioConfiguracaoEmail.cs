@@ -1,19 +1,11 @@
-﻿using System.Text;
-using Dapper;
+﻿using Dapper;
 using SME.Acessos.Infra.Dominio.Acessos.Entidades;
 using SME.Acessos.Infra.Dominio.Acessos.Repositorios;
-using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
-using SME.Acessos.Infra.Dominio.Enumeradores;
-using Modulo = SME.Acessos.Infra.Dominio.Acessos.Entidades.Modulo;
 
-namespace SME.Acessos.Infra.Dados.Acessos;
+namespace SME.Acessos.Infra.Dados.Repositorios.Acessos;
 
-public class RepositorioConfiguracaoEmail : RepositorioBaseAcessos<ConfiguracaoEmail>, IRepositorioConfiguracaoEmail
+public class RepositorioConfiguracaoEmail(IConexaoAcessos conexao) : RepositorioBaseAcessos<ConfiguracaoEmail>(conexao), IRepositorioConfiguracaoEmail
 {
-    public RepositorioConfiguracaoEmail(IConexaoAcessos conexao) : base(conexao)
-    {
-    }
-
     public async Task<ConfiguracaoEmail> ObterConfiguracaoEmailPorSistema(long sistemaId)
     {
         var query = @"select id, 
@@ -27,7 +19,7 @@ public class RepositorioConfiguracaoEmail : RepositorioBaseAcessos<ConfiguracaoE
                            tls 
                    from configuracao_email 
                    where codigo_sistema = @sistemaId";
-         
+
         return await conexao.Obter().QueryFirstOrDefaultAsync<ConfiguracaoEmail>(query, new { sistemaId });
     }
 }

@@ -1,22 +1,12 @@
 ﻿using Newtonsoft.Json;
+using SME.Acessos.Infra.Dominio.Extensions;
 using SME.Acessos.Infra.Servicos;
 using System.Net;
-using SME.Acessos.Infra.Dominio.Enumeradores;
-using SME.Acessos.Infra.Dominio.Extensions;
 
-namespace SME.Acessos.Api
+namespace SME.Acessos.Api.Middlewares
 {
-    public class TratamentoExcecaoGlobalMiddleware
+    public class TratamentoExcecaoGlobalMiddleware(RequestDelegate next, IServicoLogs servicoLogs)
     {
-        private readonly RequestDelegate next;
-        private readonly IServicoLogs servicoLogs;
-
-        public TratamentoExcecaoGlobalMiddleware(RequestDelegate next, IServicoLogs servicoLogs)
-        {
-            this.next = next;
-            this.servicoLogs = servicoLogs ?? throw new ArgumentNullException(nameof(servicoLogs));
-        }
-
         public async Task Invoke(HttpContext context)
         {
             try

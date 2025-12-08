@@ -8,12 +8,8 @@ using System.Diagnostics.CodeAnalysis;
 namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
 {
     [ExcludeFromCodeCoverage]
-    public class RepositorioUsuario : RepositorioBaseCoreSSO<Usuario>, IRepositorioUsuario
+    public class RepositorioUsuario(IConexaoCoreSSO conexao) : RepositorioBaseCoreSSO<Usuario>(conexao), IRepositorioUsuario
     {
-        public RepositorioUsuario(IConexaoCoreSSO conexao) : base(conexao)
-        {
-        }
-
         public async Task<Usuario> ObterPorLogin(string login, bool somenteAtivos = false)
         {
             var query = @" select usu_id, 

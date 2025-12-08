@@ -9,23 +9,8 @@ using System.Net;
 
 namespace SME.Acessos.Aplicacao.Servicos
 {
-    public class ServicoPerfilUsuario : IServicoPerfilUsuario
+    public class ServicoPerfilUsuario(IRepositorioUsuarioGrupoPessoa repositorioUsuarioGrupoPessoa, IServicoTokenJwt servicoTokenJwt, IRepositorioGrupoPermissao repositorioGrupoPermissao, IRepositorioPermissao repositorioPermissao, IRepositorioUsuario repositorioUsuario) : IServicoPerfilUsuario
     {
-        private readonly IRepositorioUsuarioGrupoPessoa repositorioUsuarioGrupoPessoa;
-        private readonly IRepositorioGrupoPermissao repositorioGrupoPermissao;
-        private readonly IRepositorioPermissao repositorioPermissao;
-        private readonly IServicoTokenJwt servicoTokenJwt;
-        private readonly IRepositorioUsuario repositorioUsuario;
-
-        public ServicoPerfilUsuario(IRepositorioUsuarioGrupoPessoa repositorioUsuarioGrupoPessoa, IServicoTokenJwt servicoTokenJwt, IRepositorioGrupoPermissao repositorioGrupoPermissao, IRepositorioPermissao repositorioPermissao, IRepositorioUsuario repositorioUsuario)
-        {
-            this.repositorioUsuarioGrupoPessoa = repositorioUsuarioGrupoPessoa ?? throw new ArgumentNullException(nameof(repositorioUsuarioGrupoPessoa));
-            this.servicoTokenJwt = servicoTokenJwt ?? throw new ArgumentNullException(nameof(servicoTokenJwt));
-            this.repositorioGrupoPermissao = repositorioGrupoPermissao ?? throw new ArgumentNullException(nameof(repositorioGrupoPermissao));
-            this.repositorioPermissao = repositorioPermissao ?? throw new ArgumentNullException(nameof(repositorioPermissao));
-            this.repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
-        }
-
         public async Task<RetornoPerfilUsuarioDTO> ObterPerfisToken(string login, int sistemaId, Guid? perfilUsuarioId = null)
         {
             string nomeUsuario, emailUsuario,cpfUsuario;

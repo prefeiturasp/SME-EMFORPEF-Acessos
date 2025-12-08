@@ -1,19 +1,10 @@
 ﻿using SME.Acessos.Aplicacao.Interfaces;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 
-namespace SME.Acessos.Aplicacao
+namespace SME.Acessos.Aplicacao.Servicos
 {
-    public class ServicoUsuarioGrupo : IServicoUsuarioGrupo
+    public class ServicoUsuarioGrupo(IRepositorioUsuarioGrupo repositorioUsuarioGrupo, IRepositorioUsuario repositorioUsuario) : IServicoUsuarioGrupo
     {
-        private readonly IRepositorioUsuarioGrupo repositorioUsuarioGrupo;
-        private readonly IRepositorioUsuario repositorioUsuario;
-
-        public ServicoUsuarioGrupo(IRepositorioUsuarioGrupo repositorioUsuarioGrupo,IRepositorioUsuario repositorioUsuario)
-        {
-            this.repositorioUsuarioGrupo = repositorioUsuarioGrupo ?? throw new ArgumentNullException(nameof(repositorioUsuarioGrupo));
-            this.repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
-        }
-
         public async Task<bool> VincularPerfil(string login, Guid perfilId)
         {
             try

@@ -8,15 +8,8 @@ using System.Net;
 
 namespace SME.Acessos.Aplicacao.Servicos
 {
-    public class ServicoAutenticacao : IServicoAutenticacao
+    public class ServicoAutenticacao(IRepositorioUsuario repositorioUsuario) : IServicoAutenticacao
     {
-        private readonly IRepositorioUsuario repositorioUsuario;
-        
-        public ServicoAutenticacao(IRepositorioUsuario repositorioUsuario)
-        {
-            this.repositorioUsuario = repositorioUsuario ?? throw new ArgumentNullException(nameof(repositorioUsuario));
-        }
-
         public async Task<RetornoAutenticacaoDTO> Autenticar(string login, string senha)
         {
             if (string.IsNullOrEmpty(login) && string.IsNullOrEmpty(senha))

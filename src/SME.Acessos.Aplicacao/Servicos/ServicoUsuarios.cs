@@ -12,34 +12,13 @@ using SME.Acessos.Infra.Dominio.Extensions;
 using SME.Acessos.Infra.Dominio.Extensoes;
 using SME.Acessos.Infra.Servicos.Eol;
 
-namespace SME.Acessos.Aplicacao
+namespace SME.Acessos.Aplicacao.Servicos
 {
-    public class ServicoUsuarios : IServicoUsuarios
+    public class ServicoUsuarios(IRepositorioUsuario repositorioUsuarioCoreSSO, IMapper mapper, IRepositorioPessoa repositorioPessoaCoreSSO,
+        IServicoEmail servicoEmail, IRepositorioDadosUsuario repositorioDadosUsuario, IRepositorioUsuarioValidacaoToken repositorioUsuarioValidacaoToken,
+        IRepositorioSistemaAcao repositorioSistemaAcao, IRepositorioPessoaDocumento repositorioPessoaDocumento, IServicoEol servicoEol) : IServicoUsuarios
     {
-        private readonly IRepositorioUsuario repositorioUsuarioCoreSSO;
-        private readonly IRepositorioPessoa repositorioPessoaCoreSSO;
-        private readonly IRepositorioDadosUsuario repositorioDadosUsuario;
-        private readonly IMapper mapper;
-        private readonly IServicoEmail servicoEmail;
-        private readonly IRepositorioUsuarioValidacaoToken repositorioUsuarioValidacaoToken;
-        private readonly IRepositorioSistemaAcao repositorioSistemaAcao;
-        private readonly IRepositorioPessoaDocumento repositorioPessoaDocumento;
-        private readonly IServicoEol servicoEol;
-
-        public ServicoUsuarios(IRepositorioUsuario repositorioUsuarioCoreSSO, IMapper mapper, IRepositorioPessoa repositorioPessoaCoreSSO,
-            IServicoEmail servicoEmail, IRepositorioDadosUsuario repositorioDadosUsuario, IRepositorioUsuarioValidacaoToken repositorioUsuarioValidacaoToken,
-            IRepositorioSistemaAcao repositorioSistemaAcao, IRepositorioPessoaDocumento repositorioPessoaDocumento, IServicoEol servicoEol)
-        {
-            this.repositorioUsuarioCoreSSO = repositorioUsuarioCoreSSO ?? throw new ArgumentNullException(nameof(repositorioUsuarioCoreSSO));
-            this.repositorioPessoaCoreSSO = repositorioPessoaCoreSSO ?? throw new ArgumentNullException(nameof(repositorioPessoaCoreSSO));
-            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            this.servicoEmail = servicoEmail ?? throw new ArgumentNullException(nameof(servicoEmail));
-            this.repositorioUsuarioValidacaoToken = repositorioUsuarioValidacaoToken ?? throw new ArgumentNullException(nameof(repositorioUsuarioValidacaoToken));
-            this.repositorioDadosUsuario = repositorioDadosUsuario ?? throw new ArgumentNullException(nameof(repositorioDadosUsuario));
-            this.repositorioSistemaAcao = repositorioSistemaAcao ?? throw new ArgumentNullException(nameof(repositorioSistemaAcao));
-            this.repositorioPessoaDocumento = repositorioPessoaDocumento ?? throw new ArgumentNullException(nameof(repositorioPessoaDocumento));
-            this.servicoEol = servicoEol ?? throw new ArgumentNullException(nameof(servicoEol));
-        }
+        private readonly IServicoEmail servicoEmail = servicoEmail ?? throw new ArgumentNullException(nameof(servicoEmail));
 
         public async Task<IList<DadosUsuarioDTO>> ObterTodosUsuarios()
         {
@@ -154,12 +133,11 @@ namespace SME.Acessos.Aplicacao
             return true;
         }
 
-        private async Task<Guid> ObterOuCriarMovimentacaoTokenUsuario(string login, long sistemaId, SistemaAcao? sistemaRecuperacao, Usuario? usuarioCore, TipoAcao tipoAcao = TipoAcao.RecuperacaoSenha)
+        private async Task<Guid> ObterOuCriarMovimentacaoTokenUsuario(string login, long sistemaId, SistemaAcao sistemaRecuperacao, Usuario usuarioCore, TipoAcao tipoAcao = TipoAcao.RecuperacaoSenha)
         {
             var usuarioRecuperacaoSenha = await repositorioUsuarioValidacaoToken.ObterUsuarioPorLoginSistemaTipoAcao(login, sistemaRecuperacao.CodigoSistema, tipoAcao);
 
-            if (usuarioRecuperacaoSenha.EhNulo())
-                usuarioRecuperacaoSenha = new UsuarioValidacaoToken() { Login = usuarioCore.Login, CodigoSistema = sistemaId, TipoAcao = tipoAcao };
+            usuarioRecuperacaoSenha ??= new UsuarioValidacaoToken() { Login = usuarioCore.Login, CodigoSistema = sistemaId, TipoAcao = tipoAcao };
 
             usuarioRecuperacaoSenha.IniciarMovimentacaoTokenUsuario(usuarioCore.Email);
             await repositorioUsuarioValidacaoToken.Salvar(usuarioRecuperacaoSenha);
@@ -167,17 +145,17 @@ namespace SME.Acessos.Aplicacao
             return usuarioRecuperacaoSenha.Token.Value;
         }
 
-        private async Task<SistemaAcao?> ObterSistemaAcaoPorAcaoESistema(long sistemaId, TipoAcao tipoAcao = TipoAcao.RecuperacaoSenha)
+        private async Task<SistemaAcao> ObterSistemaAcaoPorAcaoESistema(long sistemaId, TipoAcao tipoAcao = TipoAcao.RecuperacaoSenha)
         {
             var sistemaRecuperacao = await repositorioSistemaAcao.ObterSistemaAcaoPorAcaoESistema(sistemaId, tipoAcao);
 
-            if (sistemaRecuperacao.EhNulo())
+            if (sistemaRecuperacao is null)
                 throw new NegocioException(MensagemNegocio.O_SISTEMA_INFORMADO_NAO_FOI_IDENTIFICADO);
 
             return sistemaRecuperacao;
         }
 
-        private async Task<Usuario?> ValidarLogin(string login, bool validarEmail = false)
+        private async Task<Usuario> ValidarLogin(string login, bool validarEmail = false)
         {
             var usuarioCore = await repositorioUsuarioCoreSSO.ObterPorLogin(login) ??
                 throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
@@ -219,10 +197,10 @@ namespace SME.Acessos.Aplicacao
                 case ConstantesAcessos.SISTEMA_CONECTA:
                     return TratarTextoAssuntoConectaFormacao(sistema.NomeSistema, usuario.Pessoa.Nome, sistema.Endereco, token);
             }
-            return default;
+            return default!;
         }
 
-        private ConteudoEAssuntoEmailDTO TratarTextoAssuntoConectaFormacao(string nomeSistema, string nomeUsuario, string endereco, Guid token)
+        private static ConteudoEAssuntoEmailDTO TratarTextoAssuntoConectaFormacao(string nomeSistema, string nomeUsuario, string endereco, Guid token)
         {
             var caminho = $"{Directory.GetCurrentDirectory()}/wwwroot/ModelosEmail/ValidacaoEmail_Conecta.txt";
 
@@ -264,7 +242,7 @@ namespace SME.Acessos.Aplicacao
 
             try
             {
-                usuarioRecuperacaoSenha.ValidarSenha(alterarSenha.Senha);
+                UsuarioValidacaoToken.ValidarSenha(alterarSenha.Senha);
             }
             catch
             {

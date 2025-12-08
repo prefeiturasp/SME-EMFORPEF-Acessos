@@ -4,12 +4,8 @@ using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 
 namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
 {
-    public class RepositorioPessoa : RepositorioBaseCoreSSO<Pessoa>, IRepositorioPessoa
+    public class RepositorioPessoa(IConexaoCoreSSO conexao) : RepositorioBaseCoreSSO<Pessoa>(conexao), IRepositorioPessoa
     {
-        public RepositorioPessoa(IConexaoCoreSSO conexao) : base(conexao)
-        {
-        }
-
         public async Task<Guid> InserirPessoaCustomizado(string nome)
         {
             var insertPessoa = @" insert into [PES_Pessoa] ([pes_nome]) 

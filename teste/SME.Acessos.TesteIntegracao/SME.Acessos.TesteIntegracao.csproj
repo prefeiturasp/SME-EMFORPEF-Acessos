@@ -30,7 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SME.Acessos.IoC\SME.Acessos.IoC.csproj" />
+      <ProjectReference Include="..\..\src\SME.Acessos.IoC\SME.Acessos.IoC.csproj" />
     </ItemGroup>
 
     <ItemGroup>

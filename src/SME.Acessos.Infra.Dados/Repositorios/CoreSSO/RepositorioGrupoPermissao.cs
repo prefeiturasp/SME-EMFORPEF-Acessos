@@ -4,12 +4,8 @@ using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 
 namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
 {
-    public class RepositorioGrupoPermissao : RepositorioBaseCoreSSO<GrupoPermissao>, IRepositorioGrupoPermissao
+    public class RepositorioGrupoPermissao(IConexaoCoreSSO conexao) : RepositorioBaseCoreSSO<GrupoPermissao>(conexao), IRepositorioGrupoPermissao
     {
-        public RepositorioGrupoPermissao(IConexaoCoreSSO conexao) : base(conexao)
-        {
-        }
-
         public async Task<IList<GrupoPermissao>> ObterModulosPorPerfilSistema(Guid perfilId, int sistemaId)
         {
             var query = @"SELECT                     
@@ -29,7 +25,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                                 AND g.sis_id = @sistemaId";
 
             var grupoPermissao = await conexao.Obter().QueryAsync<GrupoPermissao>(query, new { perfilId, sistemaId});
-            return grupoPermissao.ToList();
+            return [.. grupoPermissao];
         }
     }
 }

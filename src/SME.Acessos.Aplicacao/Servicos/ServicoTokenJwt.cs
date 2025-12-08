@@ -12,26 +12,21 @@ using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 
 namespace SME.Acessos.Aplicacao.Servicos
 {
-    public class ServicoTokenJwt : IServicoTokenJwt
+    public class ServicoTokenJwt(IOptions<JwtTokenSettings> jwtTokenSettings) : IServicoTokenJwt
     {
-        private readonly JwtTokenSettings jwtTokenSettings;
+        private readonly JwtTokenSettings jwtTokenSettings = jwtTokenSettings?.Value ?? throw new ArgumentNullException(nameof(jwtTokenSettings));
         private string? tokenGerado;
-
-        public ServicoTokenJwt(IOptions<JwtTokenSettings> jwtTokenSettings)
-        {
-            this.jwtTokenSettings = jwtTokenSettings?.Value ?? throw new ArgumentNullException(nameof(jwtTokenSettings));
-        }
 
         public string GerarToken(string usuarioLogin, string usuarioNome, int sistemaId, Guid? guidPerfil, IEnumerable<long> permissionamentos, IEnumerable<UsuarioGrupoPessoa> perfisUsuario, IEnumerable<string> dres)
         {
-            List<Claim> claims = new()
-            {
+            List<Claim> claims =
+            [
                 new Claim(ClaimTypes.Name, usuarioLogin),
                 new Claim("login", usuarioLogin),
                 new Claim("nome", usuarioNome),
                 new Claim("sistema", sistemaId.ToString()),
                 new Claim("perfil", guidPerfil.HasValue ? guidPerfil.Value.ToString() : string.Empty),
-            };
+            ];
 
             PreencherClaimsPerfis(perfisUsuario, claims);
             
