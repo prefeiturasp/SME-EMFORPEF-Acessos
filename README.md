@@ -40,13 +40,13 @@ O projeto segue estritamente os princípios da **Clean Architecture** e **Domain
 
 ```text
 src/
-src/
 ├── SME.EMFORPEF.Acessos.Api/             # Apresentação (Controllers, Swagger, Middlewares)
 ├── SME.EMFORPEF.Acessos.Application/     # Casos de Uso (CQRS), DTOs, Mappers e Orquestração
 ├── SME.EMFORPEF.Acessos.Infra.Domain/    # Núcleo do Domínio (Entidades, Interfaces, Enums, Regras de Negócio)
 ├── SME.EMFORPEF.Acessos.Infra.Dados/     # Persistência (EF Core, Dapper, Repositórios, Mapeamentos de Banco)
 ├── SME.EMFORPEF.Acessos.Infra.Servicos/  # Integrações (HttpClients para API EOL, Telemetria, Filas)
 └── SME.EMFORPEF.Acessos.IoC/             # Injeção de Dependência (Composição dos módulos)---
+```
 
 ## 4. Configuração e Execução
 
@@ -85,6 +85,7 @@ Seguimos o padrão **Given-When-Then** para nomenclatura e **Arrange-Act-Assert*
 ```bash
 # Executar todos os testes unitários
 dotnet test
+```
 
 ---
 
@@ -99,4 +100,4 @@ O desenvolvimento deste software tem um impacto direto na qualidade da educaçã
 3.  Siga as diretrizes de código (Clean Code, SOLID, DRY).
 4.  Abra um Pull Request.
 
-"A tecnologia a serviço da educação pública de qualidade."
+*"A tecnologia a serviço da educação pública de qualidade."*
