@@ -24,8 +24,9 @@ namespace SME.Acessos.Aplicacao.Servicos
             var retorno = new RetornoAutenticacaoDTO()
             {
                 Login = usuarioCoreSSO.Login,
-                Nome = usuarioCoreSSO.Pessoa.Nome,
-                Email = usuarioCoreSSO.Email
+                Nome = usuarioCoreSSO.Pessoa?.Nome ?? "",
+                Email = usuarioCoreSSO.Email,
+                Cpf = usuarioCoreSSO.Documento?.Numero ?? ""
             };
             return retorno;
         }

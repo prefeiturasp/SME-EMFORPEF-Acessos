@@ -51,7 +51,7 @@ namespace SME.Acessos.Aplicacao.Servicos
 
             var dres = await repositorioUsuario.ObterDresPorLoginEPerfil(login,perfilUsuarioId);
             
-            var token = servicoTokenJwt.GerarToken(login, nomeUsuario, sistemaId, perfilUsuarioId, codPermissoes,perfisUsuario, dres);
+            var token = servicoTokenJwt.GerarToken(new(login, nomeUsuario, sistemaId, perfilUsuarioId, codPermissoes,perfisUsuario, dres));
             var dataExpiracaoToken = servicoTokenJwt.ObterDataHoraExpiracao();
 
             var perfis = perfisUsuario.Select(s => new PerfilUsuarioDTO() { Perfil = s.GrupoId, PerfilNome = s.GrupoNome });

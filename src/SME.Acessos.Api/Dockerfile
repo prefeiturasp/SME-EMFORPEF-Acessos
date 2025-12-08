@@ -1,43 +1,51 @@
+# Estágio Base
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+EXPOSE 8080
+EXPOSE 8081
 
-# Configurações de Localização e Timezone
 ENV TZ=America/Sao_Paulo
 ENV LANG=pt_BR.UTF-8
 ENV LANGUAGE=pt_BR:pt
 ENV LC_ALL=pt_BR.UTF-8
 
+# Instalação de dependências e configuração de SSL Legado (se necessário)
+USER root
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       tzdata \
+       locales \
+    && sed -i -e 's/# pt_BR.UTF-8 UTF-8/pt_BR.UTF-8 UTF-8/' /etc/locale.gen \
+    && locale-gen \
+    && dpkg-reconfigure --frontend noninteractive tzdata \
+    # Configuração OpenSSL Legado (Mesma lógica do seu script, mas otimizada)
+    && sed -i 's/DEFAULT@SECLEVEL=2/DEFAULT@SECLEVEL=0/g' /etc/ssl/openssl.cnf \
+    && sed -i 's/MinProtocol = TLSv1.2/MinProtocol = TLSv1.0/g' /etc/ssl/openssl.cnf \
+    && rm -rf /var/lib/apt/lists/*
+
+USER app
+
+# Estágio de Build
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-COPY ["src/SME.Acessos.Api/SME.Acessos.Api.csproj", "SME.Acessos.Api/"]
+# --- CORREÇÃO PRINCIPAL AQUI ---
+# O destino deve incluir 'src/' para casar com o comando de restore
+COPY ["src/SME.Acessos.Api/SME.Acessos.Api.csproj", "src/SME.Acessos.Api/"]
 
+# O restore agora encontrará o caminho correto: /src/src/SME.Acessos.Api/...
 RUN dotnet restore "src/SME.Acessos.Api/SME.Acessos.Api.csproj"
+
 COPY . .
 WORKDIR "/src/src/SME.Acessos.Api"
 RUN dotnet build "SME.Acessos.Api.csproj" -c Release -o /app/build
 
+# Estágio de Publish
 FROM build AS publish
-RUN dotnet publish "SME.Acessos.Api.csproj" -c Release -o /app/publish
+RUN dotnet publish "SME.Acessos.Api.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
+# Estágio Final
 FROM base AS final
 WORKDIR /app
-RUN apt-get update \
-    && apt-get install -yq tzdata locales -y \
-    && dpkg-reconfigure --frontend noninteractive tzdata \
-	  && locale-gen en_US.UTF-8
 COPY --from=publish /app/publish .
-
-RUN echo "\n[openssl_init]" >> /etc/ssl/openssl.cnf
-RUN sed -i '/[openssl_init]/a ssl_conf = ssl_configuration' /etc/ssl/openssl.cnf
-
-RUN echo "\n[ssl_configuration]" >> /etc/ssl/openssl.cnf \
-    && echo "system_default = tls_system_default" >> /etc/ssl/openssl.cnf
-
-RUN echo "\n[tls_system_default]" >> /etc/ssl/openssl.cnf \
-    && echo "MinProtocol = TLSv1" >> /etc/ssl/openssl.cnf \
-    && echo "CipherString = DEFAULT@SECLEVEL=0" >> /etc/ssl/openssl.cnf``
-
 ENTRYPOINT ["dotnet", "SME.Acessos.Api.dll"]
