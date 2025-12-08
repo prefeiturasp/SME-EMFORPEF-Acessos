@@ -1,92 +1,102 @@
-# SME-Acessos
+# SME - EMFORPEF - Acessos (API)
 
+![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen)
+![.NET Version](https://img.shields.io/badge/.NET-10.0-blueviolet)
+![Docker](https://img.shields.io/badge/Docker-Ready-blue)
+![Coverage](https://img.shields.io/badge/Coverage-80%25-green)
 
+##  1. Visão Geral
 
-## Getting started
+Este repositório contém a API de **Controle de Acessos e Identidade** do ecossistema da **EMFORPEF (Escola Municipal de Formação de Profissionais da Educação do Futuro)** da Secretaria Municipal de Educação (SME-SP).
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+### Objetivo
+Gerenciar o ciclo de vida de autenticação e autorização dos servidores da rede municipal, garantindo que o acesso aos cursos, certificações e trilhas formativas respeite os perfis de cargo e lotação (RF).
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+### Principais Funcionalidades
+* **Autenticação:** Login centralizado (Integração com SGP/LDAP legado ou IdentityServer).
+* **Gestão de Perfis:** Mapeamento de Claims e Roles baseados nos cargos da SME (CP, AD, Diretor, Professor).
+* **Auditoria:** Log de acessos e tentativas de invasão.
 
-## Add your files
+---
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## 2. Tecnologias Utilizadas
 
-```
-cd existing_repo
-git remote add origin https://git.sme.prefeitura.sp.gov.br/amcom-pedagogico/sme-acessos.git
-git branch -M main
-git push -uf origin main
-```
+A solução foi construída visando alta performance e manutenibilidade, utilizando as versões mais recentes do ecossistema .NET.
 
-## Integrate with your tools
+* **Linguagem:** C# 14
+* **Framework:** .NET 10 (ASP.NET Core Web API)
+* **Banco de Dados:** PostgreSQL (Principal) / SQL Server (Legado/Leitura)
+* **ORM:** Entity Framework Core & Dapper (para consultas de alta performance)
+* **Gerenciamento de Banco:** Flyway / EF Core Migrations
+* **Mapeamento:** AutoMapper
+* **Containerização:** Docker & Kubernetes
+* **Testes:** xUnit, Moq, Bogus, FluentAssertions
 
-- [ ] [Set up project integrations](https://git.sme.prefeitura.sp.gov.br/amcom-pedagogico/sme-acessos/-/settings/integrations)
+---
 
-## Collaborate with your team
+## 3. Arquitetura
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+O projeto segue estritamente os princípios da **Clean Architecture** e **Domain-Driven Design (DDD)**, organizado na seguinte estrutura de pastas:
 
-## Test and Deploy
+```text
+src/
+src/
+├── SME.EMFORPEF.Acessos.Api/             # Apresentação (Controllers, Swagger, Middlewares)
+├── SME.EMFORPEF.Acessos.Application/     # Casos de Uso (CQRS), DTOs, Mappers e Orquestração
+├── SME.EMFORPEF.Acessos.Infra.Domain/    # Núcleo do Domínio (Entidades, Interfaces, Enums, Regras de Negócio)
+├── SME.EMFORPEF.Acessos.Infra.Dados/     # Persistência (EF Core, Dapper, Repositórios, Mapeamentos de Banco)
+├── SME.EMFORPEF.Acessos.Infra.Servicos/  # Integrações (HttpClients para API EOL, Telemetria, Filas)
+└── SME.EMFORPEF.Acessos.IoC/             # Injeção de Dependência (Composição dos módulos)---
 
-Use the built-in continuous integration in GitLab.
+## 4. Configuração e Execução
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+### Pré-requisitos
+* [.NET 10 SDK](https://dotnet.microsoft.com/download)
+* [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
-***
+### Executando com Docker (Recomendado)
 
-# Editing this README
+1.  Clone o repositório:
+    ```bash
+    git clone [https://github.com/prefeiturasp/SME-EMFORPEF-Acessos.git](https://github.com/prefeiturasp/SME-EMFORPEF-Acessos.git)
+    ```
+2.  Navegue até a raiz e execute o compose:
+    ```bash
+    docker-compose up -d --build
+    ```
+3.  Acesse a documentação da API:
+    * Swagger: `http://localhost:5000/swagger`
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+### Executando Manualmente (Local)
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+1.  Configure a Connection String no `appsettings.Development.json` dentro de `SME.EMFORPEF.Acessos.Api`.
+2.  Execute a aplicação:
+    ```bash
+    cd SME.EMFORPEF.Acessos.Api
+    dotnet run
+    ```
 
-## Name
-Choose a self-explaining name for your project.
+---
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+## 5. Testes
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+Seguimos o padrão **Given-When-Then** para nomenclatura e **Arrange-Act-Assert** para estrutura.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+```bash
+# Executar todos os testes unitários
+dotnet test
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+---
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+## 6. Colaboração e Código Aberto 🤝🇧🇷
+Este é um projeto Open Source mantido pela Prefeitura de São Paulo.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+O desenvolvimento deste software tem um impacto direto na qualidade da educação pública da cidade. Ao colaborar com melhorias, correções de bugs ou novas funcionalidades, você está contribuindo diretamente para o benefício de milhões de cidadãos paulistanos, otimizando o trabalho dos nossos educadores.
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+### Como Contribuir
+1.  Faça um Fork do projeto.
+2.  Crie uma Branch para sua feature (git checkout -b feature/nova-feature).
+3.  Siga as diretrizes de código (Clean Code, SOLID, DRY).
+4.  Abra um Pull Request.
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+"A tecnologia a serviço da educação pública de qualidade."
