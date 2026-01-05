@@ -17,22 +17,22 @@ namespace SME.Acessos.Aplicacao.Servicos
         private readonly JwtTokenSettings jwtTokenSettings = jwtTokenSettings?.Value ?? throw new ArgumentNullException(nameof(jwtTokenSettings));
         private string? tokenGerado;
 
-        public string GerarToken(string usuarioLogin, string usuarioNome, int sistemaId, Guid? guidPerfil, IEnumerable<long> permissionamentos, IEnumerable<UsuarioGrupoPessoa> perfisUsuario, IEnumerable<string> dres)
+        public string GerarToken(ClaimsTokenDto claimsTokenDto)
         {
             List<Claim> claims =
             [
-                new Claim(ClaimTypes.Name, usuarioLogin),
-                new Claim("login", usuarioLogin),
-                new Claim("nome", usuarioNome),
-                new Claim("sistema", sistemaId.ToString()),
-                new Claim("perfil", guidPerfil.HasValue ? guidPerfil.Value.ToString() : string.Empty),
+                new Claim(ClaimTypes.Name, claimsTokenDto.UsuarioLogin),
+                new Claim("login", claimsTokenDto.UsuarioLogin),
+                new Claim("nome", claimsTokenDto.UsuarioNome),
+                new Claim("sistema", claimsTokenDto.SistemaId.ToString()),
+                new Claim("perfil", claimsTokenDto.GuidPerfil.HasValue ? claimsTokenDto.GuidPerfil.Value.ToString() : string.Empty),
             ];
 
-            PreencherClaimsPerfis(perfisUsuario, claims);
-            
-            PreencherClaimsDres(dres, claims);
+            PreencherClaimsPerfis(claimsTokenDto.PerfisUsuario, claims);
 
-            PreencherClaimsRoles(permissionamentos, claims);
+            PreencherClaimsDres(claimsTokenDto.Dres, claims);
+
+            PreencherClaimsRoles(claimsTokenDto.Permissionamentos, claims);
 
             var now = DateTimeExtensions.HorarioBrasilia();
             var token = new JwtSecurityToken(
