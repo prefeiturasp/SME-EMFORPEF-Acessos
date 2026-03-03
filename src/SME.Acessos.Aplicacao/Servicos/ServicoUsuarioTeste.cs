@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using Bogus.Extensions.Brazil;
 using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Interfaces;
 
@@ -33,7 +34,7 @@ namespace SME.Acessos.Aplicacao.Servicos
         {
             return new UsuarioDTO()
             {
-                Login = _faker.Internet.UserName(),
+                Login = _faker.Person.Cpf(false),
                 Nome = _faker.Name.FullName(),
                 Email = _faker.Internet.Email(),
                 Senha = _faker.Internet.Password()
