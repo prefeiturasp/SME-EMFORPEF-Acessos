@@ -6,7 +6,6 @@ namespace SME.Acessos.Api.Controllers
     public class UsuariosTesteController(IServicoUsuarioTeste servicoUsuarioTeste, IWebHostEnvironment environment) : BaseController
     {
         [HttpPost("cadastrar-em-massa")]
-        [ApiExplorerSettings(IgnoreApi = true)] // Oculta a rota da documentação do Swagger
         public async Task<IActionResult> CadastrarUsuariosEmMassa(int quantidade, Guid? perfilId)
         {
             // Trava de segurança absoluta: Aborta se entrar em Produção por engano
