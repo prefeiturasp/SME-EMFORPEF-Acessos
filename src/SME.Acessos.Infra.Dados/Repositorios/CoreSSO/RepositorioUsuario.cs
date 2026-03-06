@@ -1,9 +1,12 @@
 ﻿using Dapper;
+using SME.Acessos.Aplicacao.Constantes;
 using SME.Acessos.Infra.Dados.Constantes;
 using SME.Acessos.Infra.Dominio.CoreSSO.Entidades;
 using SME.Acessos.Infra.Dominio.CoreSSO.Repositorios;
 using SME.Acessos.Infra.Dominio.Enumeradores;
 using System.Diagnostics.CodeAnalysis;
+using System.Security;
+using System.Text;
 
 namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
 {
@@ -174,6 +177,152 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                                             usu_dataalteracao = getdate()
                                    where usu_id = @usuarioId ";
             await conexao.Obter().ExecuteAsync(query, new { usuarioId });
+        }
+
+        public async Task<IEnumerable<string>> ObterLoginsExistentesAsync(IEnumerable<string> logins)
+        {
+            var loginsExistentes = new List<string>();
+            var lotes = logins.Chunk(500);
+
+            const string query = 
+                """
+                SELECT usu_login
+                FROM SYS_Usuario
+                WHERE usu_login IN @loteLogins
+                """;
+
+            foreach (var lote in lotes)
+            {
+                var resultado = await conexao.Obter().QueryAsync<string>(query, new { loteLogins = lote });
+                loginsExistentes.AddRange(resultado);
+            }
+
+            return loginsExistentes;
+        }
+
+        public async Task InserirUsuariosEmMassaAsync(IEnumerable<UsuarioBulkInsertDto> usuarios, Guid perfilId)
+        {
+            // Construção do XML em alta velocidade
+            var xmlBuilder = new StringBuilder("<Usuarios>");
+            foreach (var u in usuarios)
+            {
+                // SecurityElement.Escape previne quebra de XML caso o nome tenha caracteres como '&' ou '<'
+                xmlBuilder.Append(
+                    $"""
+                    <U p="{u.PessoaId}" u="{u.UsuarioId}" n="{SecurityElement.Escape(u.Nome)}" l="{u.Login}" e="{u.Email}" s="{u.SenhaCriptografada}" />
+                    """);
+                    
+            }
+            xmlBuilder.Append("</Usuarios>");
+
+            const string query =
+                """
+                BEGIN TRY
+                    BEGIN TRAN;
+
+                    -- 1. Inserir Pessoas
+                    INSERT INTO PES_Pessoa (pes_id, pes_nome)
+                    SELECT x.c.value('@p', 'uniqueidentifier'), x.c.value('@n', 'varchar(255)')
+                    FROM @xmlData.nodes('/Usuarios/U') AS x(c);
+
+                    -- 2. Inserir Documentos
+                    INSERT INTO PES_PessoaDocumento (pes_id, tdo_id, psd_numero)
+                    SELECT x.c.value('@p', 'uniqueidentifier'), @tipoDocCpf, x.c.value('@l', 'varchar(50)')
+                    FROM @xmlData.nodes('/Usuarios/U') AS x(c);
+
+                    -- 3. Inserir Usuários
+                    INSERT INTO SYS_Usuario (usu_id, usu_login, usu_email, usu_senha, pes_id, ent_id)
+                    SELECT x.c.value('@u', 'uniqueidentifier'), x.c.value('@l', 'varchar(50)'), 
+                           x.c.value('@e', 'varchar(255)'), x.c.value('@s', 'varchar(MAX)'), 
+                           x.c.value('@p', 'uniqueidentifier'), @entidadeSme
+                    FROM @xmlData.nodes('/Usuarios/U') AS x(c);
+
+                    -- 4. Inserir Vínculo de Grupo (Perfil)
+                    INSERT INTO SYS_UsuarioGrupo (gru_id, usu_id, usg_situacao)
+                    SELECT @perfilId, x.c.value('@u', 'uniqueidentifier'), 1
+                    FROM @xmlData.nodes('/Usuarios/U') AS x(c);
+
+                    COMMIT TRAN;
+                END TRY
+                BEGIN CATCH
+                    IF @@TRANCOUNT > 0
+                        ROLLBACK TRAN;
+
+                    -- Captura o erro original e lança novamente (Compatível com SQL 2008+)
+                    DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+                    DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+                    DECLARE @ErrorState INT = ERROR_STATE();
+
+                    RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+                END CATCH;
+                """;
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@xmlData", xmlBuilder.ToString(), System.Data.DbType.Xml);
+            parametros.Add("@tipoDocCpf", new Guid(ConstantesCoreSSO.TIPO_DOCUMENTACAO_CPF));
+            parametros.Add("@entidadeSme", new Guid(ConstantesCoreSSO.ENTIDADE_SME));
+            parametros.Add("@perfilId", perfilId);
+
+            await conexao.Obter().ExecuteAsync(query, parametros);
+        }
+        public async Task ExcluirUsuariosEmMassaAsync(IEnumerable<string> logins)
+        {
+            if (logins is null || !logins.Any()) return;
+
+            var xmlBuilder = new StringBuilder("<logins>");
+            foreach (var login in logins)
+            {
+                xmlBuilder.Append($"<l v=\"{login}\"/>");
+            }
+            xmlBuilder.Append("</logins>");
+
+            const string query =
+            """
+            BEGIN TRY
+                BEGIN TRAN;
+
+                -- Extrai os logins do XML para uma tabela em memória
+                DECLARE @TempLogins TABLE (Login VARCHAR(50));
+                INSERT INTO @TempLogins (Login)
+                SELECT x.c.value('@v', 'varchar(50)')
+                FROM @xmlLogins.nodes('/logins/l') AS x(c);
+
+                -- Obtém os IDs exatos das Pessoas e Usuários baseados nos logins informados
+                DECLARE @TempIds TABLE (PesId UNIQUEIDENTIFIER, UsuId UNIQUEIDENTIFIER);
+                INSERT INTO @TempIds (PesId, UsuId)
+                SELECT u.pes_id, u.usu_id
+                FROM SYS_Usuario u
+                INNER JOIN @TempLogins t ON u.usu_login = t.Login COLLATE DATABASE_DEFAULT;
+
+                -- DELEÇÃO CONTROLADA (De baixo para cima)
+                -- 1. Exclui os vínculos de perfis
+                DELETE FROM SYS_UsuarioGrupo WHERE usu_id IN (SELECT UsuId FROM @TempIds);
+
+                -- 2. Exclui o acesso do usuário
+                DELETE FROM SYS_Usuario WHERE usu_id IN (SELECT UsuId FROM @TempIds);
+
+                -- 3. Exclui os documentos da pessoa
+                DELETE FROM PES_PessoaDocumento WHERE pes_id IN (SELECT PesId FROM @TempIds);
+
+                -- 4. Exclui o registro da pessoa
+                DELETE FROM PES_Pessoa WHERE pes_id IN (SELECT PesId FROM @TempIds);
+
+                COMMIT TRAN;
+            END TRY
+            BEGIN CATCH
+                IF @@TRANCOUNT > 0 ROLLBACK TRAN;
+            
+                DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+                DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+                DECLARE @ErrorState INT = ERROR_STATE();
+                RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+            END CATCH;
+            """;
+
+            var parametros = new DynamicParameters();
+            parametros.Add("@xmlLogins", xmlBuilder.ToString(), System.Data.DbType.Xml);
+
+            await conexao.Obter().ExecuteAsync(query, parametros);
         }
     }
 }

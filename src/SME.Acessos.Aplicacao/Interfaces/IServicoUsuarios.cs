@@ -22,5 +22,6 @@ namespace SME.Acessos.Aplicacao.Interfaces
         Task<bool> AlterarNome(string login, string nome);
         Task<bool> Alterar(string login, UsuarioDTO usuarioDTO);
         Task<bool> Inativar(string login);
+        Task<IEnumerable<string>> ObterLoginsExistentesAsync(IEnumerable<string> logins);
     }
 }

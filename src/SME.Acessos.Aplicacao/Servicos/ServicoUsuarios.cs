@@ -325,5 +325,8 @@ namespace SME.Acessos.Aplicacao.Servicos
             await repositorioUsuarioCoreSSO.Inativar(usuario.Id);
             return true;
         }
+
+        public async Task<IEnumerable<string>> ObterLoginsExistentesAsync(IEnumerable<string> logins) =>
+            logins is null || !logins.Any() ? [] : await repositorioUsuarioCoreSSO.ObterLoginsExistentesAsync(logins);
     }
 }
