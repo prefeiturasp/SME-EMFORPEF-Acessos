@@ -18,5 +18,8 @@ namespace SME.Acessos.Infra.Dominio.CoreSSO.Repositorios
         Task AlterarNome(Guid usuarioId, string nome);
         Task AlterarUsuario(Guid usuarioId, string senhaNova, TipoCriptografia criptografia, string email);
         Task Inativar(Guid id);
+        Task<IEnumerable<string>> ObterLoginsExistentesAsync(IEnumerable<string> logins);
+        Task InserirUsuariosEmMassaAsync(IEnumerable<UsuarioBulkInsertDto> usuarios, Guid perfilId);
+        Task ExcluirUsuariosEmMassaAsync(IEnumerable<string> logins);
     }
 }
