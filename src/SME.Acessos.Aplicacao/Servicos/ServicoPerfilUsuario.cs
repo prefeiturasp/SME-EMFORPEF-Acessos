@@ -14,6 +14,7 @@ namespace SME.Acessos.Aplicacao.Servicos
         public async Task<RetornoPerfilUsuarioDTO> ObterPerfisToken(string login, int sistemaId, Guid? perfilUsuarioId = null)
         {
             string nomeUsuario, emailUsuario,cpfUsuario;
+            string? nomeSocial;
             var codPermissoes = Enumerable.Empty<long>();
 
             var perfisUsuario = await repositorioUsuarioGrupoPessoa.ObterPerfisUsuario(login, sistemaId) ?? Enumerable.Empty<UsuarioGrupoPessoa>();
@@ -28,6 +29,7 @@ namespace SME.Acessos.Aplicacao.Servicos
                         throw new NegocioException($"Nenhum Perfil encontrado para o usuário");
 
                 nomeUsuario = perfilUsuario.PessoaNome;
+                nomeSocial = perfilUsuario.NomeSocial;
                 emailUsuario = perfilUsuario.UsuarioEmail;
                 perfilUsuarioId = perfilUsuario.GrupoId;
                 cpfUsuario = perfilUsuario.Cpf;
@@ -44,14 +46,15 @@ namespace SME.Acessos.Aplicacao.Servicos
                 var usuarioCoreSSO = await repositorioUsuario.ObterPorLogin(login, true) ??
                     throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO, HttpStatusCode.Unauthorized);
 
-                nomeUsuario = usuarioCoreSSO.Pessoa.Nome;
+                nomeUsuario = usuarioCoreSSO.Pessoa!.Nome;
+                nomeSocial = usuarioCoreSSO.Pessoa.NomeSocial;
                 emailUsuario = usuarioCoreSSO.Email;
-                cpfUsuario = usuarioCoreSSO.Documento.Numero;
+                cpfUsuario = usuarioCoreSSO.Documento!.Numero;
             }
 
             var dres = await repositorioUsuario.ObterDresPorLoginEPerfil(login,perfilUsuarioId);
             
-            var token = servicoTokenJwt.GerarToken(new(login, nomeUsuario, sistemaId, perfilUsuarioId, codPermissoes,perfisUsuario, dres));
+            var token = servicoTokenJwt.GerarToken(new(login, nomeSocial ?? nomeUsuario, sistemaId, perfilUsuarioId, codPermissoes,perfisUsuario, dres));
             var dataExpiracaoToken = servicoTokenJwt.ObterDataHoraExpiracao();
 
             var perfis = perfisUsuario.Select(s => new PerfilUsuarioDTO() { Perfil = s.GrupoId, PerfilNome = s.GrupoNome });
@@ -60,6 +63,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             {
                 UsuarioLogin = login,
                 UsuarioNome = nomeUsuario,
+                NomeSocial = nomeSocial,
                 Cpf = cpfUsuario,
                 Email = emailUsuario,
                 Token = token,
@@ -82,7 +86,8 @@ namespace SME.Acessos.Aplicacao.Servicos
             var retorno = Enumerable.Empty<RetornoUsuriosPareceristasDTO>();
             
             if(pareceristas.Any() )
-                retorno = pareceristas?.Select(x => new RetornoUsuriosPareceristasDTO() { Nome = x.PessoaNome, Login = x.Login});
+                retorno = pareceristas?.Select(x => 
+                new RetornoUsuriosPareceristasDTO() { Nome = x.PessoaNome, Login = x.Login, NomeSocial = x.NomeSocial });
             
             
             return retorno;

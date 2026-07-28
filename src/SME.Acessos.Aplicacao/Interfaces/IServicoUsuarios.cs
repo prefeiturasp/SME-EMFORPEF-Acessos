@@ -20,6 +20,7 @@ namespace SME.Acessos.Aplicacao.Interfaces
         Task<IEnumerable<ResponsavelDTO>> ObterUsuariosComPerfisResponsavel(Guid[] perfis, long sistemaId);
         Task<bool> EnviarEmailValidacaoCadastro(string login, long sistemaId);
         Task<bool> AlterarNome(string login, string nome);
+        Task<bool> AlterarNomeSocial(string login, string? nomeSocial);
         Task<bool> Alterar(string login, UsuarioDTO usuarioDTO);
         Task<bool> Inativar(string login);
     }

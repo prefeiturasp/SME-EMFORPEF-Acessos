@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace SME.Acessos.Aplicacao.DTO
+﻿namespace SME.Acessos.Aplicacao.DTO
 {
     public class DadosUsuarioDTO
     {
@@ -16,5 +14,6 @@ namespace SME.Acessos.Aplicacao.DTO
         public string Cep { get; set; }
         public string Cidade { get; set; }
         public string Estado { get; set; }
+        public string? NomeSocial { get; set; }
     }
 }

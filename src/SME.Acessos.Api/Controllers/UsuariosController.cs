@@ -201,6 +201,17 @@ namespace SME.Acessos.Api.Controllers
             return Ok(retorno);
         }
 
+        [HttpPut("{login}/nome-social")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> AlterarNomeSocial([FromRoute] string login, [FromBody] AlterarNomeSocialUsuarioDto alterarNomeSocialDto, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            var retorno = await servicoUsuarios.AlterarNomeSocial(login, alterarNomeSocialDto.NomeSocial);
+
+            return Ok(retorno);
+        }
+
         [HttpGet("usuarios-pareceristas")]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]

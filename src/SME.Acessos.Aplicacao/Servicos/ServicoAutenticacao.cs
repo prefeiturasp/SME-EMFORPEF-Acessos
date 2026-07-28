@@ -25,6 +25,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             {
                 Login = usuarioCoreSSO.Login,
                 Nome = usuarioCoreSSO.Pessoa?.Nome ?? "",
+                NomeSocial = usuarioCoreSSO.Pessoa?.NomeSocial,
                 Email = usuarioCoreSSO.Email,
                 Cpf = usuarioCoreSSO.Documento?.Numero ?? ""
             };

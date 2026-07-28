@@ -107,6 +107,11 @@ namespace SME.Acessos.TesteIntegracao.ServicosFakes
             return Task.CompletedTask;
         }
 
+        public Task AlterarNomeSocial(Guid usuarioId, string? nomeSocial)
+        {
+            return Task.CompletedTask;
+        }
+
         public Task AlterarSenha(Guid usuarioId, string senhaNova, TipoCriptografia criptografia)
         {
             return Task.CompletedTask;

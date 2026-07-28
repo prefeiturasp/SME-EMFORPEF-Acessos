@@ -89,10 +89,8 @@ namespace SME.Acessos.Aplicacao.Servicos
 
         public async Task<DadosUsuarioDTO?> ObterMeusDados(string login)
         {
-            var usuarios = await repositorioDadosUsuario.ObterMeusDados(login);
-            if (usuarios == null)
-                throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
-
+            var usuarios = await repositorioDadosUsuario.ObterMeusDados(login) ??
+                           throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
             return mapper.Map<DadosUsuarioDTO>(usuarios);
         }
 
@@ -294,6 +292,13 @@ namespace SME.Acessos.Aplicacao.Servicos
             return true;
         }
 
+        public async Task<bool> AlterarNomeSocial(string login, string? nomeSocial)
+        {
+            var usuario = await ValidarLogin(login);
+            await repositorioUsuarioCoreSSO.AlterarNomeSocial(usuario.Id, nomeSocial);
+            return true;
+        }
+
         public async Task<bool> Alterar(string login, UsuarioDTO usuarioDTO)
         {
             if (usuarioDTO.Email.EhNulo())
@@ -309,6 +314,7 @@ namespace SME.Acessos.Aplicacao.Servicos
             var senhaCriptografada = string.IsNullOrEmpty(usuarioDTO.Senha) ? usuario.Senha : CriptografiaExtensions.CriptografarSenha(usuarioDTO.Senha, criptografia);
 
             await repositorioUsuarioCoreSSO.AlterarNome(usuario.Id, usuarioDTO.Nome);
+            await repositorioUsuarioCoreSSO.AlterarNomeSocial(usuario.Id, usuarioDTO.NomeSocial);
             await repositorioUsuarioCoreSSO.AlterarUsuario(usuario.Id, senhaCriptografada, criptografia, usuarioDTO.Email);
 
             if (!string.IsNullOrEmpty(usuarioDTO.Senha))
