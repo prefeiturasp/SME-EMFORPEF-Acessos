@@ -20,17 +20,17 @@ namespace SME.Acessos.Aplicacao.Servicos
     {
         private readonly IServicoEmail servicoEmail = servicoEmail ?? throw new ArgumentNullException(nameof(servicoEmail));
 
-        public async Task<IList<DadosUsuarioDTO>> ObterTodosUsuarios()
+        public async Task<IList<DadosUsuarioDto>> ObterTodosUsuarios()
         {
             var usuarios = await repositorioUsuarioCoreSSO.ObterTodos();
-            return mapper.Map<IList<DadosUsuarioDTO>>(usuarios);
+            return mapper.Map<IList<DadosUsuarioDto>>(usuarios);
         }
 
-        public async Task<DadosUsuarioDTO> ObterUsuarioPorId(Guid id)
-            => mapper.Map<DadosUsuarioDTO>(await repositorioUsuarioCoreSSO.ObterPorId(id));
+        public async Task<DadosUsuarioDto> ObterUsuarioPorId(Guid id)
+            => mapper.Map<DadosUsuarioDto>(await repositorioUsuarioCoreSSO.ObterPorId(id));
 
-        public async Task<DadosUsuarioDTO> ObterUsuarioPorLogin(string login)
-            => mapper.Map<DadosUsuarioDTO>(await repositorioUsuarioCoreSSO.ObterPorLogin(login));
+        public async Task<DadosUsuarioDto> ObterUsuarioPorLogin(string login)
+            => mapper.Map<DadosUsuarioDto>(await repositorioUsuarioCoreSSO.ObterPorLogin(login));
 
         public async Task<bool> ExisteUsuarioCadastradoCoreSSO(string login)
         {
@@ -87,11 +87,11 @@ namespace SME.Acessos.Aplicacao.Servicos
             await repositorioUsuarioCoreSSO.InserirHistoricoSenha(usuarioId, senhaCriptografada, criptografia);
         }
 
-        public async Task<DadosUsuarioDTO?> ObterMeusDados(string login)
+        public async Task<DadosUsuarioDto?> ObterMeusDados(string login)
         {
             var usuarios = await repositorioDadosUsuario.ObterMeusDados(login) ??
                            throw new NegocioException(MensagemNegocio.USUARIO_NAO_ENCONTRADO);
-            return mapper.Map<DadosUsuarioDTO>(usuarios);
+            return mapper.Map<DadosUsuarioDto>(usuarios);
         }
 
         public async Task<bool> AlterarEmail(string login, AlterarEmailUsuarioDTO alterarEmailUsuarioDto)

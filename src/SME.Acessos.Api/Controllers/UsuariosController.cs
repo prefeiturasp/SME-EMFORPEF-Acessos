@@ -54,7 +54,7 @@ namespace SME.Acessos.Api.Controllers
         }
 
         [HttpGet("{login}")]
-        [ProducesResponseType(typeof(DadosUsuarioDTO), 200)]
+        [ProducesResponseType(typeof(DadosUsuarioDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(601)]
@@ -66,7 +66,7 @@ namespace SME.Acessos.Api.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerator<DadosUsuarioDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerator<DadosUsuarioDto>), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         public async Task<IActionResult> ObterTodosAsync([FromServices] IServicoUsuarios servicoUsuarios)

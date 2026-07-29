@@ -54,7 +54,7 @@ namespace SME.Acessos.TesteUnitario.Api.Controllers
         {
             // Arrange
             var login = _faker.Internet.UserName();
-            var dadosUsuario = new Faker<DadosUsuarioDTO>("pt_BR")
+            var dadosUsuario = new Faker<DadosUsuarioDto>("pt_BR")
                 .RuleFor(d => d.Login, _ => login)
                 .RuleFor(d => d.Nome, f => f.Person.FullName)
                 .RuleFor(d => d.Cpf, f => f.Random.Replace("###########"))
@@ -69,7 +69,7 @@ namespace SME.Acessos.TesteUnitario.Api.Controllers
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(resultado);
-            var valorRetornado = Assert.IsType<DadosUsuarioDTO>(okResult.Value);
+            var valorRetornado = Assert.IsType<DadosUsuarioDto>(okResult.Value);
 
             Assert.Equal(login, valorRetornado.Login);
             servicoMock.Verify(s => s.ObterMeusDados(login), Times.Once);

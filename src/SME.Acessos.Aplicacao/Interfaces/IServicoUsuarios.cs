@@ -5,12 +5,12 @@ namespace SME.Acessos.Aplicacao.Interfaces
 {
     public interface IServicoUsuarios
     {
-        Task<IList<DadosUsuarioDTO>> ObterTodosUsuarios();
-        Task<DadosUsuarioDTO> ObterUsuarioPorId(Guid id);
-        Task<DadosUsuarioDTO> ObterUsuarioPorLogin(string login);
+        Task<IList<DadosUsuarioDto>> ObterTodosUsuarios();
+        Task<DadosUsuarioDto> ObterUsuarioPorId(Guid id);
+        Task<DadosUsuarioDto> ObterUsuarioPorLogin(string login);
         Task<bool> ExisteUsuarioCadastradoCoreSSO(string login);
         Task<bool> Cadastrar(UsuarioDTO usuarioDto);
-        Task<DadosUsuarioDTO?> ObterMeusDados(string login);
+        Task<DadosUsuarioDto?> ObterMeusDados(string login);
         Task<bool> AlterarSenha(string login, AlterarSenhaUsuarioDTO alterarSenhaUsuarioDto);
         Task<bool> AlterarEmail(string login, AlterarEmailUsuarioDTO alterarEmailUsuarioDto);
         Task<string> SolicitarRecuperacaoSenha(string login, long sistemaId);
