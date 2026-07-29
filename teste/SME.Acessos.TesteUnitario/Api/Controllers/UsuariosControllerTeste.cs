@@ -55,11 +55,21 @@ namespace SME.Acessos.TesteUnitario.Api.Controllers
             // Arrange
             var login = _faker.Internet.UserName();
             var dadosUsuario = new Faker<DadosUsuarioDto>("pt_BR")
-                .RuleFor(d => d.Login, _ => login)
-                .RuleFor(d => d.Nome, f => f.Person.FullName)
-                .RuleFor(d => d.Cpf, f => f.Random.Replace("###########"))
-                .RuleFor(d => d.Email, f => f.Internet.Email())
-                .Generate();
+            .CustomInstantiator(f => new DadosUsuarioDto(
+                Nome: f.Person.FullName,
+                Cpf: f.Random.Replace("###########"),
+                Login: login,
+                Email: f.Internet.Email(),
+                Telefone: f.Phone.PhoneNumber(),
+                Endereco: f.Address.StreetName(),
+                Numero: f.Address.BuildingNumber(),
+                Complemento: f.Address.SecondaryAddress(),
+                Bairro: f.Address.County(),
+                Cep: f.Address.ZipCode(),
+                Cidade: f.Address.City(),
+                Estado: f.Address.StateAbbr(),
+                NomeSocial: f.Person.FirstName
+            )).Generate();
 
             var servicoMock = _mocker.GetMock<IServicoUsuarios>();
             servicoMock.Setup(s => s.ObterMeusDados(login)).ReturnsAsync(dadosUsuario);
