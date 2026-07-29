@@ -43,4 +43,9 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Aplicacao\Servicos\" />
+    <Folder Include="WebApi\" />
+  </ItemGroup>
+
 </Project>
