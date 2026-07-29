@@ -17,6 +17,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                             ug.usu_id UsuarioId,                        
                             u.usu_email UsuarioEmail,
                             p.pes_nome PessoaNome,
+                            p.pes_nomeSocial NomeSocial,
                             ug.gru_id GrupoId,
                             g.gru_nome GrupoNome,
                             pd.psd_numero as cpf 
@@ -41,6 +42,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                             ug.usu_id UsuarioId,                        
                             u.usu_email UsuarioEmail,
                             p.pes_nome PessoaNome,
+                            p.pes_nomeSocial NomeSocial,
                             ug.gru_id GrupoId,
                             g.gru_nome GrupoNome,
                             pd.psd_numero as cpf,

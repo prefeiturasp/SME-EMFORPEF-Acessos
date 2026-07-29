@@ -16,6 +16,7 @@ namespace SME.Acessos.Infra.Dominio.CoreSSO.Repositorios
         Task<IEnumerable<DadosUsuario>> ObterUsuariosComPerfisResponsavel(Guid[] perfis, long sistemaId);
         Task<string> ObterLoginUsuarioPorCpfCadastradoCoreSSO(string login);
         Task AlterarNome(Guid usuarioId, string nome);
+        Task AlterarNomeSocial(Guid usuarioId, string? nomeSocial);
         Task AlterarUsuario(Guid usuarioId, string senhaNova, TipoCriptografia criptografia, string email);
         Task Inativar(Guid id);
     }

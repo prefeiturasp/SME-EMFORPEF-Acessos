@@ -9,7 +9,7 @@ namespace SME.Acessos.Api.Controllers
     public class AutenticacaoController : BaseController
     {
         [HttpPost("autenticar")]
-        [ProducesResponseType(typeof(RetornoPerfilUsuarioDTO), 200)]
+        [ProducesResponseType(typeof(RetornoAutenticacaoDTO), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         public async Task<IActionResult> Autenticar(

@@ -54,7 +54,7 @@ namespace SME.Acessos.Api.Controllers
         }
 
         [HttpGet("{login}")]
-        [ProducesResponseType(typeof(DadosUsuarioDTO), 200)]
+        [ProducesResponseType(typeof(DadosUsuarioDto), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [ProducesResponseType(601)]
@@ -66,7 +66,7 @@ namespace SME.Acessos.Api.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerator<DadosUsuarioDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerator<DadosUsuarioDto>), 200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         public async Task<IActionResult> ObterTodosAsync([FromServices] IServicoUsuarios servicoUsuarios)
@@ -197,6 +197,17 @@ namespace SME.Acessos.Api.Controllers
         public async Task<IActionResult> AlterarNome([FromRoute] string login, [FromBody] AlterarNomeUsuarioDTO alterarNomeUsuarioDto, [FromServices] IServicoUsuarios servicoUsuarios)
         {
             var retorno = await servicoUsuarios.AlterarNome(login, alterarNomeUsuarioDto.Nome);
+
+            return Ok(retorno);
+        }
+
+        [HttpPut("{login}/nome-social")]
+        [ProducesResponseType(typeof(bool), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        public async Task<IActionResult> AlterarNomeSocial([FromRoute] string login, [FromBody] AlterarNomeSocialUsuarioDto alterarNomeSocialDto, [FromServices] IServicoUsuarios servicoUsuarios)
+        {
+            var retorno = await servicoUsuarios.AlterarNomeSocial(login, alterarNomeSocialDto.NomeSocial);
 
             return Ok(retorno);
         }

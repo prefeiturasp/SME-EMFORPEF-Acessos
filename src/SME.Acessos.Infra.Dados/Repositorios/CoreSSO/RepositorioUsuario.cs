@@ -19,6 +19,7 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                                  usu_criptografia,                                 
                                  p.pes_id,
                                  p.pes_nome,
+                                 p.pes_nomeSocial,
                                  pd.psd_numero
                          from SYS_Usuario u 
                          join pes_pessoa p on u.pes_id = p.pes_id
@@ -165,6 +166,17 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
                                  WHERE su.usu_id = @usuarioId ";
 
             await conexao.Obter().ExecuteAsync(alterarNome, new { usuarioId, nome });
+        }
+
+        public async Task AlterarNomeSocial(Guid usuarioId, string? nomeSocial)
+        {
+            var alterarNomeSocial = @"UPDATE PES_Pessoa
+                                    SET pes_nomeSocial = @nomeSocial,
+                                        pes_dataalteracao = getdate()
+                                 FROM SYS_Usuario su
+                                 JOIN PES_Pessoa pp ON pp.pes_id = su.pes_id
+                                 WHERE su.usu_id = @usuarioId ";
+            await conexao.Obter().ExecuteAsync(alterarNomeSocial, new { usuarioId, nomeSocial });
         }
 
         public async Task Inativar(Guid usuarioId)
