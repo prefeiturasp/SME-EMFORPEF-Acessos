@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Bogus;
 using SME.Acessos.Aplicacao.Constantes;
 using SME.Acessos.Aplicacao.DTO;
 using SME.Acessos.Aplicacao.Enumerados;

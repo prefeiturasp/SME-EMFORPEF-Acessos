@@ -111,7 +111,6 @@ namespace SME.Acessos.IoC
             services.AddScoped<IServicoPerfilUsuario, ServicoPerfilUsuario>();
             services.AddScoped<IServicoTokenJwt, ServicoTokenJwt>();
             services.AddScoped<IServicoGrupos, ServicoGrupos>();
-            services.AddScoped<IServicoUsuarioTeste, ServicoUsuarioTeste>();
         }
 
         protected virtual void RegistrarRepositorios()
