@@ -10,7 +10,8 @@ namespace SME.Acessos.Infra.Dados.Repositorios.CoreSSO
         public async Task<DadosUsuario> ObterMeusDados(string login)
         {
             var query = @"SELECT    
-                                   p.pes_nome as nome,                            
+                                   p.pes_nome as nome,
+                                   p.pes_nomeSocial as nomeSocial,
                                    d.psd_numero as cpf,      
                                    u.usu_login as login,
                                    u.usu_email as email,   
