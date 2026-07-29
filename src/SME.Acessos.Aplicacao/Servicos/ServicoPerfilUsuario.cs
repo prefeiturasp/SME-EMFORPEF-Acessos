@@ -38,7 +38,7 @@ namespace SME.Acessos.Aplicacao.Servicos
                 if (modulos != null && modulos.Any())
                 {
                     var permissoes = await repositorioPermissao.ObterPermissoesPorModulos(modulos);
-                    codPermissoes = permissoes.ToList().Select(p => p.Id);
+                    codPermissoes = permissoes.Select(p => p.Id);
                 }
             }
             else
@@ -80,14 +80,14 @@ namespace SME.Acessos.Aplicacao.Servicos
             return ObterPerfisToken(dadosUsuario.Login, dadosUsuario.Sistema, dadosUsuario.Perfil);
         }
 
-        public async Task<IEnumerable<RetornoUsuriosPareceristasDTO>> ObterUsuariosPerfilPareceristasConecta()
+        public async Task<IEnumerable<RetornoUsuariosPareceristasDTO>?> ObterUsuariosPerfilPareceristasConecta()
         {
             var pareceristas = await repositorioUsuarioGrupoPessoa.ObterUsuariosPerfilPareceristasConecta() ?? Enumerable.Empty<UsuarioGrupoPessoa>();
-            var retorno = Enumerable.Empty<RetornoUsuriosPareceristasDTO>();
+            var retorno = Enumerable.Empty<RetornoUsuariosPareceristasDTO>();
             
             if(pareceristas.Any() )
                 retorno = pareceristas?.Select(x => 
-                new RetornoUsuriosPareceristasDTO() { Nome = x.PessoaNome, Login = x.Login, NomeSocial = x.NomeSocial });
+                new RetornoUsuariosPareceristasDTO() { Nome = x.PessoaNome, Login = x.Login, NomeSocial = x.NomeSocial });
             
             
             return retorno;

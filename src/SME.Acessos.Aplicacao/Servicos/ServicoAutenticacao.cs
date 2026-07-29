@@ -10,9 +10,9 @@ namespace SME.Acessos.Aplicacao.Servicos
 {
     public class ServicoAutenticacao(IRepositorioUsuario repositorioUsuario) : IServicoAutenticacao
     {
-        public async Task<RetornoAutenticacaoDTO> Autenticar(string login, string senha)
+        public async Task<RetornoAutenticacaoDTO> Autenticar(string? login, string? senha)
         {
-            if (string.IsNullOrEmpty(login) && string.IsNullOrEmpty(senha))
+            if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(senha))
                 throw new NegocioException(MensagemNegocio.LOGIN_SENHA_SAO_OBRIGATORIOS, HttpStatusCode.BadRequest);
             
             var usuarioCoreSSO = await repositorioUsuario.ObterPorLogin(login, true) ?? 

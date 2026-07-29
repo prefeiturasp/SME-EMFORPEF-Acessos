@@ -1,6 +1,6 @@
 ﻿namespace SME.Acessos.Aplicacao.DTO
 {
-    public class RetornoUsuriosPareceristasDTO
+    public class RetornoUsuariosPareceristasDTO
     {
         public string Nome { get; set; }
         public string Login { get; set; }
