@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SME.Acessos.Api.Middlewares;
 
 namespace SME.Acessos.Api.Controllers
 {
