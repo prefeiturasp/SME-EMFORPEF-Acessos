@@ -18,6 +18,6 @@
         public DateTime DataAlteracao { get; set; }
         public int Integridade { get; set; }
         public int IdFoto { get; set; }
-        public string NomeSocial { get; set; }
+        public string? NomeSocial { get; set; }
     }
 }

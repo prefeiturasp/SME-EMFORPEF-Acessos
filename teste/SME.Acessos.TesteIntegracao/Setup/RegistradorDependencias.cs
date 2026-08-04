@@ -65,7 +65,7 @@ namespace SME.Acessos.TesteIntegracao.Setup
 
         protected override void RegistrarProfiles()
         {
-            services.AddAutoMapper(cfg => cfg.AddMaps(typeof(DominioParaDTOProfile).Assembly));
+            services.AddAutoMapper(cfg => cfg.AddMaps(typeof(DominioParaDtoProfile).Assembly));
         }
 
         protected override void RegistrarRepositorios()

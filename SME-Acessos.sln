@@ -1,21 +1,27 @@
-﻿
+﻿﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31815.197
+# Visual Studio Version 18
+VisualStudioVersion = 18.7.11903.348 stable
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "src\SME.Acessos.Api", "src\SME.Acessos.Api\SME.Acessos.Api.csproj", "{1556B5D1-8242-43DC-8B62-4FB95CC99617}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.Acessos.Api", "src\SME.Acessos.Api\SME.Acessos.Api.csproj", "{1556B5D1-8242-43DC-8B62-4FB95CC99617}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "src\SME.Acessos.IoC", "src\SME.Acessos.IoC\SME.Acessos.IoC.csproj", "{AEDF6466-2934-463E-9FDC-5A23817CDA2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.Acessos.IoC", "src\SME.Acessos.IoC\SME.Acessos.IoC.csproj", "{AEDF6466-2934-463E-9FDC-5A23817CDA2E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "src\SME.Acessos.Infra.Servicos", "src\SME.Acessos.Infra\SME.Acessos.Infra.Servicos.csproj", "{0DE40C09-0D2F-4927-A8DD-58FB855F4A0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SME.Acessos.Infra.Servicos", "src\SME.Acessos.Infra\SME.Acessos.Infra.Servicos.csproj", "{0DE40C09-0D2F-4927-A8DD-58FB855F4A0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "src\SME.Acessos.Infra.Dados", "src\SME.Acessos.Infra.Dados\SME.Acessos.Infra.Dados.csproj", "{762573F1-D302-4AA2-9077-8B74D9A1127C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.Acessos.Infra.Dados", "src\SME.Acessos.Infra.Dados\SME.Acessos.Infra.Dados.csproj", "{762573F1-D302-4AA2-9077-8B74D9A1127C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "src\SME.Acessos.Infra.Dominio", "src\SME.Acessos.Infra.Dominio\SME.Acessos.Infra.Dominio.csproj", "{660179ED-8949-4923-8846-AA45F646E0C5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.Acessos.Infra.Dominio", "src\SME.Acessos.Infra.Dominio\SME.Acessos.Infra.Dominio.csproj", "{660179ED-8949-4923-8846-AA45F646E0C5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "src\SME.Acessos.Aplicacao", "src\SME.Acessos.Aplicacao\SME.Acessos.Aplicacao.csproj", "{06021DED-BE6D-4C69-9858-D2054743D137}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.Acessos.Aplicacao", "src\SME.Acessos.Aplicacao\SME.Acessos.Aplicacao.csproj", "{06021DED-BE6D-4C69-9858-D2054743D137}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "teste\SME.Acessos.TesteIntegracao", "teste\SME.Acessos.TesteIntegracao\SME.Acessos.TesteIntegracao.csproj", "{9F4B9B0B-EF60-4188-8BFC-469872EB02C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.Acessos.TesteIntegracao", "teste\SME.Acessos.TesteIntegracao\SME.Acessos.TesteIntegracao.csproj", "{9F4B9B0B-EF60-4188-8BFC-469872EB02C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SME.Acessos.TesteUnitario", "teste\SME.Acessos.TesteUnitario\SME.Acessos.TesteUnitario.csproj", "{2F528570-4010-466E-9AD9-FE32E53774E7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{916894DC-ADF4-4AFC-AFC4-E51F9EB7E89F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "testes", "testes", "{1FE4E729-FD2E-4287-BCDF-86DD05B6A40F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,9 +57,23 @@ Global
 		{9F4B9B0B-EF60-4188-8BFC-469872EB02C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F4B9B0B-EF60-4188-8BFC-469872EB02C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F4B9B0B-EF60-4188-8BFC-469872EB02C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F528570-4010-466E-9AD9-FE32E53774E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F528570-4010-466E-9AD9-FE32E53774E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F528570-4010-466E-9AD9-FE32E53774E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F528570-4010-466E-9AD9-FE32E53774E7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1556B5D1-8242-43DC-8B62-4FB95CC99617} = {916894DC-ADF4-4AFC-AFC4-E51F9EB7E89F}
+		{AEDF6466-2934-463E-9FDC-5A23817CDA2E} = {916894DC-ADF4-4AFC-AFC4-E51F9EB7E89F}
+		{0DE40C09-0D2F-4927-A8DD-58FB855F4A0E} = {916894DC-ADF4-4AFC-AFC4-E51F9EB7E89F}
+		{762573F1-D302-4AA2-9077-8B74D9A1127C} = {916894DC-ADF4-4AFC-AFC4-E51F9EB7E89F}
+		{660179ED-8949-4923-8846-AA45F646E0C5} = {916894DC-ADF4-4AFC-AFC4-E51F9EB7E89F}
+		{06021DED-BE6D-4C69-9858-D2054743D137} = {916894DC-ADF4-4AFC-AFC4-E51F9EB7E89F}
+		{9F4B9B0B-EF60-4188-8BFC-469872EB02C9} = {1FE4E729-FD2E-4287-BCDF-86DD05B6A40F}
+		{2F528570-4010-466E-9AD9-FE32E53774E7} = {1FE4E729-FD2E-4287-BCDF-86DD05B6A40F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1E9EE8B0-70E7-41FF-9E1D-FC695C237E10}

@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
 using SME.Acessos.Infra.Dominio.Extensions;
 using SME.Acessos.Infra.Servicos;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 
 namespace SME.Acessos.Api.Middlewares
 {
+    [ExcludeFromCodeCoverage]
     public class TratamentoExcecaoGlobalMiddleware(RequestDelegate next, IServicoLogs servicoLogs)
     {
         public async Task Invoke(HttpContext context)
